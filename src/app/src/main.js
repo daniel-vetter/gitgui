@@ -18,7 +18,10 @@ function createWindow() {
     slashes: true
   }))
   mainWindow.setMenu(null);
-  mainWindow.webContents.openDevTools({ mode: "undocked" });
+  if (process.argv.indexOf("--devtools") !== -1) {
+    mainWindow.webContents.openDevTools({ mode: "undocked" });
+  }
+
 
   mainWindow.on('closed', function () {
     mainWindow = null

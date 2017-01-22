@@ -11,7 +11,8 @@
             "cwd": "${workspaceRoot}",
             "runtimeExecutable": "${workspaceRoot}\\node_modules\\electron\\dist\\electron.exe",
             "runtimeArgs": [
-                "dist"
+                "dist",
+                "--devtools"
             ],
             "env": {},
             "sourceMaps": false
