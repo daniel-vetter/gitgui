@@ -10,7 +10,7 @@ const spawn = require('child_process').spawn;
 let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow({ width: 800, height: 600, show: false })
+  mainWindow = new BrowserWindow({ width: 1200, height: 800, show: false })
   mainWindow.webContents.on("did-finish-load", () => { mainWindow.show(); })
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
