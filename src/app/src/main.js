@@ -5,6 +5,7 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 const spawn = require('child_process').spawn;
+const fs = require("fs");
 
 
 let mainWindow
@@ -12,12 +13,20 @@ let mainWindow
 function createWindow() {
     mainWindow = new BrowserWindow({ width: 1200, height: 800, show: false })
     mainWindow.webContents.on("did-finish-load", () => { mainWindow.show(); })
-    mainWindow.loadURL(url.format({
+    let appUrl = url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
         slashes: true
-    }))
+    });
+    mainWindow.loadURL(appUrl);
     mainWindow.setMenu(null);
+
+    if (process.argv.indexOf("--reload-on-change") !== -1) {
+        fs.watch(__dirname, {}, (eventType, filename) => {
+            mainWindow.loadURL(appUrl);
+        });
+    }
+
     if (process.argv.indexOf("--devtools") !== -1) {
         mainWindow.webContents.openDevTools({ mode: "undocked" });
     }

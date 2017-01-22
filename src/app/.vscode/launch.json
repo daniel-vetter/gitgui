@@ -12,7 +12,8 @@
             "runtimeExecutable": "${workspaceRoot}\\node_modules\\electron\\dist\\electron.exe",
             "runtimeArgs": [
                 "dist",
-                "--devtools"
+                "--devtools",
+                "--reload-on-change"
             ],
             "env": {},
             "sourceMaps": false
