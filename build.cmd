@@ -1,6 +1,7 @@
 @echo off
 cd src\app
-cmd /c ng build -prod -o ..\..\build\app
+cmd /c npm install
+node node_modules\angular-cli\bin\ng build -prod -o ..\..\build\app
 cd ..\..
 node src\app\node_modules\electron-packager\cli.js ^
      build\app GitGui ^
