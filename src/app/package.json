@@ -5,7 +5,7 @@
   "angular-cli": {},
   "scripts": {
     "ng": "ng",
-	"build": "ng build",
+    "build": "ng build",
     "build-watch": "ng build -w",
     "lint": "tslint \"src/**/*.ts\" --project src/tsconfig.json --type-check && tslint \"e2e/**/*.ts\" --project e2e/tsconfig.json --type-check",
     "test": "ng test",
@@ -34,6 +34,7 @@
     "angular-cli": "1.0.0-beta.26",
     "codelyzer": "~2.0.0-beta.1",
     "electron": "^1.4.15",
+    "gulp": "^3.9.1",
     "jasmine-core": "2.5.2",
     "jasmine-spec-reporter": "2.5.0",
     "karma": "1.2.0",
