@@ -13,6 +13,7 @@ html, body {
 a {
     $linkColor: dodgerblue;
     color: $linkColor;
+    cursor: pointer;
     &:hover {
         color: lighten($linkColor, 15%);
     }
