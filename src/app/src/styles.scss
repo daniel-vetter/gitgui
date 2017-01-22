@@ -10,6 +10,13 @@ html, body {
     cursor: default;
 }
 
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 a {
     $linkColor: dodgerblue;
     color: $linkColor;
@@ -20,7 +27,6 @@ a {
 }
 
 .fill {
-    box-sizing: border-box;
     height: 100%;
     width: 100%;
 }
