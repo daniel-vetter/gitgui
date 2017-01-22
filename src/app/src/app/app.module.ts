@@ -5,10 +5,14 @@ import { HttpModule } from '@angular/http';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
+import { RepositoryOpenComponent } from './repository-open/repository-open.component';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RepositoryOpenComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,
