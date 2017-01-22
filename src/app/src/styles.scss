@@ -1,0 +1,19 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font: small-caption;
+    background-color: Window;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+    cursor: default;
+}
+
+a {
+    color: dodgerblue;
+
+    &:hover {
+        color: lighten(dodgerblue, 20%);
+    }
+}
