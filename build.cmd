@@ -1,7 +1,12 @@
 @echo off
+if exist build rmdir /S /Q build
 cd src\app
 cmd /c npm install
-node node_modules\angular-cli\bin\ng build -prod -o ..\..\build\app
+node node_modules\angular-cli\bin\ng build -prod -o
+cd ..
+cd main
+cmd /c npm install
+node node_modules\webpack\bin\webpack.js
 cd ..\..
 node src\app\node_modules\electron-packager\cli.js ^
      build\app GitGui ^

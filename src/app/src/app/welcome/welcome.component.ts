@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+const remote = (<any>window).require('electron').remote;
 
 @Component({
   selector: 'welcome',
@@ -10,6 +11,12 @@ export class WelcomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onOpenRepositoryClicked() {
+      remote.dialog.showOpenDialog({
+          properties: ['openDirectory']
+      }, () => {});
   }
 
 }

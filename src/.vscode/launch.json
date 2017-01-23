@@ -5,18 +5,18 @@
             "name": "Launch",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}\\src\\main.js",
+            "program": "${workspaceRoot}\\..\\build\\app\\main.js",
             "stopOnEntry": false,
             "args": [],
-            "cwd": "${workspaceRoot}",
-            "runtimeExecutable": "${workspaceRoot}\\node_modules\\electron\\dist\\electron.exe",
+            "cwd": "${workspaceRoot}\\..\\build\\app",
+            "runtimeExecutable": "${workspaceRoot}\\main\\node_modules\\electron\\dist\\electron.exe",
             "runtimeArgs": [
-                "dist",
+                ".",
                 "--devtools",
                 "--reload-on-change"
             ],
             "env": {},
-            "sourceMaps": false
+            "sourceMaps": true
         }
     ]
 }
