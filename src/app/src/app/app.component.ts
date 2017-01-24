@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { GitRaw } from './services/git/infrastructure/git-raw';
+import { RepositoryReader } from './services/git/repository-reader';
+import { Process } from './services/git/infrastructure/process';
+import * as Rx from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -6,5 +10,5 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-    title = 'app works!';
+
 }
