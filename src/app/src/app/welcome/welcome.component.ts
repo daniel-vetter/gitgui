@@ -23,6 +23,7 @@ export class WelcomeComponent implements OnInit {
 
     private mapRecentRepositoriesViewModels() {
         this.recentRepositories = [];
+        debugger;
         for (const path of this.config.get().recentRepositories) {
             const vm = new RecentRepositoryViewModel();
             vm.path = path;

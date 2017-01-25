@@ -10,7 +10,6 @@ class MainProcess {
 
     run() {
         app.on("ready", () => {
-            this.initConfig();
             this.createWindow();
         });
         app.on("window-all-closed", () => {
@@ -50,30 +49,6 @@ class MainProcess {
         this.mainWindow.on("closed", function () {
             this.mainWindow = null;
         });
-    }
-
-    private initConfig() {
-        global["config"] = { current: undefined };
-        try {
-            global["config"]["data"] = fs.readFileSync(this.getConfigFilePath(), "utf8");
-        } catch (err) {
-            console.warn("Configuration file could not be loaded. Default configuration will be used.");
-        }
-
-        ipcMain.on("save-config", () => {
-            fs.writeFileSync(this.getConfigFilePath(), global["config"]["data"], { encoding: "utf8" });
-        });
-    }
-
-    private getConfigFilePath() {
-        if (process.platform !== "win32") {
-            throw new Error("TODO: Find user app data directory for other platforms than win32.")
-        }
-        const baseDir = path.join(process.env["LOCALAPPDATA"], "GitGui");
-        if (!fs.existsSync(baseDir)) {
-            fs.mkdirSync(baseDir);
-        }
-        return path.join(baseDir, "config.json");
     }
 }
 

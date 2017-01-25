@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import * as Rx from "rxjs";
+import { ConfigData } from '../model/config';
 const remote = (<any>window).require("electron").remote;
-const ipcRenderer = (<any>window).require("electron").ipcRenderer;
+const fs = remote.require('fs');
+const process = remote.process;
 
 @Injectable()
 export class Config {
@@ -13,23 +15,39 @@ export class Config {
             return this.config;
         }
 
-        let jsonData = remote.getGlobal("config").data;
-        if (!jsonData) {
-            console.warn("Configuration file could not be loaded. Default configuration will be used.");
+        debugger;
+
+        const configFilePath = this.getConfigFilePath();
+
+        if (!fs.existsSync(configFilePath)) {
+            console.warn("Configuration file was not found. Default configuration will be used.");
             this.config = new ConfigData();
-        } else {
-            this.config = JSON.parse(jsonData);
+            return this.config;
         }
+
+        const jsonData = fs.readFileSync(configFilePath, "utf8");
+        this.config = JSON.parse(jsonData);
         return this.config;
     }
 
-    save() {
-        remote.getGlobal("config").data = JSON.stringify(this.config);
-        ipcRenderer.send("save-config");
+    save(sync: boolean = false) {
+        const data =  JSON.stringify(this.config, undefined, 2);
+        if (sync) {
+            fs.writeFileSync(this.getConfigFilePath(), data, { encoding: "utf8" });
+        } else {
+            fs.writeFile(this.getConfigFilePath(), data, { encoding: "utf8" }, () => { });
+        }
     }
-}
 
-export class ConfigData {
-    loadLastRepositoryOnStartup: boolean = false;
-    recentRepositories: string[] = [];
+    private getConfigFilePath() {
+        if (process.platform !== "win32") {
+            throw new Error("TODO: Find user app data directory for other platforms than win32.")
+        }
+        //TODO: proper path concatenation
+        const baseDir = process.env["LOCALAPPDATA"] + "\\GitGui";
+        if (!fs.existsSync(baseDir)) {
+            fs.mkdirSync(baseDir);
+        }
+        return baseDir + "\\config.json";
+    }
 }
