@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, ipcMain } from "electron";
 import * as Electron from "electron";
 import * as path from "path";
 import * as url from "url";
@@ -10,12 +10,11 @@ class MainProcess {
 
     run() {
         app.on("ready", () => {
-            this.readConfig();
+            this.initConfig();
             this.createWindow();
         });
         app.on("window-all-closed", () => {
             if (process.platform !== "darwin") {
-                this.writeConfig();
                 app.quit();
             }
         });
@@ -53,18 +52,17 @@ class MainProcess {
         });
     }
 
-    private readConfig() {
+    private initConfig() {
         global["config"] = { current: undefined };
         try {
-            const data = fs.readFileSync(this.getConfigFilePath(), "utf8");
-            global["config"]["current"] = JSON.parse(data);
+            global["config"]["data"] = fs.readFileSync(this.getConfigFilePath(), "utf8");
         } catch (err) {
             console.warn("Configuration file could not be loaded. Default configuration will be used.");
         }
-    }
 
-    private writeConfig() {
-        fs.writeFileSync(this.getConfigFilePath(), JSON.stringify(global["config"]["current"], undefined, 2), { encoding: "utf8" });
+        ipcMain.on("save-config", () => {
+            fs.writeFileSync(this.getConfigFilePath(), global["config"]["data"], { encoding: "utf8" });
+        });
     }
 
     private getConfigFilePath() {

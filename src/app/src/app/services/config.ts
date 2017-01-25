@@ -1,22 +1,31 @@
 import { Injectable } from "@angular/core";
 import * as Rx from "rxjs";
 const remote = (<any>window).require("electron").remote;
+const ipcRenderer = (<any>window).require("electron").ipcRenderer;
 
 @Injectable()
 export class Config {
 
-    config: any;
+    private config: ConfigData;
 
     get(): ConfigData {
-        if (!this.config) {
-            this.config = remote.getGlobal("config");
+        if (this.config) {
+            return this.config;
         }
-        if (!this.config.current) {
+
+        let jsonData = remote.getGlobal("config").data;
+        if (!jsonData) {
             console.warn("Configuration file could not be loaded. Default configuration will be used.");
-            this.config.current = new ConfigData();
+            this.config = new ConfigData();
+        } else {
+            this.config = JSON.parse(jsonData);
         }
-        console.log(this.config);
-        return this.config.current;
+        return this.config;
+    }
+
+    save() {
+        remote.getGlobal("config").data = JSON.stringify(this.config);
+        ipcRenderer.send("save-config");
     }
 }
 

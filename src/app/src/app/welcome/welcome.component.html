@@ -9,9 +9,9 @@
             Recent repositories:
         </div>
         <div style="flex: 1" class="recentRepositoryList fill">
-            <div class="item">
-                <span class="name">Dashboard</span><br>
-                <span class="path">C:\coding\dashboard</span>
+            <div *ngFor="let rep of recentRepositories" class="item">
+                <span class="name">{{ rep.name }}</span><br>
+                <span class="path">{{ rep.path }}</span>
             </div>
         </div>
         <div>
