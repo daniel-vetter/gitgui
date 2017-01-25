@@ -26,6 +26,7 @@ export class WelcomeComponent implements OnInit {
         for (const path of this.config.get().recentRepositories) {
             const vm = new RecentRepositoryViewModel();
             vm.path = path;
+
             let splitIndex = path.lastIndexOf("\\");
             if (splitIndex === -1) {
                 splitIndex = path.lastIndexOf("/");
@@ -35,6 +36,10 @@ export class WelcomeComponent implements OnInit {
             } else {
                 vm.name = path.substring(splitIndex + 1);
             }
+            if (vm.name.trim() === "") {
+                vm.name = path;
+            }
+
             this.recentRepositories.push(vm);
         }
     }
@@ -50,13 +55,6 @@ export class WelcomeComponent implements OnInit {
             });
         });
     }
-
-    test() {
-        this.repositoryReader.readRepository("C:\\temp\\linux-stable").subscribe(x => {
-            console.log(x);
-        });
-    }
-
 }
 
 class RecentRepositoryViewModel {
