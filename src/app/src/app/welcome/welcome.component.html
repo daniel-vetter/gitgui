@@ -9,7 +9,7 @@
             Recent repositories:
         </div>
         <div style="flex: 1" class="recentRepositoryList fill">
-            <div *ngFor="let rep of recentRepositories" class="item">
+            <div *ngFor="let rep of recentRepositories" class="item" (click)="onRepositoryClicked(rep)">
                 <div>
                     <img src="assets/icons/repo.svg">
                 </div>

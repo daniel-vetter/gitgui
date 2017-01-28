@@ -50,11 +50,23 @@ export class WelcomeComponent implements OnInit {
             properties: ["openDirectory"]
         }, (pathArray: string[]) => {
             this.zone.run(() => {
+                if (pathArray.length === 0) {
+                    return;
+                }
                 this.config.get().recentRepositories.push(pathArray[0]);
                 this.config.save();
                 this.mapRecentRepositoriesViewModels();
+                this.openRepository(pathArray[0]);
             });
         });
+    }
+
+    onRepositoryClicked(vm: RecentRepositoryViewModel) {
+        this.openRepository(vm.path);
+    }
+
+    private openRepository(path: string) {
+        this.repositoryReader.readRepository(path).subscribe(x => console.log(x));
     }
 }
 
