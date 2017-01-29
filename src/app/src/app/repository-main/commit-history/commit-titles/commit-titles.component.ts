@@ -5,12 +5,15 @@ import { LaneColorProvider } from "../services/lane-color-provider";
 
 @Component({
     selector: "commit-titles",
-    templateUrl: "./commit-titles.component.html"
+    templateUrl: "./commit-titles.component.html",
+    styleUrls: ["./commit-titles.component.scss"]
 })
 export class CommitTitlesComponent implements OnChanges {
 
     @Input() commits: HistoryRepository =  undefined;
     @Input() visibleRange: VisibleRange = undefined;
+    @Input() commitHighlighted: HistoryCommit = undefined;
+
     visibleCommits = new ReusePool<HistoryCommit, CommitTitleViewModel>(() => new CommitTitleViewModel());
     commitHeight = 30;
 
@@ -19,7 +22,7 @@ export class CommitTitlesComponent implements OnChanges {
         this.visibleRange = new VisibleRange(0, 0);
     }
 
-    ngOnChanges() {
+    ngOnChanges(changes) {
         this.updateVisibleCommits();
     }
 
@@ -39,6 +42,7 @@ export class CommitTitlesComponent implements OnChanges {
             vm.title = commit.title;
             vm.positionTop = i * 30;
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
+            vm.highlighted = this.commitHighlighted === commit;
         }
         this.visibleCommits.clearUp();
     }
@@ -54,6 +58,7 @@ export class CommitTitleViewModel implements PoolableViewModel<HistoryCommit> {
     title: string;
     positionTop: number;
     color: string;
+    highlighted: boolean;
 
     clear() {
         this.id = undefined;
@@ -61,5 +66,6 @@ export class CommitTitleViewModel implements PoolableViewModel<HistoryCommit> {
         this.title = undefined;
         this.positionTop = undefined;
         this.color = undefined;
+        this.highlighted = undefined;
     }
 }

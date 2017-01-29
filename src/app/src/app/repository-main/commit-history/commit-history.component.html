@@ -1,14 +1,22 @@
 <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-    <div style="position: relative; width: 100%; height: 100%; overflow: auto; transform: translateZ(0); position: relative" (scroll)="onScroll()" #scrollWrapper>
+    <div style="position: relative; width: 100%; height: 100%; overflow: auto; transform: translateZ(0); position: relative" (scroll)="onScroll()" (mousemove)="onMouseMove($event)" #scrollWrapper>
         <div style="display: flex; width: 100%; overflow: hidden;" [style.height.px]="maxScrollHeight">
             <div [style.width.px]="annotationGridWidth">
                 <div style="white-space: nowrap">Ein sehr langer String und so hier könnte ein Branch stehen</div>
             </div>
             <div [style.width.px]="currentLaneGridWidth" style="position: relative">
-                <commit-lanes [commits]="historyRepository" [visibleRange]="visibleRange" [width]="currentLaneGridWidth" [verticalScroll]="laneGridScrollPosition"></commit-lanes>
+                <commit-lanes [commits]="historyRepository"
+                              [visibleRange]="visibleRange"
+                              [width]="currentLaneGridWidth"
+                              [verticalScroll]="laneGridScrollPosition"
+                              [commitHighlighted]="commitHighlighted">
+                </commit-lanes>
             </div>
             <div style="flex: 1;">
-                <commit-titles [commits]="historyRepository" [visibleRange]="visibleRange"></commit-titles>
+                <commit-titles [commits]="historyRepository"
+                               [visibleRange]="visibleRange"
+                               [commitHighlighted]="commitHighlighted">
+                </commit-titles>
             </div>
         </div>
     </div>

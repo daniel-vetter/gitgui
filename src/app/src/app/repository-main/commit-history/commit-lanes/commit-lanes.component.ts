@@ -15,12 +15,18 @@ export class CommitLanesComponent implements OnChanges {
     @Input() visibleRange: VisibleRange = undefined;
     @Input() verticalScroll = 0;
     @Input() width = 0;
+    @Input() commitHighlighted: HistoryCommit = undefined;
 
     leftBorderVisible = false;
     rightBorderVisible = false;
 
     visibleBubbles = new ReusePool<HistoryCommit, CommitBubbleViewModel>(() => new CommitBubbleViewModel());
     visibleLines = new ReusePool<Line, LineViewModel>(() => new LineViewModel());
+
+    highlightedBackgroundVisible: boolean = false;
+    highlightedBackgroundTop: number = 0;
+    highlightedBackgroundColor: string;
+
 
     private bubbleSpacing = 23;
     private lineIndex = new LineIndex([]);
@@ -46,6 +52,20 @@ export class CommitLanesComponent implements OnChanges {
             this.rightBorderVisible = this.verticalScroll < this.totalLaneCount * 30 - this.width;
             this.updateBubbles();
             this.updateLines();
+        }
+
+        if (changes.commitHighlighted) {
+            this.updateHighlightBar();
+        }
+    }
+
+    private updateHighlightBar() {
+        if (!this.commitHighlighted) {
+            this.highlightedBackgroundVisible = false;
+        } else {
+            this.highlightedBackgroundVisible = true;
+            this.highlightedBackgroundTop = this.commitHighlighted.index * 30;
+            this.highlightedBackgroundColor = this.laneColorProvider.getColorForLane(this.commitHighlighted.lane);
         }
     }
 

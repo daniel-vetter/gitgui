@@ -26,6 +26,10 @@ export class CommitHistoryComponent implements OnChanges {
     isInLaneGridResizeMode = false;
     historyRepository: HistoryRepository;
 
+    commitClicked: HistoryCommit;
+    commitSelected: HistoryCommit;
+    commitHighlighted: HistoryCommit;
+
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
         private changeDetectionRef: ChangeDetectorRef) {
@@ -37,6 +41,9 @@ export class CommitHistoryComponent implements OnChanges {
             this.currentLaneGridWidth = Math.min(this.historyRepository.totalLaneCount * 30, 200);
             this.totalLaneGridWidth = this.historyRepository.totalLaneCount * 30;
             this.maxScrollHeight = this.historyRepository.commits.length * 30;
+            this.commitClicked = undefined;
+            this.commitHighlighted = undefined;
+            this.commitSelected = undefined;
         }
         this.update();
     }
@@ -112,5 +119,20 @@ export class CommitHistoryComponent implements OnChanges {
             if (this.currentLaneGridWidth < 30)
                 this.currentLaneGridWidth = 30;
         }
+    }
+
+    onMouseMove(event) {
+        this.commitHighlighted = this.hitTest(event.clientX, event.clientY);
+    }
+
+    hitTest(x: number, y: number): HistoryCommit {
+        const bounds = this.scrollWrapper.nativeElement.getBoundingClientRect();
+        x -= this.annotationGridWidth + bounds.left;
+        y -= bounds.top - this.scrollWrapper.nativeElement.scrollTop;
+        if (x < 0 || x > this.scrollWrapper.nativeElement.clientWidth ||
+            y < 0 || y > this.maxScrollHeight)
+            return undefined;
+        const index = Math.floor(y / 30);
+        return this.historyRepository.commits[index];
     }
 }

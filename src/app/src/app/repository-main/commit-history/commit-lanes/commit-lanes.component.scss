@@ -1,9 +1,9 @@
 .scrollBorder {
-    width: 30px; 
-    position: absolute; 
-    top: 0; 
-    bottom: 0; 
-    background: white; 
+    width: 30px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: white;
     box-shadow: 0px 0px 10px;
     opacity: 0;
     transition: opacity 0.2s linear;
@@ -11,4 +11,13 @@
 
 .visible {
     opacity: 1;
+}
+
+.highlightedBackground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: black;
+    height: 30px;
+    opacity: 0.1;
 }
