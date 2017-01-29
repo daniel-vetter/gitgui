@@ -1,7 +1,9 @@
 import { Component, OnInit, NgZone } from "@angular/core";
+import { Router } from "@angular/router";
 import { Repository } from "../model/model";
 import { RepositoryReader } from "../services/git/repository-reader";
 import { Config } from "../services/config";
+import { CurrentRepository } from "../services/current-repository";
 const remote = (<any>window).require("electron").remote;
 
 @Component({
@@ -15,7 +17,9 @@ export class WelcomeComponent implements OnInit {
 
     constructor(private repositoryReader: RepositoryReader,
         private config: Config,
-        private zone: NgZone) { }
+        private zone: NgZone,
+        private router: Router,
+        private currentRepository: CurrentRepository) { }
 
     ngOnInit() {
         this.mapRecentRepositoriesViewModels();
@@ -23,8 +27,11 @@ export class WelcomeComponent implements OnInit {
 
     private mapRecentRepositoriesViewModels() {
         this.recentRepositories = [];
-        debugger;
-        for (const path of this.config.get().recentRepositories) {
+
+        const recentRepositories = Array.from(this.config.get().recentRepositories);
+        recentRepositories.reverse();
+
+        for (const path of recentRepositories) {
             const vm = new RecentRepositoryViewModel();
             vm.path = path;
 
@@ -66,7 +73,10 @@ export class WelcomeComponent implements OnInit {
     }
 
     private openRepository(path: string) {
-        this.repositoryReader.readRepository(path).subscribe(x => console.log(x));
+        this.repositoryReader.readRepository(path).subscribe(x => {
+            this.currentRepository.set(x);
+            this.router.navigate(["/main"]);
+        });
     }
 }
 

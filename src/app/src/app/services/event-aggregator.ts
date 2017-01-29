@@ -5,12 +5,12 @@ export class EventAggregator {
 
     private emitters = new Map<string, EventEmitter<any>>();
 
-    subscribe(messageType: string, handler: (any) => void): Subscription {
-        return this.getEmitter(messageType).subscribe(x => handler(x));
+    subscribe(messageType: any, handler: (any) => void): Subscription {
+        return this.getEmitter(messageType.name).subscribe(x => handler(x));
     }
 
-    publish(messageType: string, message: any) {
-        this.getEmitter(messageType).emit(message);
+    publish(message: any) {
+        this.getEmitter(message.constructor.name).emit(message);
     }
 
     private getEmitter(messageType: string) {
@@ -28,7 +28,7 @@ export class SubscriptionBag {
 
     constructor(private eventAggregator: EventAggregator) { }
 
-    subscribe(messageType: string, handler: (any) => void) {
+    subscribe(messageType: any, handler: (any) => void) {
         this.eventAggregator.subscribe(messageType, handler);
     }
 

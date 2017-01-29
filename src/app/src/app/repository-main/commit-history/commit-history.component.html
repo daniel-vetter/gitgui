@@ -1,0 +1,32 @@
+<div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+    <div style="position: relative; width: 100%; height: 100%; overflow: auto; transform: translateZ(0); position: relative" (scroll)="onScroll()" #scrollWrapper>
+        <div style="display: flex; width: 100%; overflow: hidden;" [style.height.px]="maxScrollHeight">
+            <div [style.width.px]="annotationGridWidth">
+                <div style="white-space: nowrap">Ein sehr langer String und so hier könnte ein Branch stehen</div>
+            </div>
+            <div [style.width.px]="currentLaneGridWidth" style="position: relative">
+                <commit-lanes [commits]="historyRepository" [visibleRange]="visibleRange" [width]="currentLaneGridWidth" [verticalScroll]="laneGridScrollPosition"></commit-lanes>
+            </div>
+            <div style="flex: 1;">
+                <commit-titles [commits]="historyRepository" [visibleRange]="visibleRange"></commit-titles>
+            </div>
+        </div>
+    </div>
+
+    <div style="position: absolute; bottom: 0; overflow: auto;" [style.left.px]="annotationGridWidth" [style.width.px]="currentLaneGridWidth - 1" (scroll)="onLaneGridScroll($event)">
+        <div style="opacity: 0; height: 1px;" [style.width.px]="totalLaneGridWidth" ></div>
+    </div>
+
+    <div class="resizeOverlay" [class.inResizeMode]="isInLaneGridResizeMode" [style.height.px]="maxScrollHeight">
+        <div [style.width.px]="annotationGridWidth">
+        </div>
+        <div [style.width.px]="currentLaneGridWidth" style="position: relative;">
+        </div>
+        <div style="width: 10px; pointer-events: all; cursor: ew-resize" (mousedown)="onResizeMouseDown($event)" (document:mouseup)="onResizeMouseUp($event)" (document:mousemove)="mouseMove($event)">
+        </div>
+        <div style="flex: 1; position: relative;">
+        </div>
+    </div>
+
+</div>
+

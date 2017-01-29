@@ -1,21 +1,34 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import * as Rxjs from 'rxjs';
-const remote = (<any>window).require('electron').remote;
-const child_process = remote.require('child_process');
+import { Injectable, NgZone } from "@angular/core";
+import { Observable } from "rxjs";
+import * as Rxjs from "rxjs";
+const remote = (<any>window).require("electron").remote;
+const child_process = remote.require("child_process");
 
 declare var TextDecoder;
 
 @Injectable()
 export class Process {
+
+    constructor(private zone: NgZone) { }
+
     run(pathToApp: string, args: string[], workDirectory: string): Observable<ProcessRunStdOut | ProcessRunErrOut | ProcessRunExit> {
+        const list = [];
         return Rxjs.Observable.create(subscriber => {
             const p = child_process.spawn(pathToApp, args, { cwd: workDirectory });
-            p.stdout.on('data', data => { subscriber.next(new ProcessRunStdOut(data)); });
-            p.stderr.on('data', data => { subscriber.next(new ProcessRunErrOut(data)); });
-            p.on('exit', code => {
-                subscriber.next(new ProcessRunExit(code));
-                subscriber.complete();
+            p.stdout.on("data", data => {
+                list.push(new ProcessRunStdOut(data));
+            });
+            p.stderr.on("data", data => {
+                list.push(new ProcessRunErrOut(data));
+            });
+            p.on("exit", code => {
+                list.push(new ProcessRunExit(code));
+                this.zone.run(() => {
+                    for (let d of list) {
+                        subscriber.next(d);
+                    }
+                    subscriber.complete();
+                });
             });
         });
     }
@@ -54,7 +67,7 @@ export class Process {
                     subscriber.next(result);
                     subscriber.complete();
                 } else {
-                    throw new Error('invalid type');
+                    throw new Error("invalid type");
                 }
             });
         });

@@ -14,18 +14,23 @@ import { StatusReader } from "./services/git/infrastructure/status-reader";
 import { CommitsReader } from "./services/git/commits-reader";
 import { RepositoryReader } from "./services/git/repository-reader";
 import { Config } from "./services/config";
+import { RepositoryMainComponent } from "./repository-main/repository-main.component";
+import { CommitHistoryModule } from "./repository-main/commit-history/commit-history.module";
+import { CurrentRepository } from "./services/current-repository";
 
 @NgModule({
   declarations: [
     AppComponent,
     RepositoryOpenComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    RepositoryMainComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    AppRoutingModule
+    AppRoutingModule,
+    CommitHistoryModule
   ],
   providers: [
       EventAggregator,
@@ -35,7 +40,8 @@ import { Config } from "./services/config";
       GitPathProvider,
       StatusReader,
       CommitsReader,
-      RepositoryReader
+      RepositoryReader,
+      CurrentRepository
   ],
   bootstrap: [AppComponent]
 })

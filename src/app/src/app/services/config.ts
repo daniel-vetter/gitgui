@@ -14,9 +14,6 @@ export class Config {
         if (this.config) {
             return this.config;
         }
-
-        debugger;
-
         const configFilePath = this.getConfigFilePath();
 
         if (!fs.existsSync(configFilePath)) {

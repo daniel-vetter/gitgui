@@ -1,0 +1,14 @@
+.resizeOverlay {
+    display: flex; 
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    overflow: hidden; 
+    pointer-events: none;
+}
+
+.inResizeMode {
+    pointer-events: all;
+    cursor: ew-resize;
+}
