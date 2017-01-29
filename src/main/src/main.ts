@@ -29,7 +29,7 @@ class MainProcess {
         this.mainWindow = new Electron.BrowserWindow({ width: 1200, height: 800, show: false });
         this.mainWindow.webContents.on("did-finish-load", () => { this.mainWindow.show(); });
         const appUrl = url.format({
-            pathname: path.join(__dirname, "index.html"),
+            pathname: path.join(__dirname, "app/index.html"),
             protocol: "file:",
             slashes: true
         });
