@@ -2,17 +2,19 @@
 
     <div *ngIf="highlightedBackgroundVisible" class="highlightedBackground" [style.top.px]="highlightedBackgroundTop"></div>
 
-    <div *ngFor="let line of visibleLines.viewModels"
-        style="position: absolute; border-width: 3px; border-style: solid; box-sizing: border-box; opacity: 0.7"
-        [style.top.px]="line.positionTop"
-        [style.left.px]="line.positionLeft"
-        [style.width.px]="line.width"
-        [style.height.px]="line.height"
-        [style.borderLeftColor]="line.borderLeftColor"
-        [style.borderRightColor]="line.borderRightColor"
-        [style.borderBottomColor]="line.borderBottomColor"
-        [style.borderTopColor]="line.borderTopColor"
-        [style.borderRadius]="line.borderRadius">
+    <div style="transform: translateZ(0)">
+        <div *ngFor="let line of visibleLines.viewModels"
+            style="position: absolute; border-width: 3px; border-style: solid; box-sizing: border-box; opacity: 0.7;"
+            [style.top.px]="line.positionTop"
+            [style.left.px]="line.positionLeft"
+            [style.width.px]="line.width"
+            [style.height.px]="line.height"
+            [style.borderLeftColor]="line.borderLeftColor"
+            [style.borderRightColor]="line.borderRightColor"
+            [style.borderBottomColor]="line.borderBottomColor"
+            [style.borderTopColor]="line.borderTopColor"
+            [style.borderRadius]="line.borderRadius">
+        </div>
     </div>
 
     <div style="left: 0;" class="scrollBorder" [class.visible]="leftBorderVisible">
@@ -22,8 +24,6 @@
     <div style="right: 0;" class="scrollBorder" [class.visible]="rightBorderVisible">
         <div *ngIf="highlightedBackgroundVisible" class="highlightedBackground" [style.top.px]="highlightedBackgroundTop"></div>
     </div>
-
-
 
     <div *ngFor="let item of visibleBubbles.viewModels" style="position: absolute; display: flex; width: 30px; height: 30px" [style.top.px]="item.positionTop" [style.left.px]="item.positionLeft">
         <div [style.width.px]="laneGridWidth">

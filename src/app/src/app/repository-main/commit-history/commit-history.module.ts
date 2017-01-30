@@ -9,6 +9,7 @@ import { CommitLanesComponent } from "./commit-lanes/commit-lanes.component";
 import { CommitTitlesComponent } from "./commit-titles/commit-titles.component";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
+import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 @NgModule({
     declarations: [
         CommitHistoryComponent,
@@ -24,7 +25,8 @@ import { FormsModule } from "@angular/forms";
         LaneAssigner,
         LaneColorProvider,
         LineIndex,
-        ReusePool
+        ReusePool,
+        RepositoryToHistoryRepositoryMapper
     ],
     exports: [
         CommitHistoryComponent
