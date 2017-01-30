@@ -40,6 +40,9 @@ class MainProcess {
             fs.watch(__dirname, {}, (eventType, filename) => {
                 this.mainWindow.loadURL(appUrl);
             });
+            fs.watch(path.join(__dirname, "app"), {}, (eventType, filename) => {
+                this.mainWindow.loadURL(appUrl);
+            });
         }
 
         if (process.argv.indexOf("--devtools") !== -1) {
