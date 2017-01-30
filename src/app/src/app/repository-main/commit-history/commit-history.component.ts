@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnChanges, ChangeDetectorRef, ChangeDetectionStrategy, DoCheck  } from "@angular/core";
+import { Component, Input, ViewChild, OnChanges, ChangeDetectorRef, ChangeDetectionStrategy, DoCheck } from "@angular/core";
 import { LaneColorProvider } from "./services/lane-color-provider";
 import { LineIndex } from "./services/line-index";
 import { LaneAssigner } from "./services/lane-assigner";
@@ -11,7 +11,7 @@ import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-hi
     templateUrl: "./commit-history.component.html",
     styleUrls: ["./commit-history.component.scss"]
 })
-export class CommitHistoryComponent implements OnChanges  {
+export class CommitHistoryComponent implements OnChanges {
 
     @Input() repository: Repository = undefined;
     @ViewChild("canvas") canvas;
@@ -36,9 +36,7 @@ export class CommitHistoryComponent implements OnChanges  {
 
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
-        private repositoryToHistoryRepositoryMapper: RepositoryToHistoryRepositoryMapper,
-        private changeDetector: ChangeDetectorRef) {
-            changeDetector.detach();
+        private repositoryToHistoryRepositoryMapper: RepositoryToHistoryRepositoryMapper) {
     }
 
     ngOnChanges() {
@@ -53,17 +51,9 @@ export class CommitHistoryComponent implements OnChanges  {
         }
         this.update();
     }
-
-    request = false;
     onScroll(event) {
-        if (this.request === true)
-            return;
-        this.request = true;
-        requestAnimationFrame(() => {
-            this.commitHighlighted = undefined;
-            this.update();
-            this.request = false;
-        });
+        this.commitHighlighted = undefined;
+        this.update();
     }
 
     private update() {
@@ -71,7 +61,6 @@ export class CommitHistoryComponent implements OnChanges  {
         const startY = Math.floor(this.scrollWrapper.nativeElement.scrollTop / 30);
         const endY = Math.floor(startY + this.scrollWrapper.nativeElement.clientHeight / 30) + 1;
         this.visibleRange = new VisibleRange(startY - overdraw, endY + overdraw);
-        this.changeDetector.detectChanges();
 
     }
 
@@ -96,7 +85,6 @@ export class CommitHistoryComponent implements OnChanges  {
             if (this.currentLaneGridWidth < 30)
                 this.currentLaneGridWidth = 30;
         }
-        this.changeDetector.detectChanges();
     }
 
     onMouseMove(event) {
