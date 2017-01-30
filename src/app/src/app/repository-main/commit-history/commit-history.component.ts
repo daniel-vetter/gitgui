@@ -150,4 +150,8 @@ export class CommitHistoryComponent implements OnChanges {
         const index = Math.floor(y / 30);
         return this.historyRepository.commits[index];
     }
+
+    onWindowResize() {
+        this.update();
+    }
 }

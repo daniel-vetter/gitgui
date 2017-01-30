@@ -1,4 +1,4 @@
-<div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+<div style="position: relative; width: 100%; height: 100%; overflow: hidden;" (window:resize)="onWindowResize()">
     <div style="position: relative; width: 100%; height: 100%; overflow: auto; transform: translateZ(0); position: relative" (scroll)="onScroll($event)" (document:mouseleave)="onMouseOut()" (mouseout)="onMouseOut($event)" (mousemove)="onMouseMove($event)" #scrollWrapper>
         <div style="display: flex; width: 100%; overflow: hidden;" [style.height.px]="maxScrollHeight">
             <div [style.width.px]="annotationGridWidth">
