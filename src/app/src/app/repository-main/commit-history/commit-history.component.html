@@ -21,21 +21,19 @@
                 </commit-titles>
             </div>
         </div>
+
+        <div class="resizeOverlay" [class.inResizeMode]="isInLaneGridResizeMode" [style.height.px]="maxScrollHeight">
+            <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 2"
+                                   [style.height.px]="maxScrollHeight"
+                                   (mousedown)="onResizeMouseDown($event)"
+                                   (document:mouseup)="onResizeMouseUp($event)"
+                                   (document:mousemove)="onResizeMouseMove($event)">
+            </div>
+        </div>
     </div>
 
     <div class="horizontalScrollContainer" [style.left.px]="annotationGridWidth" [style.width.px]="currentLaneGridWidth - 1" (scroll)="onLaneGridScroll($event)">
         <div style="opacity: 0; height: 1px;" [style.width.px]="totalLaneGridWidth" ></div>
-    </div>
-
-    <div class="resizeOverlay" [class.inResizeMode]="isInLaneGridResizeMode" [style.height.px]="maxScrollHeight">
-        <div [style.width.px]="annotationGridWidth">
-        </div>
-        <div [style.width.px]="currentLaneGridWidth" style="position: relative;">
-        </div>
-        <div style="width: 10px; pointer-events: all; cursor: ew-resize" (mousedown)="onResizeMouseDown($event)" (document:mouseup)="onResizeMouseUp($event)" (document:mousemove)="onResizeMouseMove($event)">
-        </div>
-        <div style="flex: 1; position: relative;">
-        </div>
     </div>
 </div>
 

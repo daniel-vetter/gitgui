@@ -30,6 +30,14 @@
     pointer-events: none;
 }
 
+.resizeBar {
+    width: 10px;
+    pointer-events: all;
+    cursor: ew-resize;
+    position: absolute
+}
+
+
 .inResizeMode {
     pointer-events: all;
     cursor: ew-resize;
