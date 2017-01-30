@@ -1,10 +1,32 @@
+.root {
+    position: relative;
+}
+
+.scrollContainer {
+    position: relative;
+    overflow: auto;
+    transform: translateZ(0);
+}
+
+.scrollInner {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+}
+
+.horizontalScrollContainer {
+    position: absolute;
+    bottom: 0;
+    overflow: auto;
+}
+
 .resizeOverlay {
-    display: flex; 
-    position: absolute; 
-    left: 0; 
-    top: 0; 
-    width: 100%; 
-    overflow: hidden; 
+    display: flex;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
     pointer-events: none;
 }
 

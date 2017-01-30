@@ -61,7 +61,6 @@ export class CommitHistoryComponent implements OnChanges {
         const startY = Math.floor(this.scrollWrapper.nativeElement.scrollTop / 30);
         const endY = Math.floor(startY + this.scrollWrapper.nativeElement.clientHeight / 30) + 1;
         this.visibleRange = new VisibleRange(startY - overdraw, endY + overdraw);
-
     }
 
     onLaneGridScroll(event: UIEvent) {
@@ -76,7 +75,7 @@ export class CommitHistoryComponent implements OnChanges {
         this.isInLaneGridResizeMode = false;
     }
 
-    mouseMove(event) {
+    onResizeMouseMove(event) {
         if (this.isInLaneGridResizeMode) {
             this.currentLaneGridWidth =
                 event.clientX -

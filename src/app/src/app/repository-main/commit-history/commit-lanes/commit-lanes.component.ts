@@ -16,6 +16,7 @@ export class CommitLanesComponent implements OnChanges {
     @Input() verticalScroll = 0;
     @Input() width = 0;
     @Input() commitHighlighted: HistoryCommit = undefined;
+    @Input() commitClicked: HistoryCommit = undefined;
 
     leftBorderVisible = false;
     rightBorderVisible = false;

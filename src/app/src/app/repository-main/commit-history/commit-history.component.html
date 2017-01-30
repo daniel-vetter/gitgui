@@ -1,6 +1,6 @@
-<div style="position: relative; width: 100%; height: 100%; overflow: hidden;" (window:resize)="onWindowResize()">
-    <div style="position: relative; width: 100%; height: 100%; overflow: auto; transform: translateZ(0); position: relative" (scroll)="onScroll($event)" (document:mouseleave)="onMouseOut()" (mouseout)="onMouseOut($event)" (mousemove)="onMouseMove($event)" #scrollWrapper>
-        <div style="display: flex; width: 100%; overflow: hidden;" [style.height.px]="maxScrollHeight">
+<div class="root fill" (window:resize)="onWindowResize()">
+    <div class="fill scrollContainer" (scroll)="onScroll($event)" (document:mouseleave)="onMouseOut()" (mouseout)="onMouseOut($event)" (mousemove)="onMouseMove($event)" #scrollWrapper>
+        <div class="scrollInner" [style.height.px]="maxScrollHeight">
             <div [style.width.px]="annotationGridWidth">
                 <div style="white-space: nowrap">Ein sehr langer String und so hier könnte ein Branch stehen</div>
             </div>
@@ -9,19 +9,21 @@
                               [visibleRange]="visibleRange"
                               [width]="currentLaneGridWidth"
                               [verticalScroll]="laneGridScrollPosition"
-                              [commitHighlighted]="commitHighlighted">
+                              [commitHighlighted]="commitHighlighted"
+                              [commitClicked]="commitClicked">
                 </commit-lanes>
             </div>
             <div style="flex: 1;">
                 <commit-titles [commits]="historyRepository"
                                [visibleRange]="visibleRange"
-                               [commitHighlighted]="commitHighlighted">
+                               [commitHighlighted]="commitHighlighted"
+                               [commitClicked]="commitClicked">
                 </commit-titles>
             </div>
         </div>
     </div>
 
-    <div style="position: absolute; bottom: 0; overflow: auto;" [style.left.px]="annotationGridWidth" [style.width.px]="currentLaneGridWidth - 1" (scroll)="onLaneGridScroll($event)">
+    <div class="horizontalScrollContainer" [style.left.px]="annotationGridWidth" [style.width.px]="currentLaneGridWidth - 1" (scroll)="onLaneGridScroll($event)">
         <div style="opacity: 0; height: 1px;" [style.width.px]="totalLaneGridWidth" ></div>
     </div>
 
@@ -30,7 +32,7 @@
         </div>
         <div [style.width.px]="currentLaneGridWidth" style="position: relative;">
         </div>
-        <div style="width: 10px; pointer-events: all; cursor: ew-resize" (mousedown)="onResizeMouseDown($event)" (document:mouseup)="onResizeMouseUp($event)" (document:mousemove)="mouseMove($event)">
+        <div style="width: 10px; pointer-events: all; cursor: ew-resize" (mousedown)="onResizeMouseDown($event)" (document:mouseup)="onResizeMouseUp($event)" (document:mousemove)="onResizeMouseMove($event)">
         </div>
         <div style="flex: 1; position: relative;">
         </div>
