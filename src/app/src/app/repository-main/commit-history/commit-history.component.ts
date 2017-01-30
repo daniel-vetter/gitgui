@@ -30,6 +30,10 @@ export class CommitHistoryComponent implements OnChanges {
     commitSelected: HistoryCommit;
     commitHighlighted: HistoryCommit;
 
+    mouseIsIn = false;
+    lastMouseX = 0;
+    lastMouseY = 0;
+
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
         private changeDetectionRef: ChangeDetectorRef) {
@@ -86,7 +90,8 @@ export class CommitHistoryComponent implements OnChanges {
         return historyRepository;
     }
 
-    onScroll() {
+    onScroll(event) {
+        this.commitHighlighted = undefined;
         this.update();
     }
 
@@ -122,7 +127,17 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     onMouseMove(event) {
+        this.mouseIsIn = true;
+        this.lastMouseX = event.clientX;
+        this.lastMouseY = event.clientY;
         this.commitHighlighted = this.hitTest(event.clientX, event.clientY);
+    }
+
+    onMouseOut(event) {
+        if (event === undefined || this.scrollWrapper.nativeElement === event.target) {
+            this.commitHighlighted = undefined;
+            this.mouseIsIn = false;
+        }
     }
 
     hitTest(x: number, y: number): HistoryCommit {
