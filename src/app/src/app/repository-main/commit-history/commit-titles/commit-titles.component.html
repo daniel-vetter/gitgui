@@ -1,12 +1,15 @@
-<div style="width: 100%; height: 100%; overflow: hidden; position: relative">
-    <div *ngFor="let item of visibleCommits.viewModels" style="position: absolute; display: flex; width: 100%; height: 30px" [style.top.px]="item.positionTop" (click)="show(item)" [class.highlighted]="item.highlighted">
-        <div style="flex: 1; display: flex; overflow: hidden" [style.borderLeftColor]="item.color" [style.lineHeight.px]="commitHeight">
-            <div style="width: 3px; margin-top: 3px; margin-right: 4px; height: 25px;" [style.background]="item.color">
+<div class="fill" style="position: relative">
+    <div *ngFor="let item of visibleCommits.viewModels" class="commitBox"
+         [class.highlighted]="item.highlighted"
+         [style.lineHeight.px]="commitHeight"
+         [style.top.px]="item.positionTop"
+         (click)="show(item)" >
 
-            </div>
-            <div style="flex: 1; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; line-height: 30px; ">
-                {{ item.title }}
-            </div>
+        <div class="colorBorder" [style.background]="item.color">
         </div>
+        <div class="title">
+            {{ item.title }}
+        </div>
+
     </div>
 </div>
