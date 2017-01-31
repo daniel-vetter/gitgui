@@ -1,6 +1,8 @@
 <div class="fill" style="position: relative">
     <div *ngFor="let item of visibleCommits.viewModels" class="commitBox"
          [class.highlighted]="item.highlighted"
+         [class.selected]="item.selected"
+         [class.clicked]="item.clicked"
          [style.lineHeight.px]="commitHeight"
          [style.top.px]="item.positionTop"
          (click)="show(item)" >

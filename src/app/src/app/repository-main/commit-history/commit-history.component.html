@@ -1,5 +1,12 @@
 <div class="root fill" (window:resize)="onWindowResize()">
-    <div class="fill scrollContainer" (scroll)="onScroll($event)" (document:mouseleave)="onMouseOut()" (mouseout)="onMouseOut($event)" (mousemove)="onMouseMove($event)" #scrollWrapper>
+    <div class="fill scrollContainer"
+         (scroll)="onScroll($event)"
+         (document:mouseleave)="onMouseOut()"
+         (mouseout)="onMouseOut($event)"
+         (mousemove)="onMouseMove($event)"
+         (mousedown)="onMouseDown($event)"
+         (mouseup)="onMouseUp($event)"
+         #scrollWrapper>
         <div class="scrollInner" [style.height.px]="maxScrollHeight">
             <div [style.width.px]="annotationGridWidth">
                 <div style="white-space: nowrap">Ein sehr langer String und so hier könnte ein Branch stehen</div>
@@ -10,14 +17,16 @@
                               [width]="currentLaneGridWidth"
                               [verticalScroll]="laneGridScrollPosition"
                               [commitHighlighted]="commitHighlighted"
-                              [commitClicked]="commitClicked">
+                              [commitClicked]="commitClicked"
+                              [commitSelected]="commitSelected">
                 </commit-lanes>
             </div>
             <div style="flex: 1;">
                 <commit-titles [commits]="historyRepository"
                                [visibleRange]="visibleRange"
                                [commitHighlighted]="commitHighlighted"
-                               [commitClicked]="commitClicked">
+                               [commitClicked]="commitClicked"
+                               [commitSelected]="commitSelected">
                 </commit-titles>
             </div>
         </div>

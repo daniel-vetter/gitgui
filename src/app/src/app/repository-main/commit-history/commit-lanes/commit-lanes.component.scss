@@ -13,11 +13,17 @@
     opacity: 1;
 }
 
-.highlightedBackground {
+.selectionBox {
     position: absolute;
     left: 0;
     right: 0;
-    background: black;
     height: 30px;
-    opacity: 0.1;
+}
+
+.highlighted {
+    background: rgba(30, 144, 255, 0.1);
+}
+
+.selected, .clicked {
+    background: rgba(30, 144, 255, 0.2);
 }

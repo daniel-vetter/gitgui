@@ -14,6 +14,7 @@ export class CommitTitlesComponent implements OnChanges {
     @Input() visibleRange: VisibleRange = undefined;
     @Input() commitHighlighted: HistoryCommit = undefined;
     @Input() commitClicked: HistoryCommit = undefined;
+    @Input() commitSelected: HistoryCommit = undefined;
 
     visibleCommits = new ReusePool<HistoryCommit, CommitTitleViewModel>(() => new CommitTitleViewModel());
     commitHeight = 30;
@@ -45,6 +46,7 @@ export class CommitTitlesComponent implements OnChanges {
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
             vm.highlighted = this.commitHighlighted === commit;
             vm.clicked = this.commitClicked === commit;
+            vm.selected = this.commitSelected === commit;
         }
         this.visibleCommits.clearUp();
     }
@@ -61,6 +63,7 @@ export class CommitTitleViewModel implements PoolableViewModel<HistoryCommit> {
     positionTop: number;
     color: string;
     highlighted: boolean;
+    selected: boolean;
     clicked: boolean;
 
     clear() {

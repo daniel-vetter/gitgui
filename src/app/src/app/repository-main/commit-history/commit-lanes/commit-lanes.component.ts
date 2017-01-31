@@ -17,6 +17,7 @@ export class CommitLanesComponent implements OnChanges {
     @Input() width = 0;
     @Input() commitHighlighted: HistoryCommit = undefined;
     @Input() commitClicked: HistoryCommit = undefined;
+    @Input() commitSelected: HistoryCommit = undefined;
 
     leftBorderVisible = false;
     rightBorderVisible = false;
@@ -24,10 +25,9 @@ export class CommitLanesComponent implements OnChanges {
     visibleBubbles = new ReusePool<HistoryCommit, CommitBubbleViewModel>(() => new CommitBubbleViewModel());
     visibleLines = new ReusePool<Line, LineViewModel>(() => new LineViewModel());
 
-    highlightedBackgroundVisible: boolean = false;
-    highlightedBackgroundTop: number = 0;
-    highlightedBackgroundColor: string;
-
+    commitSelectedTop: number = undefined;
+    commitHighlightedTop: number = undefined;
+    commitClickedTop: number = undefined;
 
     private bubbleSpacing = 23;
     private lineIndex = new LineIndex([]);
@@ -55,19 +55,34 @@ export class CommitLanesComponent implements OnChanges {
             this.updateLines();
         }
 
-        if (changes.commitHighlighted) {
+        if (changes.commitHighlighted || changes.commitSelected || changes.commitClicked) {
             this.updateHighlightBar();
         }
     }
 
     private updateHighlightBar() {
-        if (!this.commitHighlighted) {
-            this.highlightedBackgroundVisible = false;
+        if (this.commitClicked) {
+            this.commitClickedTop = this.commitClicked.index * 30;
         } else {
-            this.highlightedBackgroundVisible = true;
-            this.highlightedBackgroundTop = this.commitHighlighted.index * 30;
-            this.highlightedBackgroundColor = this.laneColorProvider.getColorForLane(this.commitHighlighted.lane);
+            this.commitClickedTop = undefined;
         }
+        if (this.commitSelected) {
+            this.commitSelectedTop = this.commitSelected.index * 30;
+        } else {
+            this.commitSelectedTop = undefined;
+        }
+        if (this.commitHighlighted) {
+            this.commitHighlightedTop = this.commitHighlighted.index * 30;
+        } else {
+            this.commitHighlightedTop = undefined;
+        }
+
+        if (this.commitHighlighted === this.commitClicked)
+            this.commitHighlightedTop = undefined;
+        if (this.commitHighlighted === this.commitSelected)
+            this.commitHighlightedTop = undefined;
+        if (this.commitSelected === this.commitClicked)
+            this.commitClickedTop = undefined;
     }
 
     private updateBubbles() {

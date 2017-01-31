@@ -1,6 +1,8 @@
 <div style="width: 100%; height: 100%; overflow: hidden; position: relative">
 
-    <div *ngIf="highlightedBackgroundVisible" class="highlightedBackground" [style.top.px]="highlightedBackgroundTop"></div>
+    <div *ngIf="commitHighlightedTop !== undefined" class="selectionBox highlighted" [style.top.px]="commitHighlightedTop"></div>
+    <div *ngIf="commitClickedTop !== undefined" class="selectionBox clicked" [style.top.px]="commitClickedTop"></div>
+    <div *ngIf="commitSelectedTop !== undefined" class="selectionBox selected" [style.top.px]="commitSelectedTop"></div>
 
     <div style="transform: translateZ(0)">
         <div *ngFor="let line of visibleLines.viewModels"
@@ -18,11 +20,15 @@
     </div>
 
     <div style="left: 0;" class="scrollBorder" [class.visible]="leftBorderVisible">
-        <div *ngIf="highlightedBackgroundVisible" class="highlightedBackground" [style.top.px]="highlightedBackgroundTop"></div>
+        <div *ngIf="commitHighlightedTop !== undefined" class="selectionBox highlighted" [style.top.px]="commitHighlightedTop"></div>
+        <div *ngIf="commitClickedTop !== undefined" class="selectionBox clicked" [style.top.px]="commitClickedTop"></div>
+        <div *ngIf="commitSelectedTop !== undefined" class="selectionBox selected" [style.top.px]="commitSelectedTop"></div>
     </div>
 
     <div style="right: 0;" class="scrollBorder" [class.visible]="rightBorderVisible">
-        <div *ngIf="highlightedBackgroundVisible" class="highlightedBackground" [style.top.px]="highlightedBackgroundTop"></div>
+        <div *ngIf="commitHighlightedTop !== undefined" class="selectionBox highlighted" [style.top.px]="commitHighlightedTop"></div>
+        <div *ngIf="commitClickedTop !== undefined" class="selectionBox clicked" [style.top.px]="commitClickedTop"></div>
+        <div *ngIf="commitSelectedTop !== undefined" class="selectionBox selected" [style.top.px]="commitSelectedTop"></div>
     </div>
 
     <div *ngFor="let item of visibleBubbles.viewModels" style="position: absolute; display: flex; width: 30px; height: 30px" [style.top.px]="item.positionTop" [style.left.px]="item.positionLeft">

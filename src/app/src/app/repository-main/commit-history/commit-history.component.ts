@@ -100,11 +100,20 @@ export class CommitHistoryComponent implements OnChanges {
         }
     }
 
+    onMouseDown(event) {
+        this.commitSelected = this.commitClicked = this.hitTest(event.clientX, event.clientY);
+    }
+
+    onMouseUp(event) {
+        this.commitClicked = undefined;
+        this.commitSelected = this.hitTest(event.clientX, event.clientY);
+    }
+
     hitTest(x: number, y: number): HistoryCommit {
         const bounds = this.scrollWrapper.nativeElement.getBoundingClientRect();
         x -= this.annotationGridWidth + bounds.left;
         y -= bounds.top - this.scrollWrapper.nativeElement.scrollTop;
-        if (x < 0 || x > this.scrollWrapper.nativeElement.clientWidth ||
+        if (x < 0 || x > this.scrollWrapper.nativeElement.clientWidth - this.annotationGridWidth ||
             y < 0 || y > this.maxScrollHeight)
             return undefined;
         const index = Math.floor(y / 30);

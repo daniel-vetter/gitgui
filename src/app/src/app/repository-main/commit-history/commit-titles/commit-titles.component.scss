@@ -1,9 +1,9 @@
 .highlighted {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(30, 144, 255, 0.1);
 }
 
-.clicked {
-    color: white;
+.selected, .clicked {
+    background: rgba(30, 144, 255, 0.2);
 }
 
 .commitBox {
