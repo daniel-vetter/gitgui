@@ -78,9 +78,15 @@ export class CommitHistoryComponent implements OnChanges {
                 event.clientX -
                 this.scrollWrapper.nativeElement.getBoundingClientRect().left -
                 this.annotationGridWidth;
-            if (this.currentLaneGridWidth < 30)
-                this.currentLaneGridWidth = 30;
+            this.limitLaneGridWidth();
         }
+    }
+
+    private limitLaneGridWidth() {
+        const minSize = 30;
+        const maxSize = this.scrollWrapper.nativeElement.clientWidth - this.annotationGridWidth - 100;
+        this.currentLaneGridWidth = Math.min(maxSize, this.currentLaneGridWidth);
+        this.currentLaneGridWidth = Math.max(minSize, this.currentLaneGridWidth);
     }
 
     onMouseMove(event) {
@@ -117,6 +123,7 @@ export class CommitHistoryComponent implements OnChanges {
 
     onWindowResize() {
         this.update();
+        this.limitLaneGridWidth();
     }
 
     onKeyDown(event) {
