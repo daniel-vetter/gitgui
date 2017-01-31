@@ -1,4 +1,4 @@
-<div class="root fill" (window:resize)="onWindowResize()">
+<div class="root fill" tabindex="0" (window:resize)="onWindowResize()" (keydown)="onKeyDown($event)" #root>
     <div class="fill scrollContainer"
          (scroll)="onScroll($event)"
          (document:mouseleave)="onMouseOut()"

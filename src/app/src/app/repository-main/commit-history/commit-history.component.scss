@@ -2,6 +2,10 @@
     position: relative;
 }
 
+.root:focus {
+    outline: none;
+}
+
 .scrollContainer {
     position: relative;
     overflow: auto;

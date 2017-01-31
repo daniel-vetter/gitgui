@@ -15,6 +15,7 @@ export class CommitHistoryComponent implements OnChanges {
     @Input() repository: Repository = undefined;
     @ViewChild("canvas") canvas;
     @ViewChild("scrollWrapper") scrollWrapper;
+    @ViewChild("root") root;
 
     visibleRange: VisibleRange;
     currentLaneGridWidth = 0;
@@ -116,5 +117,32 @@ export class CommitHistoryComponent implements OnChanges {
 
     onWindowResize() {
         this.update();
+    }
+
+    onKeyDown(event) {
+        if (!this.commitSelected) return;
+        let move = 0;
+        if (event.keyCode === 40) move = 1;
+        if (event.keyCode === 38) move = -1;
+        if (event.keyCode === 33) move = -Math.floor(this.scrollWrapper.nativeElement.clientHeight / 30);
+        if (event.keyCode === 34) move = Math.floor(this.scrollWrapper.nativeElement.clientHeight / 30);
+
+        const newIndex = Math.min(Math.max(0, this.commitSelected.index + move), this.historyRepository.commits.length - 1);
+        this.commitSelected = this.historyRepository.commits[newIndex];
+
+        this.scrollToCurrentSelection();
+    }
+
+    private scrollToCurrentSelection() {
+        if (!this.commitSelected) return;
+        const commitTop = this.commitSelected.index * 30;
+        const commitBottom = commitTop + 30;
+
+        if (commitTop < this.scrollWrapper.nativeElement.scrollTop) {
+            this.scrollWrapper.nativeElement.scrollTop = commitTop;
+        }
+        if (commitBottom > this.scrollWrapper.nativeElement.scrollTop + this.scrollWrapper.nativeElement.clientHeight) {
+            this.scrollWrapper.nativeElement.scrollTop = commitBottom - this.scrollWrapper.nativeElement.clientHeight;
+        }
     }
 }
