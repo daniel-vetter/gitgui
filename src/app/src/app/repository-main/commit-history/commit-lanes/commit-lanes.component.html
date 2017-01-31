@@ -19,21 +19,21 @@
         </div>
     </div>
 
-    <div style="left: 0;" class="scrollBorder" [class.visible]="leftBorderVisible">
+    <div style="left: 0;" class="scrollBorder" [style.width.px]="metrics.bubbleWidth" [class.visible]="leftBorderVisible">
         <div *ngIf="commitHighlightedTop !== undefined" class="selectionBox highlighted" [style.top.px]="commitHighlightedTop"></div>
         <div *ngIf="commitClickedTop !== undefined" class="selectionBox clicked" [style.top.px]="commitClickedTop"></div>
         <div *ngIf="commitSelectedTop !== undefined" class="selectionBox selected" [style.top.px]="commitSelectedTop"></div>
     </div>
 
-    <div style="right: 0;" class="scrollBorder" [class.visible]="rightBorderVisible">
+    <div style="right: 0;" class="scrollBorder" [style.width.px]="metrics.bubbleWidth" [class.visible]="rightBorderVisible">
         <div *ngIf="commitHighlightedTop !== undefined" class="selectionBox highlighted" [style.top.px]="commitHighlightedTop"></div>
         <div *ngIf="commitClickedTop !== undefined" class="selectionBox clicked" [style.top.px]="commitClickedTop"></div>
         <div *ngIf="commitSelectedTop !== undefined" class="selectionBox selected" [style.top.px]="commitSelectedTop"></div>
     </div>
 
-    <div *ngFor="let item of visibleBubbles.viewModels" style="position: absolute; display: flex; width: 30px; height: 30px" [style.top.px]="item.positionTop" [style.left.px]="item.positionLeft">
+    <div *ngFor="let item of visibleBubbles.viewModels" style="position: absolute; display: flex;" [style.width.px]="metrics.bubbleWidth" [style.height.px]="metrics.bubbleHeight" [style.top.px]="item.positionTop" [style.left.px]="item.positionLeft">
         <div [style.width.px]="laneGridWidth">
-            <div style="height: 30px; width: 30px; padding: 4px; box-sizing: border-box;" >
+            <div style="padding: 4px; box-sizing: border-box;" [style.width.px]="metrics.bubbleWidth" [style.height.px]="metrics.bubbleHeight">
                 <div style="height: 100%; width: 100%; border-width: 2px; box-sizing: border-box; border-style: solid; background: white"  [style.borderColor]="item.color">
                     <img [src]="item.profileImageUrl" style="height: 100%; width: 100%">
                 </div>

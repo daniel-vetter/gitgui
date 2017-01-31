@@ -10,6 +10,7 @@ import { CommitTitlesComponent } from "./commit-titles/commit-titles.component";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
+import { Metrics } from "./services/metrics";
 @NgModule({
     declarations: [
         CommitHistoryComponent,
@@ -26,7 +27,8 @@ import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-hi
         LaneColorProvider,
         LineIndex,
         ReusePool,
-        RepositoryToHistoryRepositoryMapper
+        RepositoryToHistoryRepositoryMapper,
+        Metrics
     ],
     exports: [
         CommitHistoryComponent

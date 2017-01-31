@@ -4,6 +4,7 @@ import { LaneAssigner } from "./services/lane-assigner";
 import { Repository } from "../../model/model";
 import { VisibleRange, HistoryRepository, HistoryCommit } from "./model/model";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
+import { Metrics } from "./services/metrics";
 
 @Component({
     selector: "commit-history",
@@ -33,15 +34,16 @@ export class CommitHistoryComponent implements OnChanges {
 
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
-        private repositoryToHistoryRepositoryMapper: RepositoryToHistoryRepositoryMapper) {
+        private repositoryToHistoryRepositoryMapper: RepositoryToHistoryRepositoryMapper,
+        private metrics: Metrics) {
     }
 
     ngOnChanges() {
         if (this.repository && this.repository.commits) {
             this.historyRepository = this.repositoryToHistoryRepositoryMapper.map(this.repository);
-            this.currentLaneGridWidth = Math.min(this.historyRepository.totalLaneCount * 30, 200);
-            this.totalLaneGridWidth = this.historyRepository.totalLaneCount * 30;
-            this.maxScrollHeight = this.historyRepository.commits.length * 30;
+            this.totalLaneGridWidth = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
+            this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, 200);
+            this.maxScrollHeight = this.historyRepository.commits.length * this.metrics.commitHeight;
             this.commitClicked = undefined;
             this.commitHighlighted = undefined;
             this.commitSelected = undefined;
@@ -54,8 +56,8 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     private update() {
-        const startY = Math.floor(this.scrollWrapper.nativeElement.scrollTop / 30);
-        const endY = Math.floor(startY + this.scrollWrapper.nativeElement.clientHeight / 30) + 1;
+        const startY = Math.floor(this.scrollWrapper.nativeElement.scrollTop / this.metrics.commitHeight);
+        const endY = Math.floor(startY + this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight) + 1;
         const overdraw = 10;
         this.visibleRange = new VisibleRange(startY - overdraw, endY + overdraw);
     }
@@ -83,7 +85,7 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     private limitLaneGridWidth() {
-        const minSize = 30;
+        const minSize = this.metrics.bubbleWidth;
         const maxSize = this.scrollWrapper.nativeElement.clientWidth - this.annotationGridWidth - 100;
         this.currentLaneGridWidth = Math.min(maxSize, this.currentLaneGridWidth);
         this.currentLaneGridWidth = Math.max(minSize, this.currentLaneGridWidth);
@@ -117,7 +119,7 @@ export class CommitHistoryComponent implements OnChanges {
         if (x < 0 || x > this.scrollWrapper.nativeElement.clientWidth - this.annotationGridWidth ||
             y < 0 || y > this.maxScrollHeight)
             return undefined;
-        const index = Math.floor(y / 30);
+        const index = Math.floor(y / this.metrics.commitHeight);
         return this.historyRepository.commits[index];
     }
 
@@ -131,8 +133,8 @@ export class CommitHistoryComponent implements OnChanges {
         let move = 0;
         if (event.keyCode === 40) move = 1;
         if (event.keyCode === 38) move = -1;
-        if (event.keyCode === 33) move = -Math.floor(this.scrollWrapper.nativeElement.clientHeight / 30);
-        if (event.keyCode === 34) move = Math.floor(this.scrollWrapper.nativeElement.clientHeight / 30);
+        if (event.keyCode === 33) move = -Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight);
+        if (event.keyCode === 34) move = Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight);
 
         const newIndex = Math.min(Math.max(0, this.commitSelected.index + move), this.historyRepository.commits.length - 1);
         this.commitSelected = this.historyRepository.commits[newIndex];
@@ -142,8 +144,8 @@ export class CommitHistoryComponent implements OnChanges {
 
     private scrollToCurrentSelection() {
         if (!this.commitSelected) return;
-        const commitTop = this.commitSelected.index * 30;
-        const commitBottom = commitTop + 30;
+        const commitTop = this.commitSelected.index * this.metrics.commitHeight;
+        const commitBottom = commitTop + this.metrics.commitHeight;
 
         if (commitTop < this.scrollWrapper.nativeElement.scrollTop) {
             this.scrollWrapper.nativeElement.scrollTop = commitTop;

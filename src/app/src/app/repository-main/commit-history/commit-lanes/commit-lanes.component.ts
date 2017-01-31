@@ -4,6 +4,7 @@ import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { LineIndex } from "../services/line-index";
 import { GravatarUrlBuilder } from "../services/gravatar-url-builder";
+import { Metrics } from "../services/metrics";
 @Component({
     selector: "commit-lanes",
     templateUrl: "./commit-lanes.component.html",
@@ -13,7 +14,7 @@ export class CommitLanesComponent implements OnChanges {
 
     @Input() commits: HistoryRepository = undefined;
     @Input() visibleRange: VisibleRange = undefined;
-    @Input() verticalScroll = 0;
+    @Input() horizontalScroll = 0;
     @Input() width = 0;
     @Input() commitHighlighted: HistoryCommit = undefined;
     @Input() commitClicked: HistoryCommit = undefined;
@@ -29,11 +30,12 @@ export class CommitLanesComponent implements OnChanges {
     commitHighlightedTop: number = undefined;
     commitClickedTop: number = undefined;
 
-    private bubbleSpacing = 23;
     private lineIndex = new LineIndex([]);
     private totalLaneCount = 0;
 
-    constructor(private laneColorProvider: LaneColorProvider, private gravatarUrlBuilder: GravatarUrlBuilder) {}
+    constructor(private laneColorProvider: LaneColorProvider,
+                private gravatarUrlBuilder: GravatarUrlBuilder,
+                private metrics: Metrics) {}
 
     ngOnChanges(changes: any) {
         if (changes.commits) {
@@ -48,9 +50,9 @@ export class CommitLanesComponent implements OnChanges {
                 this.totalLaneCount = 0;
             }
         }
-        if (changes.visibleRange || changes.verticalScroll || changes.width) {
-            this.leftBorderVisible = this.verticalScroll > 0;
-            this.rightBorderVisible = this.verticalScroll < this.totalLaneCount * 30 - this.width;
+        if (changes.visibleRange || changes.horizontalScroll || changes.width) {
+            this.leftBorderVisible = this.horizontalScroll > 0 ;
+            this.rightBorderVisible = this.horizontalScroll < this.metrics.getBubbleRight(this.totalLaneCount - 2) - this.width;
             this.updateBubbles();
             this.updateLines();
         }
@@ -62,17 +64,17 @@ export class CommitLanesComponent implements OnChanges {
 
     private updateHighlightBar() {
         if (this.commitClicked) {
-            this.commitClickedTop = this.commitClicked.index * 30;
+            this.commitClickedTop = this.commitClicked.index * this.metrics.commitHeight;
         } else {
             this.commitClickedTop = undefined;
         }
         if (this.commitSelected) {
-            this.commitSelectedTop = this.commitSelected.index * 30;
+            this.commitSelectedTop = this.commitSelected.index * this.metrics.commitHeight;
         } else {
             this.commitSelectedTop = undefined;
         }
         if (this.commitHighlighted) {
-            this.commitHighlightedTop = this.commitHighlighted.index * 30;
+            this.commitHighlightedTop = this.commitHighlighted.index * this.metrics.commitHeight;
         } else {
             this.commitHighlightedTop = undefined;
         }
@@ -99,12 +101,10 @@ export class CommitLanesComponent implements OnChanges {
             const vm = this.visibleBubbles.giveViewModelFor(commit);
             vm.data = commit;
             vm.id = commit.hash;
-            vm.positionTop = i * 30;
-            vm.positionLeft = Math.min(this.getBubbleCenter(commit.lane) - (this.bubbleSpacing / 2)) - this.verticalScroll;
-            if (vm.positionLeft > this.width - 30)
-                vm.positionLeft = this.width - 30;
-            if (vm.positionLeft < 0)
-                vm.positionLeft = 0;
+            vm.positionTop = this.metrics.getBubbleTop(i);
+            vm.positionLeft = this.metrics.getBubbleLeft(commit.lane) - this.horizontalScroll;
+            vm.positionLeft = Math.max(vm.positionLeft, 0);
+            vm.positionLeft = Math.min(vm.positionLeft, this.width - this.metrics.bubbleWidth);
             vm.profileImageUrl = this.gravatarUrlBuilder.getUrlFor(commit.authorMail);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
         }
@@ -114,8 +114,8 @@ export class CommitLanesComponent implements OnChanges {
 
     private updateLines() {
 
-        const startX = this.verticalScroll / this.bubbleSpacing - 1;
-        const endX = (this.width + this.verticalScroll) / this.bubbleSpacing + 1;
+        const startX = this.horizontalScroll / this.metrics.bubbleSpacing - 1;
+        const endX = (this.width + this.horizontalScroll) / this.metrics.bubbleSpacing + 1;
         const linesToRender = this.lineIndex.getLinesInRangeRange(startX, this.visibleRange.start, endX, this.visibleRange.end);
         this.visibleLines.markAllUnused();
 
@@ -123,14 +123,15 @@ export class CommitLanesComponent implements OnChanges {
 
             const vm = this.visibleLines.giveViewModelFor(line);
             vm.data = line;
-            vm.positionLeft = this.getBubbleCenter(Math.min(line.laneStart, line.laneEnd)) - this.verticalScroll;
-            vm.width = (Math.max(line.laneStart, line.laneEnd) - Math.min(line.laneStart, line.laneEnd)) * this.bubbleSpacing;
-            vm.positionTop = Math.min(line.indexStart, line.indexEnd) * 30 + 15;
-            vm.height = (Math.max(line.indexStart, line.indexEnd) - Math.min(line.indexStart, line.indexEnd)) * 30;
+            vm.positionLeft = this.metrics.getBubbleCenterX(Math.min(line.laneStart, line.laneEnd)) - this.horizontalScroll;
+            vm.width = this.metrics.getBubbleCenterX(Math.max(line.laneStart, line.laneEnd)) - vm.positionLeft - this.horizontalScroll;
+            vm.width = (Math.max(line.laneStart, line.laneEnd) - Math.min(line.laneStart, line.laneEnd)) * this.metrics.bubbleSpacing;
+            vm.positionTop = this.metrics.getBubbleCenterY(Math.min(line.indexStart, line.indexEnd));
+            vm.height = this.metrics.getBubbleCenterY(Math.max(line.indexStart, line.indexEnd)) - vm.positionTop;
 
-            vm.positionLeft += 1;
+            vm.positionLeft -= 2;
             vm.width += 3;
-            vm.positionTop -= 2;
+            vm.positionTop -= 1;
             vm.height += 3;
 
             let color = "";
@@ -161,11 +162,6 @@ export class CommitLanesComponent implements OnChanges {
 
         this.visibleLines.clearUp();
     }
-
-    private getBubbleCenter(lane: number) {
-        return (lane * this.bubbleSpacing) + (this.bubbleSpacing / 2);
-    }
-
 }
 
 export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommit> {

@@ -15,7 +15,7 @@
                 <commit-lanes [commits]="historyRepository"
                               [visibleRange]="visibleRange"
                               [width]="currentLaneGridWidth"
-                              [verticalScroll]="laneGridScrollPosition"
+                              [horizontalScroll]="laneGridScrollPosition"
                               [commitHighlighted]="commitHighlighted"
                               [commitClicked]="commitClicked"
                               [commitSelected]="commitSelected">
@@ -44,7 +44,7 @@
     <div class="horizontalScrollContainer"
          [class.visible]="mouseIsInLaneGrid || isInLaneGridResizeMode"
          [style.left.px]="annotationGridWidth"
-         [style.width.px]="currentLaneGridWidth - 1"
+         [style.width.px]="currentLaneGridWidth"
          (scroll)="onLaneGridScroll($event)">
         <div style="opacity: 0; height: 1px;" [style.width.px]="totalLaneGridWidth" ></div>
     </div>

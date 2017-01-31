@@ -2,6 +2,7 @@ import { Input, OnChanges, Component } from "@angular/core";
 import { HistoryCommit, HistoryRepository, VisibleRange } from "../model/model";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
+import { Metrics } from "../services/metrics";
 
 @Component({
     selector: "commit-titles",
@@ -17,9 +18,9 @@ export class CommitTitlesComponent implements OnChanges {
     @Input() commitSelected: HistoryCommit = undefined;
 
     visibleCommits = new ReusePool<HistoryCommit, CommitTitleViewModel>(() => new CommitTitleViewModel());
-    commitHeight = 30;
 
-    constructor(private laneColorProvider: LaneColorProvider) {
+    constructor(private laneColorProvider: LaneColorProvider,
+                private metrics: Metrics) {
         this.commits = new HistoryRepository();
         this.visibleRange = new VisibleRange(0, 0);
     }
@@ -42,7 +43,7 @@ export class CommitTitlesComponent implements OnChanges {
             vm.id = commit.hash;
             vm.data = commit;
             vm.title = commit.title;
-            vm.positionTop = i * 30;
+            vm.positionTop = this.metrics.commitHeight * i;
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
             vm.highlighted = this.commitHighlighted === commit;
             vm.clicked = this.commitClicked === commit;
