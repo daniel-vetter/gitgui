@@ -17,7 +17,6 @@ export class CommitsReader {
             const allCommits: RepositoryCommit[] = [];
             const commitIndex = new Map<string, RepositoryCommit>();
             const parents = new Map<string, string[]>();
-            const index = 0;
             for (let i = 0; i < parts.length - 1; i += prettyParts.length + 1) {
                 const commit = new RepositoryCommit();
                 commit.parents = [];
@@ -37,7 +36,6 @@ export class CommitsReader {
 
             // Parents/Children
             parents.forEach((parentHashes, currentCommitHash) => {
-                const currentCommit = commitIndex.get(currentCommitHash);
                 for (const parentHash of parentHashes) {
                     const parentCommit = commitIndex.get(parentHash);
                     if (!parentCommit) {

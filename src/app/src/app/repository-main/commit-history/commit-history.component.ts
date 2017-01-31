@@ -1,8 +1,7 @@
-import { Component, Input, ViewChild, OnChanges, ChangeDetectorRef, ChangeDetectionStrategy, DoCheck } from "@angular/core";
+import { Component, Input, ViewChild, OnChanges } from "@angular/core";
 import { LaneColorProvider } from "./services/lane-color-provider";
-import { LineIndex } from "./services/line-index";
 import { LaneAssigner } from "./services/lane-assigner";
-import { Repository, RepositoryCommit } from "../../model/model";
+import { Repository } from "../../model/model";
 import { VisibleRange, HistoryRepository, HistoryCommit } from "./model/model";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Repository } from "../model/model";
 import { CurrentRepository } from "../services/current-repository";
 import { EventAggregator, SubscriptionBag } from "../services/event-aggregator";

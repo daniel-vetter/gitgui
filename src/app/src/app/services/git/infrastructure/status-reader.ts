@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import * as Rx from 'rxjs';
-import { RepositoryStatus } from '../../../model/model';
+import { Injectable } from "@angular/core";
+import * as Rx from "rxjs";
+import { RepositoryStatus } from "../../../model/model";
 
 @Injectable()
 export class StatusReader {

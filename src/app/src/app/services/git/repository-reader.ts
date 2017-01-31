@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { CommitsReader } from './commits-reader';
-import * as Rx from 'rxjs';
-import { Repository, RepositoryStatus, RepositoryCommit } from '../../model/model';
-import { StatusReader } from './infrastructure/status-reader';
+import { Injectable } from "@angular/core";
+import { CommitsReader } from "./commits-reader";
+import * as Rx from "rxjs";
+import { Repository } from "../../model/model";
+import { StatusReader } from "./infrastructure/status-reader";
 
 @Injectable()
 export class RepositoryReader {
     constructor(private commitsReader: CommitsReader,
-                private statusReader: StatusReader) {
+        private statusReader: StatusReader) {
 
     }
 

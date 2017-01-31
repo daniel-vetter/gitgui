@@ -32,8 +32,8 @@ export class CommitTitlesComponent implements OnChanges {
         if (!this.commits || !this.commits.commits)
             return;
 
-        let start = Math.max(0, this.visibleRange.start);
-        let end = this.visibleRange.end;
+        const start = Math.max(0, this.visibleRange.start);
+        const end = this.visibleRange.end;
 
         this.visibleCommits.markAllUnused();
         for (let i = start; i <= end && i < this.commits.commits.length; i++) {

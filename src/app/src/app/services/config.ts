@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import * as Rx from "rxjs";
-import { ConfigData } from '../model/config';
+import { ConfigData } from "../model/config";
 const remote = (<any>window).require("electron").remote;
-const fs = remote.require('fs');
+const fs = remote.require("fs");
 const process = remote.process;
 
 @Injectable()
@@ -27,7 +27,7 @@ export class Config {
         return this.config;
     }
 
-    save(sync: boolean = false) {
+    save(sync = false) {
         const data =  JSON.stringify(this.config, undefined, 2);
         if (sync) {
             fs.writeFileSync(this.getConfigFilePath(), data, { encoding: "utf8" });
@@ -40,7 +40,7 @@ export class Config {
         if (process.platform !== "win32") {
             throw new Error("TODO: Find user app data directory for other platforms than win32.")
         }
-        //TODO: proper path concatenation
+        // TODO: proper path concatenation
         const baseDir = process.env["LOCALAPPDATA"] + "\\GitGui";
         if (!fs.existsSync(baseDir)) {
             fs.mkdirSync(baseDir);
