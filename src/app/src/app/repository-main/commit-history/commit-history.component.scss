@@ -18,6 +18,11 @@
     position: absolute;
     bottom: 0;
     overflow: auto;
+    opacity: 0;
+    transition: opacity 0.2s linear;
+    &.visible {
+        opacity: 1;
+    }
 }
 
 .resizeOverlay {

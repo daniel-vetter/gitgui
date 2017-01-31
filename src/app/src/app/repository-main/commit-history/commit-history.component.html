@@ -41,7 +41,11 @@
         </div>
     </div>
 
-    <div class="horizontalScrollContainer" [style.left.px]="annotationGridWidth" [style.width.px]="currentLaneGridWidth - 1" (scroll)="onLaneGridScroll($event)">
+    <div class="horizontalScrollContainer"
+         [class.visible]="mouseIsInLaneGrid || isInLaneGridResizeMode"
+         [style.left.px]="annotationGridWidth"
+         [style.width.px]="currentLaneGridWidth - 1"
+         (scroll)="onLaneGridScroll($event)">
         <div style="opacity: 0; height: 1px;" [style.width.px]="totalLaneGridWidth" ></div>
     </div>
 </div>

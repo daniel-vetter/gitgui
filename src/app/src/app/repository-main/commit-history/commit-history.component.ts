@@ -25,14 +25,11 @@ export class CommitHistoryComponent implements OnChanges {
     annotationGridWidth = 200;
     isInLaneGridResizeMode = false;
     historyRepository: HistoryRepository;
+    mouseIsInLaneGrid = false;
 
     commitClicked: HistoryCommit;
     commitSelected: HistoryCommit;
     commitHighlighted: HistoryCommit;
-
-    mouseIsIn = false;
-    lastMouseX = 0;
-    lastMouseY = 0;
 
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
@@ -87,16 +84,15 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     onMouseMove(event) {
-        this.mouseIsIn = true;
-        this.lastMouseX = event.clientX;
-        this.lastMouseY = event.clientY;
         this.commitHighlighted = this.hitTest(event.clientX, event.clientY);
+
+        const mouseX = event.clientX - this.scrollWrapper.nativeElement.getBoundingClientRect().left;
+        this.mouseIsInLaneGrid = mouseX > this.annotationGridWidth && mouseX < this.annotationGridWidth + this.currentLaneGridWidth;
     }
 
     onMouseOut(event) {
         if (event === undefined || this.scrollWrapper.nativeElement === event.target) {
             this.commitHighlighted = undefined;
-            this.mouseIsIn = false;
         }
     }
 
