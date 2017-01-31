@@ -57,9 +57,9 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     private update() {
-        const overdraw = 0;
         const startY = Math.floor(this.scrollWrapper.nativeElement.scrollTop / 30);
         const endY = Math.floor(startY + this.scrollWrapper.nativeElement.clientHeight / 30) + 1;
+        const overdraw = 10;
         this.visibleRange = new VisibleRange(startY - overdraw, endY + overdraw);
     }
 
@@ -106,7 +106,6 @@ export class CommitHistoryComponent implements OnChanges {
 
     onMouseUp(event) {
         this.commitClicked = undefined;
-        this.commitSelected = this.hitTest(event.clientX, event.clientY);
     }
 
     hitTest(x: number, y: number): HistoryCommit {
