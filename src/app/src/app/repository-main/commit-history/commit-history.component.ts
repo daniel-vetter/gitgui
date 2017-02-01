@@ -86,8 +86,10 @@ export class CommitHistoryComponent implements OnChanges {
 
     private limitLaneGridWidth() {
         const minSize = this.metrics.bubbleWidth;
-        const maxSize = this.scrollWrapper.nativeElement.clientWidth - this.annotationGridWidth - 100;
-        this.currentLaneGridWidth = Math.min(maxSize, this.currentLaneGridWidth);
+        const maxSizeBecauseOfComponentBorder = this.scrollWrapper.nativeElement.clientWidth - this.annotationGridWidth - 100;
+        const maxSizeBecauseOfLaneCount = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
+        this.currentLaneGridWidth = Math.min(maxSizeBecauseOfLaneCount, this.currentLaneGridWidth);
+        this.currentLaneGridWidth = Math.min(maxSizeBecauseOfComponentBorder, this.currentLaneGridWidth);
         this.currentLaneGridWidth = Math.max(minSize, this.currentLaneGridWidth);
     }
 
