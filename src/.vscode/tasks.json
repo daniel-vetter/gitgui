@@ -1,8 +1,8 @@
 {
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
-    "version": "0.1.0",
-    "command": "cmd",
+    "version": "0.1.0",  
+    "command": "node",
     "options": {
         "cwd": "${workspaceRoot}"
     },
@@ -13,8 +13,8 @@
         {
             "taskName": "build-watch",
             "args": [
-                "/c start /D app node node_modules/angular-cli/bin/ng build -w &&  start /d main node node_modules/webpack/bin/webpack.js -w"
-            ], 
+                "appDev.js"
+            ],
             "isBuildCommand": true
         }
     ]
