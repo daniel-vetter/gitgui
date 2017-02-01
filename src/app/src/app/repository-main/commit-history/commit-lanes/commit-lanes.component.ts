@@ -52,7 +52,7 @@ export class CommitLanesComponent implements OnChanges {
         }
         if (changes.visibleRange || changes.horizontalScroll || changes.width) {
             this.leftBorderVisible = this.horizontalScroll > 0 ;
-            this.rightBorderVisible = this.horizontalScroll < this.metrics.getBubbleRight(this.totalLaneCount - 2) - this.width;
+            this.rightBorderVisible = this.metrics.getBubbleRight(this.totalLaneCount - 1) - this.width - this.horizontalScroll > 1;
             this.updateBubbles();
             this.updateLines();
         }

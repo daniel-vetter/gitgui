@@ -42,7 +42,7 @@ export class CommitHistoryComponent implements OnChanges {
         if (this.repository && this.repository.commits) {
             this.historyRepository = this.repositoryToHistoryRepositoryMapper.map(this.repository);
             this.totalLaneGridWidth = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
-            this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, 200);
+            this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, this.metrics.getBubbleRight(10));
             this.maxScrollHeight = this.historyRepository.commits.length * this.metrics.commitHeight;
             this.commitClicked = undefined;
             this.commitHighlighted = undefined;
