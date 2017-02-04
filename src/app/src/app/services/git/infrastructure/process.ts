@@ -11,9 +11,9 @@ declare var TextDecoder;
 export class Process {
 
     private lastId = 0;
-    private runningRequest = new Map<number, Rx.Subscriber<ProcessStatus>>(); 
+    private runningRequest = new Map<number, Rx.Subscriber<ProcessStatus>>();
 
-    constructor(private zone: NgZone) { 
+    constructor(private zone: NgZone) {
         ipcRenderer.on(PROCESS_START_RESPONSE, (event, args) => {
             this.onIncommingResponse(args);
         })
@@ -41,17 +41,23 @@ export class Process {
         const subscriber = this.runningRequest.get(arg.id);
 
         if (arg.type === PROCESS_START_RESPONSE_TYPE_EXIT) {
-            subscriber.next(new ProcessRunExit(arg.code));
-            subscriber.complete();
-            this.runningRequest.delete(arg.id);
+            this.zone.run(() => {
+                subscriber.next(new ProcessRunExit(arg.code));
+                subscriber.complete();
+                this.runningRequest.delete(arg.id);
+            });
         }
 
         if (arg.type === PROCESS_START_RESPONSE_TYPE_STDOUT) {
-            subscriber.next(new ProcessRunStdOut(arg.data));
+            this.zone.run(() => {
+                subscriber.next(new ProcessRunStdOut(arg.data));
+            });
         }
 
         if (arg.type === PROCESS_START_RESPONSE_TYPE_STDERR) {
-            subscriber.next(new ProcessRunErrOut(arg.data));
+            this.zone.run(() => {
+                subscriber.next(new ProcessRunErrOut(arg.data));
+            });
         }
     }
 
@@ -69,7 +75,7 @@ export class Process {
                     let totalCount = 0;
                     for (const item of data) {
                         totalCount += item.length;
-                    }                  
+                    }
 
                     // Create the end result.
                     const result = new ProcessResult();
