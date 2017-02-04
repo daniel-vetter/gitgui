@@ -3,6 +3,8 @@ import * as Electron from "electron";
 import * as path from "path";
 import * as url from "url";
 import * as fs from "fs";
+import { ProcessStartRequestHandler } from "./process-start-request-handler";
+const child_process = require("child_process");
 
 class MainProcess {
 
@@ -55,4 +57,5 @@ class MainProcess {
     }
 }
 
+new ProcessStartRequestHandler().setup();
 new MainProcess().run();

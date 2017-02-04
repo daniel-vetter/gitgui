@@ -1,41 +1,63 @@
 import { Injectable, NgZone } from "@angular/core";
 import { Observable } from "rxjs";
-import * as Rxjs from "rxjs";
-const remote = (<any>window).require("electron").remote;
-const child_process = remote.require("child_process");
+import * as Rx from "rxjs";
+import { spawn } from "child_process";
+import { ProcessStartRequest, PROCESS_START_REQUEST, PROCESS_START_RESPONSE, ProcessStartResponse, PROCESS_START_RESPONSE_TYPE_EXIT, PROCESS_START_RESPONSE_TYPE_STDOUT, PROCESS_START_RESPONSE_TYPE_STDERR } from "../../../../../../shared/ipc-interfaces/process-start";
+const { ipcRenderer } = (<any>window).require("electron");
 
 declare var TextDecoder;
 
 @Injectable()
 export class Process {
 
-    constructor(private zone: NgZone) { }
+    private lastId = 0;
+    private runningRequest = new Map<number, Rx.Subscriber<ProcessStatus>>(); 
 
-    run(pathToApp: string, args: string[], workDirectory: string): Observable<ProcessRunStdOut | ProcessRunErrOut | ProcessRunExit> {
-        const list = [];
-        return Rxjs.Observable.create(subscriber => {
-            const p = child_process.spawn(pathToApp, args, { cwd: workDirectory });
-            p.stdout.on("data", data => {
-                list.push(new ProcessRunStdOut(data));
-            });
-            p.stderr.on("data", data => {
-                list.push(new ProcessRunErrOut(data));
-            });
-            p.on("exit", code => {
-                list.push(new ProcessRunExit(code));
-                this.zone.run(() => {
-                    for (let d of list) {
-                        subscriber.next(d);
-                    }
-                    subscriber.complete();
-                });
-            });
-        });
+    constructor(private zone: NgZone) { 
+        ipcRenderer.on(PROCESS_START_RESPONSE, (event, args) => {
+            this.onIncommingResponse(args);
+        })
     }
 
-    runAndWait(pathToApp: string, args: string[], workDirectory: string): Rxjs.Observable<ProcessResult> {
-        const data: Uint8Array[] = [];
-        return Rxjs.Observable.create(subscriber => {
+    run(command: string, args: string[], workDirectory: string): Observable<ProcessStatus> {
+
+        const id = ++this.lastId;
+
+        const oberservable = Rx.Observable.create((subscriber: Rx.Subscriber<ProcessStatus>) => {
+            this.runningRequest.set(id, subscriber);
+        })
+
+        ipcRenderer.send(PROCESS_START_REQUEST, <ProcessStartRequest>{
+            id: id,
+            command: command,
+            args: args,
+            workDirectory: workDirectory
+        });
+
+        return oberservable;
+    }
+
+    private onIncommingResponse(arg: ProcessStartResponse) {
+        const subscriber = this.runningRequest.get(arg.id);
+
+        if (arg.type === PROCESS_START_RESPONSE_TYPE_EXIT) {
+            subscriber.next(new ProcessRunExit(arg.code));
+            subscriber.complete();
+            this.runningRequest.delete(arg.id);
+        }
+
+        if (arg.type === PROCESS_START_RESPONSE_TYPE_STDOUT) {
+            subscriber.next(new ProcessRunStdOut(arg.data));
+        }
+
+        if (arg.type === PROCESS_START_RESPONSE_TYPE_STDERR) {
+            subscriber.next(new ProcessRunErrOut(arg.data));
+        }
+    }
+
+    runAndWait(pathToApp: string, args: string[], workDirectory: string): Rx.Observable<ProcessResult> {
+        const data: string[] = [];
+        return Rx.Observable.create(subscriber => {
 
             return this.run(pathToApp, args, workDirectory).subscribe(x => {
 
@@ -47,23 +69,12 @@ export class Process {
                     let totalCount = 0;
                     for (const item of data) {
                         totalCount += item.length;
-                    }
-
-                    // Create a new buffer and fill it with all blocks
-                    const totalBuffer = new Uint8Array(totalCount);
-                    let offset = 0;
-                    for (const item of data) {
-                        totalBuffer.set(item, offset);
-                        offset += item.length;
-                    }
-
-                    // TODO: Breaks on large buffers.
-                    const content = new TextDecoder().decode(totalBuffer);
+                    }                  
 
                     // Create the end result.
                     const result = new ProcessResult();
                     result.exitCode = x.code;
-                    result.data = content;
+                    result.data = data.join("");
                     subscriber.next(result);
                     subscriber.complete();
                 } else {
@@ -75,16 +86,18 @@ export class Process {
 }
 
 export class ProcessRunStdOut {
-    constructor(public data: Uint8Array) { }
+    constructor(public data: string) { }
 }
 
 export class ProcessRunErrOut {
-    constructor(public data: Uint8Array) { }
+    constructor(public data: string) { }
 }
 
 export class ProcessRunExit {
     constructor(public code: number) { }
 }
+
+export type ProcessStatus = ProcessRunStdOut | ProcessRunErrOut | ProcessRunExit;
 
 export class ProcessResult {
     exitCode: number;

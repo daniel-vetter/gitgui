@@ -37,14 +37,17 @@ export class Config {
     }
 
     private getConfigFilePath() {
-        if (process.platform !== "win32") {
-            throw new Error("TODO: Find user app data directory for other platforms than win32.")
+        let baseDir: string = undefined;
+        if (process.platform === "win32") {
+            baseDir = process.env["LOCALAPPDATA"] + "\\GitGui";    
+        } else if (process.platform === "linux") {
+            baseDir = process.env["HOME"] + "/.gitgui";
+        } else {
+            throw new Error("TODO: Find user app data directory for other platforms than win32 and linux.")
         }
-        // TODO: proper path concatenation
-        const baseDir = process.env["LOCALAPPDATA"] + "\\GitGui";
         if (!fs.existsSync(baseDir)) {
             fs.mkdirSync(baseDir);
         }
-        return baseDir + "\\config.json";
+        return baseDir + "/config.json";
     }
 }

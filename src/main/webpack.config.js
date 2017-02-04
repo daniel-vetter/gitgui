@@ -16,6 +16,9 @@ module.exports = {
       { from: '../package.json' }
     ])
   ],
+  resolve: {
+    extensions: ['.js', '.ts']
+  },
   output: {
     path: path.resolve(__dirname, '../../build/app'),
     filename: '[name].js',
