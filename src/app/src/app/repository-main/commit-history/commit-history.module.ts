@@ -3,7 +3,6 @@ import { CommitHistoryComponent } from "./commit-history.component";
 import { GravatarUrlBuilder } from "./services/gravatar-url-builder";
 import { LaneAssigner } from "./services/lane-assigner";
 import { LaneColorProvider } from "./services/lane-color-provider";
-import { LineIndex } from "./services/line-index";
 import { ReusePool } from "./services/reuse-pool";
 import { CommitLanesComponent } from "./commit-lanes/commit-lanes.component";
 import { CommitTitlesComponent } from "./commit-titles/commit-titles.component";
@@ -11,6 +10,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 import { Metrics } from "./services/metrics";
+import { LineRangeQueryHelper } from "./services/line-range-query-helper";
 @NgModule({
     declarations: [
         CommitHistoryComponent,
@@ -25,7 +25,7 @@ import { Metrics } from "./services/metrics";
         GravatarUrlBuilder,
         LaneAssigner,
         LaneColorProvider,
-        LineIndex,
+        LineRangeQueryHelper,
         ReusePool,
         RepositoryToHistoryRepositoryMapper,
         Metrics

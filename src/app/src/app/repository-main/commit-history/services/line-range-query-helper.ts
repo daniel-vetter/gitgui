@@ -2,9 +2,10 @@ import { Line, HistoryCommit, LaneSwitchPosition } from "../model/model";
 import { Injectable } from "@angular/core";
 
 @Injectable()
-export class LineIndex {
+export class LineRangeQueryHelper {
 
     private lineIndex: { [lineIndex: number]: Line[]; } = [];
+    private lines: Line[];
 
     constructor(private commits: HistoryCommit[]) {
         this.updateIndex();
@@ -12,7 +13,7 @@ export class LineIndex {
 
     private updateIndex() {
         if (!this.commits) return;
-        let lines = [];
+        const lines = [];
         this.lineIndex = [];
 
         for (const commit of this.commits) {
@@ -27,33 +28,21 @@ export class LineIndex {
             }
         }
 
-        lines = this.optimizeLines(lines);
-
-        for (const line of lines) {
-            const start = Math.min(line.indexStart, line.indexEnd);
-            const end = Math.max(line.indexStart, line.indexEnd);
-            for (let i = start; i <= end; i++) {
-                if (!this.lineIndex[i]) {
-                    this.lineIndex[i] = [];
-                }
-                this.lineIndex[i].push(line);
-            }
-        }
+        this.lines = this.optimizeLines(lines);
     }
 
     getLinesInRangeRange(startX: number, startY: number, endX: number, endY: number): Line[] {
         const relevantLines: Line[] = [];
-        for (let i = startY; i < endY; i++) {
-            if (this.lineIndex[i]) {
-                for (const line of this.lineIndex[i]) {
-                    if (Math.max(line.laneStart, line.laneEnd) < startX ||
-                        Math.min(line.laneStart, line.laneEnd) > endX)
-                        continue;
-                    if (relevantLines.indexOf(line) === -1) {
-                        relevantLines.push(line);
-                    }
-                }
+        for (const line of this.lines) {
+            const start = Math.min(line.indexStart, line.indexEnd);
+            const end = Math.max(line.indexStart, line.indexEnd);
+            if (!(end < startY || start > endY)) {
+                if (Math.max(line.laneStart, line.laneEnd) < startX ||
+                    Math.min(line.laneStart, line.laneEnd) > endX)
+                    continue;
+                relevantLines.push(line);
             }
+
         }
         return relevantLines;
     }

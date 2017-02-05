@@ -2,9 +2,9 @@ import { Component, Input, OnChanges } from "@angular/core";
 import { HistoryRepository, VisibleRange, HistoryCommit, LaneSwitchPosition, Line } from "../model/model";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
-import { LineIndex } from "../services/line-index";
 import { GravatarUrlBuilder } from "../services/gravatar-url-builder";
 import { Metrics } from "../services/metrics";
+import { LineRangeQueryHelper } from "../services/line-range-query-helper";
 @Component({
     selector: "commit-lanes",
     templateUrl: "./commit-lanes.component.html",
@@ -30,7 +30,7 @@ export class CommitLanesComponent implements OnChanges {
     commitHighlightedTop: number = undefined;
     commitClickedTop: number = undefined;
 
-    private lineIndex = new LineIndex([]);
+    private lineQueryHelper = new LineRangeQueryHelper([]);
     private totalLaneCount = 0;
 
     constructor(private laneColorProvider: LaneColorProvider,
@@ -39,7 +39,7 @@ export class CommitLanesComponent implements OnChanges {
 
     ngOnChanges(changes: any) {
         if (changes.commits) {
-            this.lineIndex = new LineIndex(this.commits ? this.commits.commits : []);
+            this.lineQueryHelper = new LineRangeQueryHelper(this.commits ? this.commits.commits : []);
             this.totalLaneCount = 0;
             if (this.commits && this.commits.commits) {
                 for (const commit of this.commits.commits) {
@@ -116,7 +116,7 @@ export class CommitLanesComponent implements OnChanges {
 
         const startX = this.horizontalScroll / this.metrics.bubbleSpacing - 1;
         const endX = (this.width + this.horizontalScroll) / this.metrics.bubbleSpacing + 1;
-        const linesToRender = this.lineIndex.getLinesInRangeRange(startX, this.visibleRange.start, endX, this.visibleRange.end);
+        const linesToRender = this.lineQueryHelper.getLinesInRangeRange(startX, this.visibleRange.start, endX, this.visibleRange.end);
         this.visibleLines.markAllUnused();
 
         for (const line of linesToRender) {

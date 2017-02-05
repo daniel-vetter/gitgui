@@ -11,7 +11,7 @@ export class CommitsReader {
     readAllCommits(repositoryPath: string): Rx.Observable<RepositoryCommit[]> {
 
         const prettyParts = ["ae", "an", "P", "s"];
-        const args = ["rev-list", "--all", "--max-count=100000", "--pretty=" + prettyParts.map(x => "%" + x).join("%n")];
+        const args = ["rev-list", "--all", "--pretty=" + prettyParts.map(x => "%" + x).join("%n")];
         return this.gitRaw.run(repositoryPath, args).map(x => {
             const parts = x.data.split("\n");
             const allCommits: RepositoryCommit[] = [];
