@@ -1,15 +1,15 @@
 export class Repository {
     status: RepositoryStatus;
-    commits: RepositoryCommit[];
-    refs: RepositoryRef[];
+    commits: RepositoryCommit[] = [];
+    refs: RepositoryRef[] = [];
     location: string;
 }
 
 export class RepositoryStatus {
     isMerge: boolean;
     isRebase: boolean;
-    unstaged: FileStatus[];
-    staged: FileStatus[];
+    unstaged: FileStatus[] = [];
+    staged: FileStatus[] = [];
 }
 
 export class FileStatus {
@@ -33,9 +33,25 @@ export class RepositoryCommit {
     authorName: string;
     authorMail: string;
     authorDate: Date;
-    parents: RepositoryCommit[];
-    children: RepositoryCommit[];
+    parents: RepositoryCommit[] = [];
+    children: RepositoryCommit[] = [];
+    refs: RepositoryRef[] = [];
 }
 
 export class RepositoryRef {
+    fullName: string;
+    shortName: string;
+    commit: RepositoryCommit;
+}
+
+export class RepositoryHeadRef extends RepositoryRef {
+    upstream: RepositoryRemoteRef;
+}
+
+export class RepositoryTagRef extends RepositoryRef {
+    annotationHash: string;
+}
+
+export class RepositoryRemoteRef extends RepositoryRef {
+    downstreams: RepositoryHeadRef[] = [];
 }

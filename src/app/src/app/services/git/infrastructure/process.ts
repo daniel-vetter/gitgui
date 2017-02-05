@@ -1,8 +1,15 @@
 import { Injectable, NgZone } from "@angular/core";
 import { Observable } from "rxjs";
 import * as Rx from "rxjs";
-import { spawn } from "child_process";
-import { ProcessStartRequest, PROCESS_START_REQUEST, PROCESS_START_RESPONSE, ProcessStartResponse, PROCESS_START_RESPONSE_TYPE_EXIT, PROCESS_START_RESPONSE_TYPE_STDOUT, PROCESS_START_RESPONSE_TYPE_STDERR } from "../../../../../../shared/ipc-interfaces/process-start";
+import {
+    ProcessStartRequest,
+    PROCESS_START_REQUEST,
+    PROCESS_START_RESPONSE,
+    ProcessStartResponse,
+    PROCESS_START_RESPONSE_TYPE_EXIT,
+    PROCESS_START_RESPONSE_TYPE_STDOUT,
+    PROCESS_START_RESPONSE_TYPE_STDERR
+} from "../../../../../../shared/ipc-interfaces/process-start";
 const { ipcRenderer } = (<any>window).require("electron");
 
 declare var TextDecoder;
@@ -15,17 +22,17 @@ export class Process {
 
     constructor(private zone: NgZone) {
         ipcRenderer.on(PROCESS_START_RESPONSE, (event, args) => {
-            this.onIncommingResponse(args);
-        })
+            this.onIncomingResponse(args);
+        });
     }
 
     run(command: string, args: string[], workDirectory: string): Observable<ProcessStatus> {
 
         const id = ++this.lastId;
 
-        const oberservable = Rx.Observable.create((subscriber: Rx.Subscriber<ProcessStatus>) => {
+        const observable = Rx.Observable.create((subscriber: Rx.Subscriber<ProcessStatus>) => {
             this.runningRequest.set(id, subscriber);
-        })
+        });
 
         ipcRenderer.send(PROCESS_START_REQUEST, <ProcessStartRequest>{
             id: id,
@@ -34,10 +41,10 @@ export class Process {
             workDirectory: workDirectory
         });
 
-        return oberservable;
+        return observable;
     }
 
-    private onIncommingResponse(arg: ProcessStartResponse) {
+    private onIncomingResponse(arg: ProcessStartResponse) {
         const subscriber = this.runningRequest.get(arg.id);
 
         if (arg.type === PROCESS_START_RESPONSE_TYPE_EXIT) {

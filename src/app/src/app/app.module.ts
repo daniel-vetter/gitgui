@@ -17,6 +17,7 @@ import { Config } from "./services/config";
 import { RepositoryMainComponent } from "./repository-main/repository-main.component";
 import { CommitHistoryModule } from "./repository-main/commit-history/commit-history.module";
 import { CurrentRepository } from "./services/current-repository";
+import { RefsReader } from "./services/git/refs-reader";
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { CurrentRepository } from "./services/current-repository";
       StatusReader,
       CommitsReader,
       RepositoryReader,
+      RefsReader,
       CurrentRepository
   ],
   bootstrap: [AppComponent]
