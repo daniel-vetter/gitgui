@@ -9,7 +9,9 @@
          #scrollWrapper>
         <div class="scrollInner" [style.height.px]="maxScrollHeight">
             <div [style.width.px]="annotationGridWidth">
-                <div style="white-space: nowrap">Ein sehr langer String und so hier könnte ein Branch stehen</div>
+                <commit-annotations [commits]="historyRepository"
+                                    [visibleRange]="visibleRange">
+                </commit-annotations>
             </div>
             <div [style.width.px]="currentLaneGridWidth" style="position: relative">
                 <commit-lanes [commits]="historyRepository"

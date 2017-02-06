@@ -11,11 +11,13 @@ import { FormsModule } from "@angular/forms";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 import { Metrics } from "./services/metrics";
 import { LineRangeQueryHelper } from "./services/line-range-query-helper";
+import { CommitAnnotationsComponent } from "./commit-annotations/commit-annotations.component";
 @NgModule({
     declarations: [
         CommitHistoryComponent,
         CommitLanesComponent,
-        CommitTitlesComponent
+        CommitTitlesComponent,
+        CommitAnnotationsComponent
     ],
     imports: [
         BrowserModule,

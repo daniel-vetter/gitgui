@@ -1,5 +1,5 @@
-import { HistoryRepository, HistoryCommit } from "../model/model";
-import { Repository, RepositoryCommit } from "../../../model/model";
+import { HistoryRepository, HistoryCommit, HistoryHeadRef, HistoryRemoteRef } from "../model/model";
+import { Repository, RepositoryCommit, RepositoryHeadRef, RepositoryRemoteRef } from "../../../model/model";
 import { LaneAssigner } from "./lane-assigner";
 import { Injectable } from "@angular/core";
 
@@ -28,6 +28,7 @@ export class RepositoryToHistoryRepositoryMapper {
             r.authorDate = commit.authorDate;
             r.parents = [];
             r.children = [];
+            r.refs = [];
             historyRepository.commits.push(r);
             hashToHistoryCommitMap.set(r.hash, r);
             hashToRepositoryCommitMap.set(commit.hash, commit);
@@ -39,6 +40,24 @@ export class RepositoryToHistoryRepositoryMapper {
                 const parentHistoryCommit = hashToHistoryCommitMap.get(parent.hash)
                 historyCommit.parents.push(parentHistoryCommit);
                 parentHistoryCommit.children.push(historyCommit);
+            }
+        }
+
+        for (const ref of repository.refs) {
+            if (!ref.commit)
+                continue;
+            const historyCommit = hashToHistoryCommitMap.get(ref.commit.hash);
+            if (ref instanceof RepositoryHeadRef) {
+                const historyRef = new HistoryHeadRef();
+                historyRef.shortName = ref.shortName;
+                historyRef.fullName = ref.fullName;
+                historyCommit.refs.push(historyRef);
+            }
+            if (ref instanceof RepositoryRemoteRef) {
+                const historyRef = new HistoryRemoteRef();
+                historyRef.shortName = ref.shortName;
+                historyRef.fullName = ref.fullName;
+                historyCommit.refs.push(historyRef);
             }
         }
 

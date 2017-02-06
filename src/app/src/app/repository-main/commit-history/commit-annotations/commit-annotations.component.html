@@ -1,0 +1,9 @@
+<div class="fill root">
+    <div *ngFor="let refBundle of refBundles" class="refBundleContainer" [style.top.px]="refBundle.top" [style.height.px]="metrics.commitHeight">
+        <div *ngFor="let ref of refBundle.refs">
+            <div class="refBox" [style.background]="refBundle.colorLight" [style.borderColor]="refBundle.color">
+                {{ ref.name }}
+            </div>
+        </div>
+    </div>
+</div>
