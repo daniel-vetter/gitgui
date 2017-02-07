@@ -16,21 +16,17 @@ export class HistoryCommit {
     children: HistoryCommit[];
     index: number;
     lane: number;
-    refs: HistoryRef[];
+    tags: HistoryTag[];
+    branches: HistoryBranch[];
 }
 
-export abstract class HistoryRef {
-    shortName: string;
-    fullName: string;
+export class HistoryTag {
+    name: string;
 }
 
-export class HistoryTagRef extends HistoryRef {
-}
-
-export class HistoryHeadRef extends HistoryRef {
-}
-
-export class HistoryRemoteRef extends HistoryRef {
+export class HistoryBranch {
+    localName: string;
+    remoteName: string;
 }
 
 export class VisibleRange {

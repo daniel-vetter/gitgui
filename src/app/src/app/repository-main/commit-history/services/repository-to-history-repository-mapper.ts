@@ -1,5 +1,5 @@
-import { HistoryRepository, HistoryCommit, HistoryHeadRef, HistoryRemoteRef } from "../model/model";
-import { Repository, RepositoryCommit, RepositoryHeadRef, RepositoryRemoteRef } from "../../../model/model";
+import { HistoryRepository, HistoryCommit, HistoryTag, HistoryBranch } from "../model/model";
+import { Repository, RepositoryCommit, RepositoryTagRef, RepositoryHeadRef, RepositoryRemoteRef } from "../../../model/model";
 import { LaneAssigner } from "./lane-assigner";
 import { Injectable } from "@angular/core";
 
@@ -28,7 +28,8 @@ export class RepositoryToHistoryRepositoryMapper {
             r.authorDate = commit.authorDate;
             r.parents = [];
             r.children = [];
-            r.refs = [];
+            r.tags = this.getTagsFromCommit(commit);
+            r.branches = this.getBranchesFromCommit(commit);
             historyRepository.commits.push(r);
             hashToHistoryCommitMap.set(r.hash, r);
             hashToRepositoryCommitMap.set(commit.hash, commit);
@@ -43,26 +44,51 @@ export class RepositoryToHistoryRepositoryMapper {
             }
         }
 
-        for (const ref of repository.refs) {
-            if (!ref.commit)
-                continue;
-            const historyCommit = hashToHistoryCommitMap.get(ref.commit.hash);
-            if (ref instanceof RepositoryHeadRef) {
-                const historyRef = new HistoryHeadRef();
-                historyRef.shortName = ref.shortName;
-                historyRef.fullName = ref.fullName;
-                historyCommit.refs.push(historyRef);
-            }
-            if (ref instanceof RepositoryRemoteRef) {
-                const historyRef = new HistoryRemoteRef();
-                historyRef.shortName = ref.shortName;
-                historyRef.fullName = ref.fullName;
-                historyCommit.refs.push(historyRef);
-            }
-        }
-
         this.laneAssigner.assignLanes(historyRepository);
 
         return historyRepository;
+    }
+
+    private getTagsFromCommit(commit: RepositoryCommit): HistoryTag[] {
+        return commit.refs
+            .filter(x => x instanceof RepositoryTagRef)
+            .map(x => {
+                const tag = new HistoryTag();
+                tag.name = x.shortName;
+                return tag;
+            });
+    }
+
+    private getBranchesFromCommit(commit: RepositoryCommit): HistoryBranch[] {
+        const result: HistoryBranch[] = [];
+
+
+        const allLocalRefs = <RepositoryHeadRef[]>commit.refs.filter(x => x instanceof RepositoryHeadRef);
+        const allRemoteRefs = <RepositoryRemoteRef[]>commit.refs.filter(x => x instanceof RepositoryRemoteRef);
+        const refToSkip: RepositoryRemoteRef[] = [];
+
+        for (const ref of allLocalRefs) {
+            const historyBranch = new HistoryBranch();
+            historyBranch.localName = ref.shortName;
+
+            // if the upstream of this ref is also on this commit, set the branches remote name
+            if (ref.upstream && ref.upstream.commit === commit) {
+                historyBranch.remoteName = ref.upstream.shortName;
+                refToSkip.push(ref.upstream);
+            }
+            result.push(historyBranch);
+        }
+
+        for (const ref of allRemoteRefs) {
+            if (refToSkip.indexOf(ref) !== -1)
+                continue;
+            const historyBranch = new HistoryBranch();
+            historyBranch.remoteName = ref.shortName;
+            result.push(historyBranch);
+        }
+
+        if (result.length > 0)
+            console.log(result);
+        return result;
     }
 }

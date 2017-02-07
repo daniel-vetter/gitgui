@@ -15,7 +15,6 @@
 
     &:hover {
         overflow: visible;
-        width: auto;
     }
 }
 
@@ -31,4 +30,13 @@
     border-right-width: 1px;
     border-top-width: 1px;
     border-bottom-width: 1px;
+    z-index: 10;
+}
+
+.line {
+
+    border-top: 1px solid red;
+    height: 1px;
+    width: 100%;
+    position: absolute;
 }

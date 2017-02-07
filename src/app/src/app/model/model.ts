@@ -53,5 +53,6 @@ export class RepositoryTagRef extends RepositoryRef {
 }
 
 export class RepositoryRemoteRef extends RepositoryRef {
+    remote: string;
     downstreams: RepositoryHeadRef[] = [];
 }

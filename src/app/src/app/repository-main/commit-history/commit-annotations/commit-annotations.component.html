@@ -1,9 +1,12 @@
 <div class="fill root">
-    <div *ngFor="let refBundle of refBundles" class="refBundleContainer" [style.top.px]="refBundle.top" [style.height.px]="metrics.commitHeight">
-        <div *ngFor="let ref of refBundle.refs">
-            <div class="refBox" [style.background]="refBundle.colorLight" [style.borderColor]="refBundle.color">
-                {{ ref.name }}
-            </div>
+
+    <div *ngFor="let annotationBundle of annotationBundles" class="refBundleContainer" [style.top.px]="annotationBundle.top" [style.height.px]="metrics.commitHeight">
+        <div class="line" [style.top.px]="metrics.commitHeight / 2" [style.borderColor]="annotationBundle.color"></div>
+        <div *ngFor="let annotation of annotationBundle.annotations" class="refBox" [style.background]="annotationBundle.colorLight" [style.borderColor]="annotationBundle.color">
+            <i *ngIf="annotation.isTag" class="material-icons" [style.color]="annotationBundle.color">label</i>
+            <i *ngIf="annotation.isLocal" class="material-icons" [style.color]="annotationBundle.color">computer</i>
+            <i *ngIf="annotation.isRemote" class="material-icons" [style.color]="annotationBundle.color">wifi</i>
+            {{ annotation.name }}
         </div>
     </div>
 </div>

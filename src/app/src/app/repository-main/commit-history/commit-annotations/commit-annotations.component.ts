@@ -11,7 +11,7 @@ export class CommitAnnotationsComponent implements OnChanges {
     @Input() commits: HistoryRepository = undefined;
     @Input() visibleRange: VisibleRange = undefined;
 
-    refBundles: RefBundleViewModel[] = [];
+    annotationBundles: AnnotationBundleViewModel[] = [];
 
     constructor(private metrics: Metrics,
                 private laneColorProvider: LaneColorProvider) {
@@ -22,38 +22,47 @@ export class CommitAnnotationsComponent implements OnChanges {
     }
 
     private updateRefs() {
-        this.refBundles = [];
+        this.annotationBundles = [];
         if (!this.commits || !this.visibleRange) {
             return;
         }
 
         for (let i = Math.max(0, this.visibleRange.start); i < Math.min(this.visibleRange.end, this.commits.commits.length); i++) {
             const commit = this.commits.commits[i];
-            if (commit.refs.length === 0)
-                continue;
-
-            const vm = new RefBundleViewModel();
+            const vm = new AnnotationBundleViewModel();
             vm.top = this.metrics.commitHeight * commit.index;
             vm.colorLight = this.laneColorProvider.getColorForLane(commit.lane, 0.97);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
-            vm.refs = [];
-            for (const ref of commit.refs) {
-                const refVm = new RefViewModel();
-                refVm.name = ref.shortName;
-                vm.refs.push(refVm);
+            vm.annotations = [];
+            for (const branch of commit.branches) {
+                const annotation = new AnnotationViewModel();
+                annotation.name = branch.localName ? branch.localName : branch.remoteName;
+                annotation.isLocal = !!branch.localName;
+                annotation.isRemote = !!branch.remoteName;
+                vm.annotations.push(annotation);
             }
-            this.refBundles.push(vm);
+            for (const tag of commit.tags) {
+                const annotation = new AnnotationViewModel();
+                annotation.name = tag.name;
+                annotation.isTag = true;
+                vm.annotations.push(annotation);
+            }
+            if (vm.annotations.length > 0)
+                this.annotationBundles.push(vm);
         }
     }
 }
 
-class RefBundleViewModel {
+class AnnotationBundleViewModel {
     top: number;
-    refs: RefViewModel[];
+    annotations: AnnotationViewModel[];
     color: string;
     colorLight: string;
 }
 
-class RefViewModel {
+class AnnotationViewModel {
     name: string;
+    isTag: boolean;
+    isLocal: boolean;
+    isRemote: boolean;
 }

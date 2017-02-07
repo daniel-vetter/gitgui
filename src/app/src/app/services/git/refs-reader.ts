@@ -30,24 +30,27 @@ export class RefsReader {
             // go through each line and create RepositoryRef objects for each
             for (const line of lines) {
 
-                // creating objects inherited from RepositoryRef depending on the type of the ref
-                let ref: RepositoryRef = undefined;
-
                 // /ref/heads/*
                 if (line.ref.type === "heads") {
-                    ref = new RepositoryHeadRef();
+                    const ref = new RepositoryHeadRef();
+                    ref.fullName = line.ref.fullName;
+                    ref.shortName = line.ref.shortName;
                     if (line.objectType !== "commit") {
                         throw new Error("The ref \"" + line.ref.fullName + "\" is not connected to a commit. " +
                                         "(connected to: \"" + line.objectType + "\")");
                     }
                     ref.commit = commitIndex.get(line.objectName);
+                    result.push(ref);
+                    continue;
                 }
 
                 // /ref/tags/*
                 if (line.ref.type === "tags") {
-                    ref = new RepositoryTagRef();
+                    const ref = new RepositoryTagRef();
+                    ref.fullName = line.ref.fullName;
+                    ref.shortName = line.ref.shortName;
                     if (line.objectType === "commit") { // lightweight tag
-                        ref.commit = commitIndex.get(line.objectType);
+                        ref.commit = commitIndex.get(line.objectName);
                     } else if (line.objectName === "tag") { // annotated tag
                         if (line.resolvedObjectType !== "commit") {
                             throw new Error("Tag \"" + line.objectName + "\" not pointing to a commit.")
@@ -55,24 +58,27 @@ export class RefsReader {
                         ref.commit = commitIndex.get(line.resolvedObjectName);
                         (<RepositoryTagRef>ref).annotationHash = line.objectName;
                     }
+                    result.push(ref);
+                    continue;
                 }
 
                 // /ref/remotes/*
                 if (line.ref.type === "remotes") {
-                    ref = new RepositoryRemoteRef();
+                    const ref = new RepositoryRemoteRef();
+                    ref.fullName = line.ref.fullName;
+                    const splitter = line.ref.shortName.indexOf("/");
+                    if (splitter === -1) {
+                        throw new Error("Remote name could not be extracted from: \"" + line.ref.shortName + "\"");
+                    }
+                    ref.shortName = line.ref.shortName.substr(splitter + 1);
+                    ref.remote = line.ref.shortName.substr(0, splitter);
                     ref.commit = commitIndex.get(line.objectName);
-                }
-
-                // unknown ref types get skipped
-                if (!ref) {
-                    console.warn("skipped ref: " + ref.fullName);
+                    result.push(ref);
                     continue;
                 }
 
-                // set the remaining values and add the object to the list
-                ref.fullName = line.ref.fullName;
-                ref.shortName = line.ref.shortName;
-                result.push(ref);
+                // unknown ref types get skipped
+                console.warn("skipped ref: " + line.ref.fullName);
             }
 
             // after all ref object are created, we can connect all local branch refs with its upstream refs.

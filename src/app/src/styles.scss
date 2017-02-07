@@ -31,3 +31,17 @@ a {
     width: 100%;
     overflow: hidden;
 }
+
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(assets/MaterialIcons-Regular.woff2);
+}
+.material-icons {
+    font-family: 'Material Icons';
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    top: 2px;
+}
