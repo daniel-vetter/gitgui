@@ -1,4 +1,5 @@
 <div class="root fill" tabindex="0" (window:resize)="onWindowResize()" (keydown)="onKeyDown($event)" #root>
+
     <div class="fill scrollContainer"
          (scroll)="onScroll($event)"
          (document:mouseleave)="onMouseOut()"
@@ -7,6 +8,15 @@
          (mousedown)="onMouseDown($event)"
          (mouseup)="onMouseUp($event)"
          #scrollWrapper>
+
+        <div class="overlay" [style.paddingLeft.px]="annotationGridWidth" [style.height.px]="maxScrollHeight">
+            <commit-selection-background
+                                        [commitClicked]="commitClicked"
+                                        [commitSelected]="commitSelected"
+                                        [commitHighlighted]="commitHighlighted">
+            </commit-selection-background>
+        </div>
+
         <div class="scrollInner" [style.height.px]="maxScrollHeight">
             <div [style.width.px]="annotationGridWidth">
                 <commit-annotations [commits]="historyRepository"
@@ -33,7 +43,7 @@
             </div>
         </div>
 
-        <div class="resizeOverlay" [class.inResizeMode]="isInLaneGridResizeMode" [style.height.px]="maxScrollHeight">
+        <div class="overlay" style="display: flex" [class.inResizeMode]="isInLaneGridResizeMode || isInAnnotationGridResizeMode" [style.height.px]="maxScrollHeight">
             <div class="resizeBar" [style.left.px]="annotationGridWidth - 5"
                                    [style.height.px]="maxScrollHeight"
                                    (mousedown)="onAnnotationGridResizeMouseDown($event)"

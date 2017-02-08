@@ -12,12 +12,14 @@ import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-hi
 import { Metrics } from "./services/metrics";
 import { LineRangeQueryHelper } from "./services/line-range-query-helper";
 import { CommitAnnotationsComponent } from "./commit-annotations/commit-annotations.component";
+import { CommitSelectionBackgroundComponent } from "./commit-selection-background/commit-selection-background.component";
 @NgModule({
     declarations: [
         CommitHistoryComponent,
         CommitLanesComponent,
         CommitTitlesComponent,
-        CommitAnnotationsComponent
+        CommitAnnotationsComponent,
+        CommitSelectionBackgroundComponent
     ],
     imports: [
         BrowserModule,

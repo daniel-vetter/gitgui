@@ -25,10 +25,6 @@ export class CommitLanesComponent implements OnChanges {
     visibleBubbles = new ReusePool<HistoryCommit, CommitBubbleViewModel>(() => new CommitBubbleViewModel());
     visibleLines = new ReusePool<Line, LineViewModel>(() => new LineViewModel());
 
-    commitSelectedTop: number = undefined;
-    commitHighlightedTop: number = undefined;
-    commitClickedTop: number = undefined;
-
     private lineQueryHelper = new LineRangeQueryHelper([]);
     private totalLaneCount = 0;
 
@@ -54,36 +50,9 @@ export class CommitLanesComponent implements OnChanges {
             this.updateBubbles();
             this.updateLines();
         }
-
-        if (changes.commitHighlighted || changes.commitSelected || changes.commitClicked) {
-            this.updateHighlightBar();
-        }
     }
 
-    private updateHighlightBar() {
-        if (this.commitClicked) {
-            this.commitClickedTop = this.commitClicked.index * this.metrics.commitHeight;
-        } else {
-            this.commitClickedTop = undefined;
-        }
-        if (this.commitSelected) {
-            this.commitSelectedTop = this.commitSelected.index * this.metrics.commitHeight;
-        } else {
-            this.commitSelectedTop = undefined;
-        }
-        if (this.commitHighlighted) {
-            this.commitHighlightedTop = this.commitHighlighted.index * this.metrics.commitHeight;
-        } else {
-            this.commitHighlightedTop = undefined;
-        }
 
-        if (this.commitHighlighted === this.commitClicked)
-            this.commitHighlightedTop = undefined;
-        if (this.commitHighlighted === this.commitSelected)
-            this.commitHighlightedTop = undefined;
-        if (this.commitSelected === this.commitClicked)
-            this.commitClickedTop = undefined;
-    }
 
     private updateBubbles() {
         if (!this.commits || !this.commits.commits)

@@ -33,6 +33,7 @@ export class CommitHistoryComponent implements OnChanges {
     commitSelected: HistoryCommit;
     commitHighlighted: HistoryCommit;
 
+
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
         private repositoryToHistoryRepositoryMapper: RepositoryToHistoryRepositoryMapper,
@@ -51,6 +52,7 @@ export class CommitHistoryComponent implements OnChanges {
         }
         this.update();
     }
+
     onScroll(event) {
         this.commitHighlighted = undefined;
         this.update();
@@ -165,7 +167,6 @@ export class CommitHistoryComponent implements OnChanges {
 
         const newIndex = Math.min(Math.max(0, this.commitSelected.index + move), this.historyRepository.commits.length - 1);
         this.commitSelected = this.historyRepository.commits[newIndex];
-
         this.scrollToCurrentSelection();
     }
 

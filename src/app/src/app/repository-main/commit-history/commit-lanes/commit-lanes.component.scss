@@ -11,19 +11,3 @@
 .visible {
     opacity: 1;
 }
-
-.selectionBox {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 30px;
-    pointer-events: none;
-}
-
-.highlighted {
-    background: rgba(30, 144, 255, 0.1);
-}
-
-.selected, .clicked {
-    background: rgba(30, 144, 255, 0.2);
-}
