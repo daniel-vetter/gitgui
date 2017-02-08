@@ -31,7 +31,7 @@ export class LineRangeQueryHelper {
         this.lines = this.optimizeLines(lines);
     }
 
-    getLinesInRangeRange(startX: number, startY: number, endX: number, endY: number): Line[] {
+    getLinesInRange(startX: number, startY: number, endX: number, endY: number): Line[] {
         const relevantLines: Line[] = [];
         for (const line of this.lines) {
             const start = Math.min(line.indexStart, line.indexEnd);

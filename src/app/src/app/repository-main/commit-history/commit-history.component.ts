@@ -25,6 +25,7 @@ export class CommitHistoryComponent implements OnChanges {
     maxScrollHeight = 0;
     annotationGridWidth = 200;
     isInLaneGridResizeMode = false;
+    isInAnnotationGridResizeMode = false;
     historyRepository: HistoryRepository;
     mouseIsInLaneGrid = false;
 
@@ -66,21 +67,38 @@ export class CommitHistoryComponent implements OnChanges {
         this.laneGridScrollPosition = (<HTMLDivElement>event.target).scrollLeft;
     }
 
-    onResizeMouseDown(event: MouseEvent) {
+    onLaneGridResizeMouseDown(event: MouseEvent) {
         this.isInLaneGridResizeMode = true;
     }
 
-    onResizeMouseUp(event: MouseEvent) {
+    onLaneGridResizeMouseUp(event: MouseEvent) {
         this.isInLaneGridResizeMode = false;
     }
 
-    onResizeMouseMove(event) {
+    onLaneGridResizeMouseMove(event) {
         if (this.isInLaneGridResizeMode) {
             this.currentLaneGridWidth =
                 event.clientX -
                 this.scrollWrapper.nativeElement.getBoundingClientRect().left -
                 this.annotationGridWidth;
             this.limitLaneGridWidth();
+        }
+    }
+
+    onAnnotationGridResizeMouseDown(event: MouseEvent) {
+        this.isInAnnotationGridResizeMode = true;
+    }
+
+    onAnnotationGridResizeMouseUp(event: MouseEvent) {
+        this.isInAnnotationGridResizeMode = false;
+    }
+
+    onAnnotationGridResizeMouseMove(event) {
+        if (this.isInAnnotationGridResizeMode) {
+            this.annotationGridWidth =
+                event.clientX -
+                this.scrollWrapper.nativeElement.getBoundingClientRect().left;
+            this.limitAnnotationGridWidth();
         }
     }
 
@@ -91,6 +109,13 @@ export class CommitHistoryComponent implements OnChanges {
         this.currentLaneGridWidth = Math.min(maxSizeBecauseOfLaneCount, this.currentLaneGridWidth);
         this.currentLaneGridWidth = Math.min(maxSizeBecauseOfComponentBorder, this.currentLaneGridWidth);
         this.currentLaneGridWidth = Math.max(minSize, this.currentLaneGridWidth);
+    }
+
+    private limitAnnotationGridWidth() {
+        const minSize = 10;
+        const maxSizeBecauseOfComponentBorder = this.scrollWrapper.nativeElement.clientWidth - 100 - this.currentLaneGridWidth;
+        this.annotationGridWidth = Math.min(maxSizeBecauseOfComponentBorder, this.annotationGridWidth);
+        this.annotationGridWidth = Math.max(minSize, this.annotationGridWidth);
     }
 
     onMouseMove(event) {

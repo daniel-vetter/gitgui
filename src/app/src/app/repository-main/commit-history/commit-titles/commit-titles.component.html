@@ -3,12 +3,13 @@
          [class.highlighted]="item.highlighted"
          [class.selected]="item.selected"
          [class.clicked]="item.clicked"
-         [style.lineHeight.px]="commitHeight"
          [style.top.px]="item.positionTop"
+         [style.height.px]="metrics.commitHeight"
          (click)="show(item)" >
 
-        <div class="colorBorder" [style.background]="item.color">
-        </div>
+
+        <div class="profileImg" style="height: 100%; border-style: solid; border-width: 2px; margin-right: 3px" [style.borderColor]="item.color"><img [src]="item.profileImageUrl" style="height: 100%"></div>
+
         <div class="title">
             {{ item.title }}
         </div>

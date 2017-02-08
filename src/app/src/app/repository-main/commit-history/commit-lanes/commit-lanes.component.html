@@ -19,26 +19,29 @@
         </div>
     </div>
 
-    <div style="left: 0;" class="scrollBorder" [style.width.px]="metrics.bubbleWidth" [class.visible]="leftBorderVisible">
+    <div style="left: -10px;" class="scrollBorder" [style.width.px]="10" [class.visible]="leftBorderVisible">
         <div *ngIf="commitHighlightedTop !== undefined" class="selectionBox highlighted" [style.top.px]="commitHighlightedTop"></div>
         <div *ngIf="commitClickedTop !== undefined" class="selectionBox clicked" [style.top.px]="commitClickedTop"></div>
         <div *ngIf="commitSelectedTop !== undefined" class="selectionBox selected" [style.top.px]="commitSelectedTop"></div>
     </div>
 
-    <div style="right: 0;" class="scrollBorder" [style.width.px]="metrics.bubbleWidth" [class.visible]="rightBorderVisible">
+    <div style="right: -10px;" class="scrollBorder" [style.width.px]="10" [class.visible]="rightBorderVisible">
         <div *ngIf="commitHighlightedTop !== undefined" class="selectionBox highlighted" [style.top.px]="commitHighlightedTop"></div>
         <div *ngIf="commitClickedTop !== undefined" class="selectionBox clicked" [style.top.px]="commitClickedTop"></div>
         <div *ngIf="commitSelectedTop !== undefined" class="selectionBox selected" [style.top.px]="commitSelectedTop"></div>
     </div>
 
     <ng-container *ngFor="let item of visibleBubbles.viewModels">
-        <div *ngIf="item.showAnnotationLine" style="border-style: solid; border-top-width: 1px; position: absolute; left: 0px; border-top-width: 1px; border-width: 0px; border-top-width: 1px;" [style.top.px]="item.positionTop + 15" [style.borderColor]="item.color" [style.width.px]="item.positionLeft + 15"></div>
+        <div *ngIf="item.showAnnotationLine"
+             style="border-style: solid; border-top-width: 1px; position: absolute; left: 0px; border-top-width: 1px; border-width: 0px; border-top-width: 1px;"
+             [style.top.px]="item.positionTop + metrics.bubbleHeight / 2"
+             [style.borderColor]="item.color"
+             [style.width.px]="item.positionLeft + metrics.bubbleWidth / 2">
+        </div>
         <div style="position: absolute; display: flex;" [style.width.px]="metrics.bubbleWidth" [style.height.px]="metrics.bubbleHeight" [style.top.px]="item.positionTop" [style.left.px]="item.positionLeft">
             <div [style.width.px]="laneGridWidth">
                 <div style="padding: 4px; box-sizing: border-box;" [style.width.px]="metrics.bubbleWidth" [style.height.px]="metrics.bubbleHeight">
-                    <div style="height: 100%; width: 100%; border-width: 2px; box-sizing: border-box; border-style: solid; background: white"  [style.borderColor]="item.color">
-                        <img [src]="item.profileImageUrl" style="height: 100%; width: 100%">
-                    </div>
+                    <div style="height: 100%; width: 100%; border: 0px solid white; box-sizing: border-box; border-style: solid; border-radius: 0%"  [style.background]="item.color"></div>
                 </div>
             </div>
         </div>

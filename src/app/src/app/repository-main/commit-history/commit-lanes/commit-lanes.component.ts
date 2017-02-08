@@ -2,7 +2,6 @@ import { Component, Input, OnChanges } from "@angular/core";
 import { HistoryRepository, VisibleRange, HistoryCommit, LaneSwitchPosition, Line } from "../model/model";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
-import { GravatarUrlBuilder } from "../services/gravatar-url-builder";
 import { Metrics } from "../services/metrics";
 import { LineRangeQueryHelper } from "../services/line-range-query-helper";
 @Component({
@@ -34,7 +33,6 @@ export class CommitLanesComponent implements OnChanges {
     private totalLaneCount = 0;
 
     constructor(private laneColorProvider: LaneColorProvider,
-                private gravatarUrlBuilder: GravatarUrlBuilder,
                 private metrics: Metrics) {}
 
     ngOnChanges(changes: any) {
@@ -103,9 +101,6 @@ export class CommitLanesComponent implements OnChanges {
             vm.id = commit.hash;
             vm.positionTop = this.metrics.getBubbleTop(i);
             vm.positionLeft = this.metrics.getBubbleLeft(commit.lane) - this.horizontalScroll;
-            vm.positionLeft = Math.max(vm.positionLeft, 0);
-            vm.positionLeft = Math.min(vm.positionLeft, this.width - this.metrics.bubbleWidth);
-            vm.profileImageUrl = this.gravatarUrlBuilder.getUrlFor(commit.authorMail);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
             vm.showAnnotationLine = commit.tags.length > 0 || commit.branches.length > 0;
         }
@@ -117,7 +112,7 @@ export class CommitLanesComponent implements OnChanges {
 
         const startX = this.horizontalScroll / this.metrics.bubbleSpacing - 1;
         const endX = (this.width + this.horizontalScroll) / this.metrics.bubbleSpacing + 1;
-        const linesToRender = this.lineQueryHelper.getLinesInRangeRange(startX, this.visibleRange.start, endX, this.visibleRange.end);
+        const linesToRender = this.lineQueryHelper.getLinesInRange(startX, this.visibleRange.start, endX, this.visibleRange.end);
         this.visibleLines.markAllUnused();
 
         for (const line of linesToRender) {
@@ -180,7 +175,6 @@ export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommit> {
         this.color = undefined;
         this.positionTop = undefined;
         this.positionLeft = undefined;
-        this.profileImageUrl = undefined;
     }
 }
 

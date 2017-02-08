@@ -34,11 +34,17 @@
         </div>
 
         <div class="resizeOverlay" [class.inResizeMode]="isInLaneGridResizeMode" [style.height.px]="maxScrollHeight">
-            <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 2"
+            <div class="resizeBar" [style.left.px]="annotationGridWidth - 5"
                                    [style.height.px]="maxScrollHeight"
-                                   (mousedown)="onResizeMouseDown($event)"
-                                   (document:mouseup)="onResizeMouseUp($event)"
-                                   (document:mousemove)="onResizeMouseMove($event)">
+                                   (mousedown)="onAnnotationGridResizeMouseDown($event)"
+                                   (document:mouseup)="onAnnotationGridResizeMouseUp($event)"
+                                   (document:mousemove)="onAnnotationGridResizeMouseMove($event)">
+            </div>
+            <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 5"
+                                   [style.height.px]="maxScrollHeight"
+                                   (mousedown)="onLaneGridResizeMouseDown($event)"
+                                   (document:mouseup)="onLaneGridResizeMouseUp($event)"
+                                   (document:mousemove)="onLaneGridResizeMouseMove($event)">
             </div>
         </div>
     </div>
