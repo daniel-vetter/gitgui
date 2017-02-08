@@ -124,15 +124,17 @@ export class RefsReader {
         }
 
         refFullName = refFullName.substr(pre.length);
-        const typePartEnd = refFullName.indexOf("/");
-        if (typePartEnd === -1) {
-            throw new Error("Could not determine ref type from \"" + refFullName + "\"");
-        }
 
         const refName = new Ref();
         refName.fullName = pre + refFullName;
-        refName.shortName = refFullName.substr(typePartEnd + 1);
-        refName.type = refFullName.substr(0, typePartEnd);
+        const typePartEnd = refFullName.indexOf("/");
+        if (typePartEnd === -1) {
+            refName.type = refFullName;
+            refName.shortName = "";
+        } else {
+            refName.shortName = refFullName.substr(typePartEnd + 1);
+            refName.type = refFullName.substr(0, typePartEnd);
+        }
         return refName;
     }
 }
