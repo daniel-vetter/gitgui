@@ -31,13 +31,16 @@
         <div *ngIf="commitSelectedTop !== undefined" class="selectionBox selected" [style.top.px]="commitSelectedTop"></div>
     </div>
 
-    <div *ngFor="let item of visibleBubbles.viewModels" style="position: absolute; display: flex;" [style.width.px]="metrics.bubbleWidth" [style.height.px]="metrics.bubbleHeight" [style.top.px]="item.positionTop" [style.left.px]="item.positionLeft">
-        <div [style.width.px]="laneGridWidth">
-            <div style="padding: 4px; box-sizing: border-box;" [style.width.px]="metrics.bubbleWidth" [style.height.px]="metrics.bubbleHeight">
-                <div style="height: 100%; width: 100%; border-width: 2px; box-sizing: border-box; border-style: solid; background: white"  [style.borderColor]="item.color">
-                    <img [src]="item.profileImageUrl" style="height: 100%; width: 100%">
+    <ng-container *ngFor="let item of visibleBubbles.viewModels">
+        <div *ngIf="item.showAnnotationLine" style="border-style: solid; border-top-width: 1px; position: absolute; left: 0px; border-top-width: 1px; border-width: 0px; border-top-width: 1px;" [style.top.px]="item.positionTop + 15" [style.borderColor]="item.color" [style.width.px]="item.positionLeft + 15"></div>
+        <div style="position: absolute; display: flex;" [style.width.px]="metrics.bubbleWidth" [style.height.px]="metrics.bubbleHeight" [style.top.px]="item.positionTop" [style.left.px]="item.positionLeft">
+            <div [style.width.px]="laneGridWidth">
+                <div style="padding: 4px; box-sizing: border-box;" [style.width.px]="metrics.bubbleWidth" [style.height.px]="metrics.bubbleHeight">
+                    <div style="height: 100%; width: 100%; border-width: 2px; box-sizing: border-box; border-style: solid; background: white"  [style.borderColor]="item.color">
+                        <img [src]="item.profileImageUrl" style="height: 100%; width: 100%">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </ng-container>
 </div>
