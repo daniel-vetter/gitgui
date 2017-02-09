@@ -27,18 +27,12 @@
                 <commit-lanes [commits]="historyRepository"
                               [visibleRange]="visibleRange"
                               [width]="currentLaneGridWidth"
-                              [horizontalScroll]="laneGridScrollPosition"
-                              [commitHighlighted]="commitHighlighted"
-                              [commitClicked]="commitClicked"
-                              [commitSelected]="commitSelected">
+                              [horizontalScroll]="laneGridScrollPosition">
                 </commit-lanes>
             </div>
             <div style="flex: 1;">
                 <commit-titles [commits]="historyRepository"
-                               [visibleRange]="visibleRange"
-                               [commitHighlighted]="commitHighlighted"
-                               [commitClicked]="commitClicked"
-                               [commitSelected]="commitSelected">
+                               [visibleRange]="visibleRange">
                 </commit-titles>
             </div>
         </div>

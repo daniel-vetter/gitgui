@@ -16,12 +16,6 @@
         </div>
     </div>
 
-    <div style="left: -10px;" class="scrollBorder" [style.width.px]="10" [class.visible]="leftBorderVisible">
-    </div>
-
-    <div style="right: -10px;" class="scrollBorder" [style.width.px]="10" [class.visible]="rightBorderVisible">
-    </div>
-
     <ng-container *ngFor="let item of visibleBubbles.viewModels">
         <div *ngIf="item.showAnnotationLine"
              style="border-style: solid; border-top-width: 1px; position: absolute; left: 0px; border-top-width: 1px; border-width: 0px; border-top-width: 1px;"

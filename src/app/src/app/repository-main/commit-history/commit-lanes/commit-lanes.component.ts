@@ -15,12 +15,6 @@ export class CommitLanesComponent implements OnChanges {
     @Input() visibleRange: VisibleRange = undefined;
     @Input() horizontalScroll = 0;
     @Input() width = 0;
-    @Input() commitHighlighted: HistoryCommit = undefined;
-    @Input() commitClicked: HistoryCommit = undefined;
-    @Input() commitSelected: HistoryCommit = undefined;
-
-    leftBorderVisible = false;
-    rightBorderVisible = false;
 
     visibleBubbles = new ReusePool<HistoryCommit, CommitBubbleViewModel>(() => new CommitBubbleViewModel());
     visibleLines = new ReusePool<Line, LineViewModel>(() => new LineViewModel());
@@ -45,14 +39,10 @@ export class CommitLanesComponent implements OnChanges {
             }
         }
         if (changes.visibleRange || changes.horizontalScroll || changes.width) {
-            this.leftBorderVisible = this.horizontalScroll > 0 ;
-            this.rightBorderVisible = this.metrics.getBubbleRight(this.totalLaneCount - 1) - this.width - this.horizontalScroll > 1;
             this.updateBubbles();
             this.updateLines();
         }
     }
-
-
 
     private updateBubbles() {
         if (!this.commits || !this.commits.commits)
@@ -144,6 +134,7 @@ export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommit> {
         this.color = undefined;
         this.positionTop = undefined;
         this.positionLeft = undefined;
+        this.showAnnotationLine = undefined;
     }
 }
 

@@ -86,9 +86,6 @@ export class RepositoryToHistoryRepositoryMapper {
             historyBranch.remoteName = ref.remote + "/" + ref.shortName;
             result.push(historyBranch);
         }
-
-        if (result.length > 0)
-            console.log(result);
         return result;
     }
 }
