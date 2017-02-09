@@ -33,6 +33,9 @@ export class CommitHistoryComponent implements OnChanges {
     commitSelected: HistoryCommit;
     commitHighlighted: HistoryCommit;
 
+    showLeftLaneGridBorder: boolean = false;
+    showRightLaneGridBorder: boolean = false;
+
 
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
@@ -50,15 +53,15 @@ export class CommitHistoryComponent implements OnChanges {
             this.commitHighlighted = undefined;
             this.commitSelected = undefined;
         }
-        this.update();
+        this.updateVisibleRange();
     }
 
     onScroll(event) {
         this.commitHighlighted = undefined;
-        this.update();
+        this.updateVisibleRange();
     }
 
-    private update() {
+    private updateVisibleRange() {
         const startY = Math.floor(this.scrollWrapper.nativeElement.scrollTop / this.metrics.commitHeight);
         const endY = Math.floor(startY + this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight) + 1;
         const overdraw = 10;
@@ -67,6 +70,7 @@ export class CommitHistoryComponent implements OnChanges {
 
     onLaneGridScroll(event: UIEvent) {
         this.laneGridScrollPosition = (<HTMLDivElement>event.target).scrollLeft;
+        this.updateShadowVisibility();
     }
 
     onLaneGridResizeMouseDown(event: MouseEvent) {
@@ -84,6 +88,7 @@ export class CommitHistoryComponent implements OnChanges {
                 this.scrollWrapper.nativeElement.getBoundingClientRect().left -
                 this.annotationGridWidth;
             this.limitLaneGridWidth();
+            this.updateShadowVisibility();
         }
     }
 
@@ -101,6 +106,7 @@ export class CommitHistoryComponent implements OnChanges {
                 event.clientX -
                 this.scrollWrapper.nativeElement.getBoundingClientRect().left;
             this.limitAnnotationGridWidth();
+            this.updateShadowVisibility();
         }
     }
 
@@ -153,8 +159,9 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     onWindowResize() {
-        this.update();
+        this.updateVisibleRange();
         this.limitLaneGridWidth();
+        this.updateShadowVisibility();
     }
 
     onKeyDown(event) {
@@ -181,5 +188,10 @@ export class CommitHistoryComponent implements OnChanges {
         if (commitBottom > this.scrollWrapper.nativeElement.scrollTop + this.scrollWrapper.nativeElement.clientHeight) {
             this.scrollWrapper.nativeElement.scrollTop = commitBottom - this.scrollWrapper.nativeElement.clientHeight;
         }
+    }
+
+    private updateShadowVisibility() {
+        this.showLeftLaneGridBorder = this.laneGridScrollPosition > 0;
+        this.showRightLaneGridBorder = this.laneGridScrollPosition < this.totalLaneGridWidth - this.currentLaneGridWidth - 1;
     }
 }
