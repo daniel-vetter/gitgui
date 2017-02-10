@@ -22,7 +22,8 @@
         <div class="scrollInner" [style.height.px]="maxScrollHeight">
             <div [style.width.px]="annotationGridWidth">
                 <commit-annotations [commits]="historyRepository"
-                                    [visibleRange]="visibleRange">
+                                    [visibleRange]="visibleRange"
+                                    [width]="annotationGridWidth">
                 </commit-annotations>
             </div>
             <div [style.width.px]="currentLaneGridWidth" style="position: relative">

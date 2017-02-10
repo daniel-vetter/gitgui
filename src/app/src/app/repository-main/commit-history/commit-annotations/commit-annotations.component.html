@@ -2,11 +2,23 @@
 
     <div *ngFor="let annotationBundle of annotationBundles" class="refBundleContainer" [style.top.px]="annotationBundle.top" [style.height.px]="metrics.commitHeight">
         <div class="line" [style.top.px]="metrics.commitHeight / 2" [style.borderColor]="annotationBundle.color"></div>
-        <div *ngFor="let annotation of annotationBundle.annotations" class="refBox" [style.background]="annotationBundle.colorLight" [style.borderColor]="annotationBundle.color">
+        <div *ngFor="let annotation of annotationBundle.annotations"
+              class="refBox"
+              [style.background]="annotationBundle.colorLight"
+              [style.borderColor]="annotationBundle.color"
+              [style.width.px]="annotation.width"
+              [style.minWidth.px]="annotation.width"
+              draggable="true">
+
             <i *ngIf="annotation.isTag" class="material-icons" [style.color]="annotationBundle.color">label</i>
             <i *ngIf="annotation.isLocal" class="material-icons" [style.color]="annotationBundle.color">computer</i>
             <i *ngIf="annotation.isRemote" class="material-icons" [style.color]="annotationBundle.color">wifi</i>
             {{ annotation.name }}
+        </div>
+
+        <div *ngIf="annotationBundle.showMoreMarker" class="refBox" style="border-left-width: 1px; min-width: 22px; width: 22px; text-align: center; background: white"
+             [style.borderColor]="annotationBundle.color">
+             <i class="material-icons" [style.color]="annotationBundle.color">keyboard_arrow_right</i>
         </div>
     </div>
 </div>

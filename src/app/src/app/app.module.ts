@@ -18,6 +18,7 @@ import { RepositoryMainComponent } from "./repository-main/repository-main.compo
 import { CommitHistoryModule } from "./repository-main/commit-history/commit-history.module";
 import { CurrentRepository } from "./services/current-repository";
 import { RefsReader } from "./services/git/refs-reader";
+import { WidthCalculator } from "./repository-main/commit-history/commit-annotations/services/width-calculator";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { RefsReader } from "./services/git/refs-reader";
       CommitsReader,
       RepositoryReader,
       RefsReader,
-      CurrentRepository
+      CurrentRepository,
+      WidthCalculator
   ],
   bootstrap: [AppComponent]
 })
