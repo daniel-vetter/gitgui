@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "main": "main.js",
   "devDependencies": {
-    "@types/node": "^7.0.1",
-    "copy-webpack-plugin": "^4.0.1",
-    "electron": "^1.4.15",
-    "ts-loader": "^2.0.0",
-    "typescript": "^2.1.5",
-    "webpack": "^2.2.0",
-    "@types/electron": "^1.4.31"
+    "@types/node": "7.0.1",
+    "copy-webpack-plugin": "4.0.1",
+    "electron": "1.4.15",
+    "ts-loader": "2.0.0",
+    "typescript": "2.1.5",
+    "webpack": "2.2.0",
+    "@types/electron": "1.4.31"
   }
 }
