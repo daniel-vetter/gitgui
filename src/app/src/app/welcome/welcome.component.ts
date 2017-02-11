@@ -73,9 +73,9 @@ export class WelcomeComponent implements OnInit {
     }
 
     private openRepository(path: string) {
+        this.router.navigate(["/main"]);
         this.repositoryReader.readRepository(path).subscribe(x => {
             this.currentRepository.set(x);
-            this.router.navigate(["/main"]);
         });
     }
 }
