@@ -145,9 +145,16 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     onMouseMove(event) {
-        this.commitHighlighted = this.hitTest(event.clientX, event.clientY);
+        const commitHighlighted = this.hitTest(event.clientX, event.clientY);
         const mouseX = event.clientX - this.scrollWrapper.nativeElement.getBoundingClientRect().left;
-        this.mouseIsInLaneGrid = mouseX > this.annotationGridWidth && mouseX < this.annotationGridWidth + this.currentLaneGridWidth;
+        const mouseIsInLaneGrid = mouseX > this.annotationGridWidth && mouseX < this.annotationGridWidth + this.currentLaneGridWidth;
+
+        if (this.commitHighlighted !== commitHighlighted ||
+            this.mouseIsInLaneGrid !== mouseIsInLaneGrid) {
+            this.commitHighlighted = commitHighlighted;
+            this.mouseIsInLaneGrid = mouseIsInLaneGrid;
+            this.changeDetectorRef.detectChanges();
+        }
     }
 
     onMouseOut(event) {
