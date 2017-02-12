@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnChanges } from "@angular/core";
+import { Component, Input, ViewChild, OnChanges, ChangeDetectorRef } from "@angular/core";
 import { LaneColorProvider } from "./services/lane-color-provider";
 import { LaneAssigner } from "./services/lane-assigner";
 import { Repository } from "../../model/model";
@@ -36,11 +36,14 @@ export class CommitHistoryComponent implements OnChanges {
     showLeftLaneGridBorder: boolean = false;
     showRightLaneGridBorder: boolean = false;
 
+    scrollAnimationFrameRequested = false;
 
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
         private repositoryToHistoryRepositoryMapper: RepositoryToHistoryRepositoryMapper,
-        private metrics: Metrics) {
+        private metrics: Metrics,
+        private changeDetectorRef: ChangeDetectorRef) {
+            changeDetectorRef.detach();
     }
 
     ngOnChanges() {
@@ -54,11 +57,19 @@ export class CommitHistoryComponent implements OnChanges {
             this.commitSelected = undefined;
         }
         this.updateVisibleRange();
+        this.changeDetectorRef.detectChanges();
     }
 
     onScroll(event) {
-        this.commitHighlighted = undefined;
-        this.updateVisibleRange();
+        if (this.scrollAnimationFrameRequested)
+            return;
+        requestAnimationFrame(() => {
+            this.commitHighlighted = undefined;
+            this.updateVisibleRange();
+            this.scrollAnimationFrameRequested = false;
+            this.changeDetectorRef.detectChanges();
+        });
+        this.scrollAnimationFrameRequested = true;
     }
 
     private updateVisibleRange() {
@@ -71,14 +82,17 @@ export class CommitHistoryComponent implements OnChanges {
     onLaneGridScroll(event: UIEvent) {
         this.laneGridScrollPosition = (<HTMLDivElement>event.target).scrollLeft;
         this.updateShadowVisibility();
+        this.changeDetectorRef.detectChanges();
     }
 
     onLaneGridResizeMouseDown(event: MouseEvent) {
         this.isInLaneGridResizeMode = true;
+        this.changeDetectorRef.detectChanges();
     }
 
     onLaneGridResizeMouseUp(event: MouseEvent) {
         this.isInLaneGridResizeMode = false;
+        this.changeDetectorRef.detectChanges();
     }
 
     onLaneGridResizeMouseMove(event) {
@@ -89,15 +103,18 @@ export class CommitHistoryComponent implements OnChanges {
                 this.annotationGridWidth;
             this.limitLaneGridWidth();
             this.updateShadowVisibility();
+            this.changeDetectorRef.detectChanges();
         }
     }
 
     onAnnotationGridResizeMouseDown(event: MouseEvent) {
         this.isInAnnotationGridResizeMode = true;
+        this.changeDetectorRef.detectChanges();
     }
 
     onAnnotationGridResizeMouseUp(event: MouseEvent) {
         this.isInAnnotationGridResizeMode = false;
+        this.changeDetectorRef.detectChanges();
     }
 
     onAnnotationGridResizeMouseMove(event) {
@@ -107,6 +124,7 @@ export class CommitHistoryComponent implements OnChanges {
                 this.scrollWrapper.nativeElement.getBoundingClientRect().left;
             this.limitAnnotationGridWidth();
             this.updateShadowVisibility();
+            this.changeDetectorRef.detectChanges();
         }
     }
 
@@ -128,23 +146,27 @@ export class CommitHistoryComponent implements OnChanges {
 
     onMouseMove(event) {
         this.commitHighlighted = this.hitTest(event.clientX, event.clientY);
-
         const mouseX = event.clientX - this.scrollWrapper.nativeElement.getBoundingClientRect().left;
         this.mouseIsInLaneGrid = mouseX > this.annotationGridWidth && mouseX < this.annotationGridWidth + this.currentLaneGridWidth;
     }
 
     onMouseOut(event) {
         if (event === undefined || this.scrollWrapper.nativeElement === event.target) {
-            this.commitHighlighted = undefined;
+            if (this.commitHighlighted !== undefined) {
+                this.commitHighlighted = undefined;
+                this.changeDetectorRef.detectChanges();
+            }
         }
     }
 
     onMouseDown(event) {
         this.commitSelected = this.commitClicked = this.hitTest(event.clientX, event.clientY);
+        this.changeDetectorRef.detectChanges();
     }
 
     onMouseUp(event) {
         this.commitClicked = undefined;
+        this.changeDetectorRef.detectChanges();
     }
 
     hitTest(x: number, y: number): HistoryCommit {
@@ -162,6 +184,7 @@ export class CommitHistoryComponent implements OnChanges {
         this.updateVisibleRange();
         this.limitLaneGridWidth();
         this.updateShadowVisibility();
+        this.changeDetectorRef.detectChanges();
     }
 
     onKeyDown(event) {
@@ -175,6 +198,7 @@ export class CommitHistoryComponent implements OnChanges {
         const newIndex = Math.min(Math.max(0, this.commitSelected.index + move), this.historyRepository.commits.length - 1);
         this.commitSelected = this.historyRepository.commits[newIndex];
         this.scrollToCurrentSelection();
+        this.changeDetectorRef.detectChanges();
     }
 
     private scrollToCurrentSelection() {
