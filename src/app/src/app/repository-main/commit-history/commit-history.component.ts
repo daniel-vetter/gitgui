@@ -5,6 +5,7 @@ import { Repository } from "../../model/model";
 import { VisibleRange, HistoryRepository, HistoryCommit } from "./model/model";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 import { Metrics } from "./services/metrics";
+import { OncePerFrame } from "./services/once-per-frame";
 
 @Component({
     selector: "commit-history",
@@ -36,14 +37,14 @@ export class CommitHistoryComponent implements OnChanges {
     showLeftLaneGridBorder: boolean = false;
     showRightLaneGridBorder: boolean = false;
 
-    scrollAnimationFrameRequested = false;
+    oncePerFrame = new OncePerFrame();
 
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
         private repositoryToHistoryRepositoryMapper: RepositoryToHistoryRepositoryMapper,
         private metrics: Metrics,
         private changeDetectorRef: ChangeDetectorRef) {
-            changeDetectorRef.detach();
+        changeDetectorRef.detach();
     }
 
     ngOnChanges() {
@@ -61,15 +62,11 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     onScroll(event) {
-        if (this.scrollAnimationFrameRequested)
-            return;
-        requestAnimationFrame(() => {
+        this.oncePerFrame.run(() => {
             this.commitHighlighted = undefined;
             this.updateVisibleRange();
-            this.scrollAnimationFrameRequested = false;
             this.changeDetectorRef.detectChanges();
         });
-        this.scrollAnimationFrameRequested = true;
     }
 
     private updateVisibleRange() {
