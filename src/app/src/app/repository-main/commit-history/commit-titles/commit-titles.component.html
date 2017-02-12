@@ -1,11 +1,14 @@
 <div class="fill" style="position: relative">
     <div *ngFor="let item of visibleCommits.viewModels" class="commitBox"
+         [hidden]="!item.visible"
          [style.top.px]="item.positionTop"
          [style.height.px]="metrics.commitHeight"
          (click)="show(item)" >
 
 
-        <div class="profileImg" style="height: 100%; border-style: solid; border-width: 2px; margin-right: 3px" [style.borderColor]="item.color"><img [src]="item.profileImageUrl" style="height: 100%"></div>
+        <div class="profileImg" 
+             style="height: 100%; border-style: solid; border-width: 2px; margin-right: 3px" 
+             [style.borderColor]="item.color"><img [src]="item.profileImageUrl" style="height: 100%"></div>
 
         <div class="title">
             {{ item.title }}

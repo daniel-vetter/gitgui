@@ -35,7 +35,7 @@ export class CommitTitlesComponent implements OnChanges {
         const start = Math.max(0, this.visibleRange.start);
         const end = this.visibleRange.end;
 
-        this.visibleCommits.markAllUnused();
+        this.visibleCommits.makeAllInvisible();
         for (let i = start; i <= end && i < this.commits.commits.length; i++) {
             const commit = this.commits.commits[i];
             const vm = this.visibleCommits.giveViewModelFor(commit);
@@ -46,7 +46,6 @@ export class CommitTitlesComponent implements OnChanges {
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
             vm.profileImageUrl = this.gravatarUrlBuilder.getUrlFor(commit.authorMail);
         }
-        this.visibleCommits.clearUp();
     }
 
     show(item) {
@@ -61,6 +60,7 @@ export class CommitTitleViewModel implements PoolableViewModel<HistoryCommit> {
     positionTop: number;
     color: string;
     profileImageUrl: string;
+    visible: boolean;
 
     clear() {
         this.id = undefined;

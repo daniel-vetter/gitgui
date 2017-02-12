@@ -4,7 +4,6 @@ import { Injectable } from "@angular/core";
 export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 
     public viewModels: TViewModel[] = [];
-    public used: TViewModel[] = [];
 
     constructor(private viewModelFactory: () => TViewModel) {
 
@@ -13,7 +12,15 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
     giveViewModelFor(model: TModel) {
         for (let i = 0; i < this.viewModels.length; i++) {
             if (this.viewModels[i].data === model) {
-                this.used.push(this.viewModels[i]);
+                this.viewModels[i].visible = true;
+                this.viewModels[i].clear();
+                return this.viewModels[i];
+            }
+        }
+
+        for (let i = 0; i < this.viewModels.length; i++) {
+            if (this.viewModels[i].visible === false) {
+                this.viewModels[i].visible = true;
                 this.viewModels[i].clear();
                 return this.viewModels[i];
             }
@@ -21,31 +28,18 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 
         let viewModel = this.viewModelFactory();
         viewModel.data = model;
+        viewModel.visible = true;
         this.viewModels.push(viewModel);
-        this.used.push(viewModel);
         return viewModel;
     }
 
-    markAllUnused() {
-        this.used = [];
+    makeAllInvisible() {
+        this.viewModels.forEach(x => x.visible = false);
     }
-
-    clearUp() {
-        let newList: TViewModel[] = [];
-        for (let viewModel of this.viewModels) {
-            if (this.used.indexOf(viewModel) !== -1)
-                newList.push(viewModel);
-        }
-        this.viewModels = newList;
-    }
-}
-
-class Container<TModel, TViewModel extends PoolableViewModel<TModel>> {
-    used: boolean;
-    viewModel: TViewModel;
 }
 
 export interface PoolableViewModel<TModel> {
     data: TModel;
+    visible: boolean;
     clear();
 }

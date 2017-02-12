@@ -24,7 +24,7 @@ export class CommitAnnotationsComponent implements OnChanges {
     }
 
     ngOnChanges(changes: any) {
-        this.updateRefs();
+        //this.updateRefs();
     }
 
     private updateRefs() {

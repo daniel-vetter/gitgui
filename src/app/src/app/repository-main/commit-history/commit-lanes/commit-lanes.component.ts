@@ -51,7 +51,7 @@ export class CommitLanesComponent implements OnChanges {
         const start = Math.max(0, this.visibleRange.start);
         const end = this.visibleRange.end;
 
-        this.visibleBubbles.markAllUnused();
+        this.visibleBubbles.makeAllInvisible();
 
         for (let i = start; i <= end && i < this.commits.commits.length; i++) {
             const commit = this.commits.commits[i];
@@ -63,8 +63,6 @@ export class CommitLanesComponent implements OnChanges {
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
             vm.showAnnotationLine = commit.tags.length > 0 || commit.branches.length > 0;
         }
-
-        this.visibleBubbles.clearUp();
     }
 
     private updateLines() {
@@ -72,7 +70,7 @@ export class CommitLanesComponent implements OnChanges {
         const startX = this.horizontalScroll / this.metrics.bubbleSpacing - 1;
         const endX = (this.width + this.horizontalScroll) / this.metrics.bubbleSpacing + 1;
         const linesToRender = this.lineQueryHelper.getLinesInRange(startX, this.visibleRange.start, endX, this.visibleRange.end);
-        this.visibleLines.markAllUnused();
+        this.visibleLines.makeAllInvisible();
 
         for (const line of linesToRender) {
 
@@ -114,8 +112,6 @@ export class CommitLanesComponent implements OnChanges {
             if (!vm.borderRightColor) vm.borderRightColor = "transparent";
             if (!vm.borderBottomColor) vm.borderBottomColor = "transparent";
         }
-
-        this.visibleLines.clearUp();
     }
 }
 
@@ -127,6 +123,7 @@ export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommit> {
     positionLeft: number;
     profileImageUrl: string;
     showAnnotationLine: boolean;
+    visible: boolean;
 
     clear() {
         this.id = undefined;
@@ -150,6 +147,7 @@ export class LineViewModel implements PoolableViewModel<Line> {
     borderRightColor: string;
     borderBottomColor: string;
     borderRadius: string;
+    visible: boolean;
 
     clear() {
         this.id = undefined;
