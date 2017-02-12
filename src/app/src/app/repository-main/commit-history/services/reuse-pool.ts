@@ -20,6 +20,7 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 
         for (let i = 0; i < this.viewModels.length; i++) {
             if (this.viewModels[i].visible === false) {
+                this.viewModels[i].data = model;
                 this.viewModels[i].visible = true;
                 this.viewModels[i].clear();
                 return this.viewModels[i];
