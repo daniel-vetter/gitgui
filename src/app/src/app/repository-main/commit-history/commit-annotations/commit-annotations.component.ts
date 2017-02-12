@@ -44,54 +44,53 @@ export class CommitAnnotationsComponent implements OnChanges {
             vm.top = this.metrics.commitHeight * commit.index;
             vm.colorLight = this.laneColorProvider.getColorForLane(commit.lane, 0.97);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
-            vm.annotations = [];
 
             // fill bundle with annotations (tag, branches)
+            const allAnnotation: AnnotationViewModel[] = [];
             for (const branch of commit.branches) {
                 const annotation = new AnnotationViewModel();
                 annotation.name = branch.localName ? branch.localName : branch.remoteName;
                 annotation.isLocal = !!branch.localName;
                 annotation.isRemote = !!branch.remoteName;
-                vm.annotations.push(annotation);
+                allAnnotation.push(annotation);
             }
             for (const tag of commit.tags) {
                 const annotation = new AnnotationViewModel();
                 annotation.name = tag.name;
                 annotation.isTag = true;
-                vm.annotations.push(annotation);
+                allAnnotation.push(annotation);
             }
 
             // calculate position and width of annotations
             let totalWidth = 0;
-            const toRemove: AnnotationViewModel[] = [];
-            for (const annotation of vm.annotations) {
+            vm.annotations = [];
+            for (const annotation of allAnnotation) {
                 // calc width of annotation
                 annotation.width = this.widthCalculator.getWidth(annotation.name, this.font);
-                if (annotation.isLocal) annotation.width += 15;
-                if (annotation.isRemote) annotation.width += 15;
-                if (annotation.isTag) annotation.width += 15;
-                annotation.width += 14;
+                if (annotation.isLocal) annotation.width += 18;
+                if (annotation.isRemote) annotation.width += 18;
+                if (annotation.isTag) annotation.width += 18;
+                annotation.width += 20;
 
                 // make annotations smaller if the exceed the total width
-                const overshoot = (totalWidth + annotation.width) - this.width + 30;
+                const overshoot = (totalWidth + annotation.width) - this.width + 50;
                 if (overshoot > 0) {
                     annotation.width -= overshoot;
-                }
 
-                vm.showMoreMarker = toRemove.length > 0;
-
-                // minimum annotation width
-                if (annotation.width < 30) {
-                    toRemove.push(annotation);
-                    continue;
+                    // check if annotation still is wider than a minimum width
+                    if (annotation.width < 50) {
+                        break;
+                    }
                 }
 
                 // sum total width
                 totalWidth += annotation.width + 10;
+
+                vm.annotations.push(annotation);
             }
 
-            vm.annotations = vm.annotations.filter(x => toRemove.indexOf(x) === -1);
-
+            vm.hiddenAnnotationCount = allAnnotation.length - vm.annotations.length;
+            vm.hiddenAnnotationCountWidth = this.widthCalculator.getWidth("+" + vm.hiddenAnnotationCount, this.font) + 10;
             this.annotationBundles.push(vm);
         }
     }
@@ -102,7 +101,8 @@ class AnnotationBundleViewModel {
     annotations: AnnotationViewModel[];
     color: string;
     colorLight: string;
-    showMoreMarker: boolean;
+    hiddenAnnotationCount: number;
+    hiddenAnnotationCountWidth: number;
 }
 
 class AnnotationViewModel {

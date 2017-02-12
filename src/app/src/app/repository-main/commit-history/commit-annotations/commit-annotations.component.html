@@ -16,9 +16,10 @@
             {{ annotation.name }}
         </div>
 
-        <div *ngIf="annotationBundle.showMoreMarker" class="refBox" style="border-left-width: 1px; min-width: 22px; width: 22px; text-align: center; background: white"
-             [style.borderColor]="annotationBundle.color">
-             <i class="material-icons" [style.color]="annotationBundle.color">keyboard_arrow_right</i>
+        <div *ngIf="annotationBundle.hiddenAnnotationCount > 0" class="refBox" style="text-overflow: unset; border-left-width: 1px; min-width: 22px; width: 22px; text-align: center; background: white"
+             [style.borderColor]="annotationBundle.color"
+             [style.minWidth.px]="annotationBundle.hiddenAnnotationCountWidth">
+             +{{ annotationBundle.hiddenAnnotationCount }}
         </div>
     </div>
 </div>
