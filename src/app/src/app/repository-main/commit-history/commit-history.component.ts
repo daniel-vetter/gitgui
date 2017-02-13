@@ -58,6 +58,7 @@ export class CommitHistoryComponent implements OnChanges {
             this.commitSelected = undefined;
         }
         this.updateVisibleRange();
+        this.updateShadowVisibility();
         this.changeDetectorRef.detectChanges();
     }
 
