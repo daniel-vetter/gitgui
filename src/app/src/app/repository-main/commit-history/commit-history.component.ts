@@ -136,7 +136,7 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     private limitAnnotationGridWidth() {
-        const minSize = 10;
+        const minSize = 40;
         const maxSizeBecauseOfComponentBorder = this.scrollWrapper.nativeElement.clientWidth - 100 - this.currentLaneGridWidth;
         this.annotationGridWidth = Math.min(maxSizeBecauseOfComponentBorder, this.annotationGridWidth);
         this.annotationGridWidth = Math.max(minSize, this.annotationGridWidth);
