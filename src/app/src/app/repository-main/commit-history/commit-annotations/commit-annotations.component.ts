@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, ElementRef } from "@angular/core";
-import { HistoryRepository, VisibleRange } from "../model/model";
+import { Component, Input, OnChanges, ElementRef, ChangeDetectorRef } from "@angular/core";
+import { HistoryRepository, VisibleRange, HistoryCommit } from "../model/model";
 import { Metrics } from "../services/metrics";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { WidthCalculator } from "./services/width-calculator";
@@ -15,11 +15,13 @@ export class CommitAnnotationsComponent implements OnChanges {
 
     annotationBundles: AnnotationBundleViewModel[] = [];
     font: string;
+    currentExpandedCommit: HistoryCommit;
 
     constructor(private metrics: Metrics,
         private laneColorProvider: LaneColorProvider,
         private widthCalculator: WidthCalculator,
-        private elementRef: ElementRef) {
+        private elementRef: ElementRef,
+        private changeDetectorRef: ChangeDetectorRef) {
         this.font = window.getComputedStyle(document.body, null).font;
     }
 
@@ -41,6 +43,7 @@ export class CommitAnnotationsComponent implements OnChanges {
 
             // create one annotation bundle for each commit with refs
             const vm = new AnnotationBundleViewModel();
+            vm.commit = commit;
             vm.top = this.metrics.commitHeight * commit.index;
             vm.colorLight = this.laneColorProvider.getColorForLane(commit.lane, 0.97);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
@@ -68,41 +71,44 @@ export class CommitAnnotationsComponent implements OnChanges {
                 annotation.width = this.getEstimatedAnnotationWidth(annotation);
                 leftPos += annotation.width + 10;
             }
+            vm.totalWidth = leftPos;
 
-            // go in reverse order through all annotations and shorten or remove them if they exceed the component width
-            const border = 10;
-            const minAnnotationWidth = 50;
-            let removedCount = 0;
-            while (true) {
+            if (commit !== this.currentExpandedCommit) {
+                // go in reverse order through all annotations and shorten or remove them if they exceed the component width
+                const border = 10;
+                const minAnnotationWidth = 50;
+                let removedCount = 0;
+                while (true) {
 
-                // get last annotation
-                if (vm.annotations.length === 0)
-                    break;
-                const lastAnnotation = vm.annotations[vm.annotations.length - 1];
+                    // get last annotation
+                    if (vm.annotations.length === 0)
+                        break;
+                    const lastAnnotation = vm.annotations[vm.annotations.length - 1];
 
-                // calc max width for this annotation
-                const moreAnnotationsMarkerWidth = removedCount === 0
-                    ? 0
-                    : this.getEstimatedHiddenAnnotationCountWidth(removedCount) + border;
-                const maxWidth = this.width - lastAnnotation.left - border - moreAnnotationsMarkerWidth;
+                    // calc max width for this annotation
+                    const moreAnnotationsMarkerWidth = removedCount === 0
+                        ? 0
+                        : this.getEstimatedHiddenAnnotationCountWidth(removedCount) + border;
+                    const maxWidth = this.width - lastAnnotation.left - border - moreAnnotationsMarkerWidth;
 
-                // if this annotation is small enough, everything is fine
-                if (lastAnnotation.width < maxWidth)
-                    break;
+                    // if this annotation is small enough, everything is fine
+                    if (lastAnnotation.width < maxWidth)
+                        break;
 
-                // if the annotation can be shorten -> shorten it and then we are done
-                if (minAnnotationWidth < maxWidth) {
-                    lastAnnotation.width = maxWidth;
-                    break;
+                    // if the annotation can be shorten -> shorten it and then we are done
+                    if (minAnnotationWidth < maxWidth) {
+                        lastAnnotation.width = maxWidth;
+                        break;
+                    }
+
+                    // this annotation can not be shorten enough, so we remove it
+                    vm.annotations.splice(vm.annotations.length - 1, 1);
+                    removedCount++;
                 }
 
-                // this annotation can not be shorten enough, so we remove it
-                vm.annotations.splice(vm.annotations.length - 1, 1);
-                removedCount++;
+                vm.hiddenAnnotationCount = removedCount;
+                vm.hiddenAnnotationCountWidth = this.getEstimatedHiddenAnnotationCountWidth(removedCount);
             }
-
-            vm.hiddenAnnotationCount = removedCount;
-            vm.hiddenAnnotationCountWidth = this.getEstimatedHiddenAnnotationCountWidth(removedCount);
 
             this.annotationBundles.push(vm);
         }
@@ -119,15 +125,33 @@ export class CommitAnnotationsComponent implements OnChanges {
     private getEstimatedHiddenAnnotationCountWidth(countToDisplay: number): number {
         return this.widthCalculator.getWidth("+" + countToDisplay, this.font) + 10;
     }
+
+    onMouseEnter(vm: AnnotationBundleViewModel) {
+        if (vm.commit !== this.currentExpandedCommit) {
+            this.currentExpandedCommit = vm.commit;
+            this.updateRefs();
+            this.changeDetectorRef.detectChanges();
+        }
+    }
+
+    onMouseLeave(vm: AnnotationBundleViewModel) {
+        if (this.currentExpandedCommit !== undefined) {
+            this.currentExpandedCommit = undefined;
+            this.updateRefs();
+            this.changeDetectorRef.detectChanges();
+        }
+    }
 }
 
 class AnnotationBundleViewModel {
+    commit: HistoryCommit;
     top: number;
     annotations: AnnotationViewModel[];
     color: string;
     colorLight: string;
     hiddenAnnotationCount: number;
     hiddenAnnotationCountWidth: number;
+    totalWidth: number;
 }
 
 class AnnotationViewModel {
