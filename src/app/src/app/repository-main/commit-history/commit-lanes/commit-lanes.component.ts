@@ -60,6 +60,7 @@ export class CommitLanesComponent implements OnChanges {
             vm.id = commit.hash;
             vm.positionTop = this.metrics.getBubbleTop(i);
             vm.positionLeft = this.metrics.getBubbleLeft(commit.lane) - this.horizontalScroll;
+            vm.lineWidth = Math.max(0, vm.positionLeft + this.metrics.bubbleWidth / 2);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
             vm.showAnnotationLine = commit.tags.length > 0 || commit.branches.length > 0;
         }
@@ -121,6 +122,7 @@ export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommit> {
     color: string;
     positionTop: number;
     positionLeft: number;
+    lineWidth: number;
     profileImageUrl: string;
     showAnnotationLine: boolean;
     visible: boolean;
@@ -131,6 +133,7 @@ export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommit> {
         this.color = undefined;
         this.positionTop = undefined;
         this.positionLeft = undefined;
+        this.lineWidth = undefined;
         this.showAnnotationLine = undefined;
     }
 }

@@ -23,12 +23,12 @@
              style="border-style: solid; border-top-width: 1px; position: absolute; left: 0px; border-top-width: 1px; border-width: 0px; border-top-width: 1px;"
              [style.top.px]="item.positionTop + metrics.bubbleHeight / 2"
              [style.borderColor]="item.color"
-             [style.width.px]="item.positionLeft + metrics.bubbleWidth / 2">
+             [style.width.px]="item.lineWidth">
         </div>
         <div style="position: absolute; display: flex;"
-             [style.width.px]="metrics.bubbleWidth" 
-             [style.height.px]="metrics.bubbleHeight" 
-             [style.top.px]="item.positionTop" 
+             [style.width.px]="metrics.bubbleWidth"
+             [style.height.px]="metrics.bubbleHeight"
+             [style.top.px]="item.positionTop"
              [style.left.px]="item.positionLeft"
              [hidden]="!item.visible">
             <div [style.width.px]="laneGridWidth">
