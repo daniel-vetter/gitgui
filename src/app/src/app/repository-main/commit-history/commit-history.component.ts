@@ -176,9 +176,9 @@ export class CommitHistoryComponent implements OnChanges {
 
     hitTest(x: number, y: number): HistoryCommit {
         const bounds = this.scrollWrapper.nativeElement.getBoundingClientRect();
-        x -= this.annotationGridWidth + bounds.left;
+        x -= bounds.left;
         y -= bounds.top - this.scrollWrapper.nativeElement.scrollTop;
-        if (x < 0 || x > this.scrollWrapper.nativeElement.clientWidth - this.annotationGridWidth ||
+        if (x < 0 || x > this.scrollWrapper.nativeElement.clientWidth ||
             y < 0 || y > this.maxScrollHeight)
             return undefined;
         const index = Math.floor(y / this.metrics.commitHeight);

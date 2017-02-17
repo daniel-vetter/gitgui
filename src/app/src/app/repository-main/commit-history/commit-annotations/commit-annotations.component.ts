@@ -3,6 +3,7 @@ import { HistoryRepository, VisibleRange, HistoryCommit } from "../model/model";
 import { Metrics } from "../services/metrics";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { WidthCalculator } from "./services/width-calculator";
+import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 @Component({
     selector: "commit-annotations",
     templateUrl: "./commit-annotations.component.html",
@@ -13,7 +14,7 @@ export class CommitAnnotationsComponent implements OnChanges {
     @Input() visibleRange: VisibleRange = undefined;
     @Input() width = undefined;
 
-    annotationBundles: AnnotationBundleViewModel[] = [];
+    annotationBundles = new ReusePool<HistoryCommit, AnnotationBundleViewModel>(() => new AnnotationBundleViewModel());
     font: string;
     currentExpandedCommit: HistoryCommit;
 
@@ -30,7 +31,7 @@ export class CommitAnnotationsComponent implements OnChanges {
     }
 
     private updateRefs() {
-        this.annotationBundles = [];
+
         if (!this.commits || !this.visibleRange) {
             return;
         }
@@ -42,8 +43,7 @@ export class CommitAnnotationsComponent implements OnChanges {
                 continue;
 
             // create one annotation bundle for each commit with refs
-            const vm = new AnnotationBundleViewModel();
-            vm.commit = commit;
+            const vm = this.annotationBundles.giveViewModelFor(commit);
             vm.top = this.metrics.commitHeight * commit.index;
             vm.colorLight = this.laneColorProvider.getColorForLane(commit.lane, 0.97);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
@@ -71,13 +71,12 @@ export class CommitAnnotationsComponent implements OnChanges {
                 annotation.width = this.getEstimatedAnnotationWidth(annotation);
                 leftPos += annotation.width + 10;
             }
-            vm.totalWidth = leftPos;
 
             if (commit !== this.currentExpandedCommit) {
                 // go in reverse order through all annotations and shorten or remove them if they exceed the component width
                 const border = 10;
                 const minAnnotationWidth = 50;
-                let removedCount = 0;
+                vm.hiddenAnnotationCount = 0;
                 while (true) {
 
                     // get last annotation
@@ -86,9 +85,9 @@ export class CommitAnnotationsComponent implements OnChanges {
                     const lastAnnotation = vm.annotations[vm.annotations.length - 1];
 
                     // calc max width for this annotation
-                    const moreAnnotationsMarkerWidth = removedCount === 0
+                    const moreAnnotationsMarkerWidth = vm.hiddenAnnotationCount === 0
                         ? 0
-                        : this.getEstimatedHiddenAnnotationCountWidth(removedCount) + border;
+                        : this.getEstimatedHiddenAnnotationCountWidth(vm.hiddenAnnotationCount) + border;
                     const maxWidth = this.width - lastAnnotation.left - border - moreAnnotationsMarkerWidth;
 
                     // if this annotation is small enough, everything is fine
@@ -103,14 +102,18 @@ export class CommitAnnotationsComponent implements OnChanges {
 
                     // this annotation can not be shorten enough, so we remove it
                     vm.annotations.splice(vm.annotations.length - 1, 1);
-                    removedCount++;
+                    vm.hiddenAnnotationCount++;
                 }
-
-                vm.hiddenAnnotationCount = removedCount;
-                vm.hiddenAnnotationCountWidth = this.getEstimatedHiddenAnnotationCountWidth(removedCount);
             }
 
-            this.annotationBundles.push(vm);
+            vm.hiddenAnnotationCountWidth = this.getEstimatedHiddenAnnotationCountWidth(vm.hiddenAnnotationCount);
+
+            if (vm.annotations.length > 0) {
+                const lastAnnotation = vm.annotations[vm.annotations.length - 1];
+                vm.totalWidth = lastAnnotation.left + lastAnnotation.width + vm.hiddenAnnotationCountWidth;
+            } else {
+                vm.totalWidth = 0;
+            }
         }
     }
 
@@ -123,12 +126,14 @@ export class CommitAnnotationsComponent implements OnChanges {
     }
 
     private getEstimatedHiddenAnnotationCountWidth(countToDisplay: number): number {
+        if (countToDisplay === 0)
+            return 0;
         return this.widthCalculator.getWidth("+" + countToDisplay, this.font) + 10;
     }
 
     onMouseEnter(vm: AnnotationBundleViewModel) {
-        if (vm.commit !== this.currentExpandedCommit) {
-            this.currentExpandedCommit = vm.commit;
+        if (vm.data !== this.currentExpandedCommit) {
+            this.currentExpandedCommit = vm.data;
             this.updateRefs();
             this.changeDetectorRef.detectChanges();
         }
@@ -143,8 +148,7 @@ export class CommitAnnotationsComponent implements OnChanges {
     }
 }
 
-class AnnotationBundleViewModel {
-    commit: HistoryCommit;
+class AnnotationBundleViewModel implements PoolableViewModel<HistoryCommit> {
     top: number;
     annotations: AnnotationViewModel[];
     color: string;
@@ -152,6 +156,17 @@ class AnnotationBundleViewModel {
     hiddenAnnotationCount: number;
     hiddenAnnotationCountWidth: number;
     totalWidth: number;
+    data: HistoryCommit;
+    visible: boolean;
+    clear() {
+        this.top = undefined;
+        this.annotations = undefined;
+        this.color = undefined;
+        this.colorLight = undefined;
+        this.hiddenAnnotationCount = undefined;
+        this.hiddenAnnotationCountWidth = undefined;
+        this.totalWidth = undefined;
+    }
 }
 
 class AnnotationViewModel {

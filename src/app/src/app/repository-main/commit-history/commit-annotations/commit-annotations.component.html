@@ -1,6 +1,6 @@
 <div class="fill root">
 
-    <div *ngFor="let annotationBundle of annotationBundles"
+    <div *ngFor="let annotationBundle of annotationBundles.viewModels"
          class="refBundleContainer"
          [style.top.px]="annotationBundle.top"
          [style.height.px]="metrics.commitHeight"

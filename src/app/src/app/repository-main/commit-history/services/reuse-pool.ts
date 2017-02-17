@@ -27,7 +27,7 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
             }
         }
 
-        let viewModel = this.viewModelFactory();
+        const viewModel = this.viewModelFactory();
         viewModel.data = model;
         viewModel.visible = true;
         this.viewModels.push(viewModel);

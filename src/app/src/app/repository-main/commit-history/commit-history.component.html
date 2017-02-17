@@ -10,7 +10,7 @@
          #scrollWrapper>
 
          <!-- The selection background gets drawn behind all other components -->
-        <div class="overlay" [style.paddingLeft.px]="annotationGridWidth" [style.height.px]="maxScrollHeight">
+        <div class="overlay" [style.height.px]="maxScrollHeight">
             <commit-selection-background
                                         [commitClicked]="commitClicked"
                                         [commitSelected]="commitSelected"
@@ -20,6 +20,9 @@
 
         <!-- The three parts of this component: Annotions, LaneGrid, CommitTitles -->
         <div class="scrollInner" [style.height.px]="maxScrollHeight">
+
+
+
             <div [style.width.px]="annotationGridWidth">
                 <commit-annotations [commits]="historyRepository"
                                     [visibleRange]="visibleRange"
@@ -38,22 +41,24 @@
                                [visibleRange]="visibleRange">
                 </commit-titles>
             </div>
+
+            <!-- A overlay containing two vertical divs (10px width) which represent the resize click zones -->
+            <div class="overlay" style="display: flex;" [style.height.px]="maxScrollHeight" [class.inResizeMode]="isInLaneGridResizeMode || isInAnnotationGridResizeMode">
+                <div class="resizeBar" [style.left.px]="annotationGridWidth - 5"
+                                        (mousedown)="onAnnotationGridResizeMouseDown($event)"
+                                        (document:mouseup)="onAnnotationGridResizeMouseUp($event)"
+                                        (document:mousemove)="onAnnotationGridResizeMouseMove($event)">
+                </div>
+                <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 5"
+                                        (mousedown)="onLaneGridResizeMouseDown($event)"
+                                        (document:mouseup)="onLaneGridResizeMouseUp($event)"
+                                        (document:mousemove)="onLaneGridResizeMouseMove($event)">
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- A overlay containing two vertical divs (10px width) which represent the resize click zones -->
-    <div class="overlay" style="display: flex; height: 100%" [class.inResizeMode]="isInLaneGridResizeMode || isInAnnotationGridResizeMode">
-        <div class="resizeBar" [style.left.px]="annotationGridWidth - 5"
-                                (mousedown)="onAnnotationGridResizeMouseDown($event)"
-                                (document:mouseup)="onAnnotationGridResizeMouseUp($event)"
-                                (document:mousemove)="onAnnotationGridResizeMouseMove($event)">
-        </div>
-        <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 5"
-                                (mousedown)="onLaneGridResizeMouseDown($event)"
-                                (document:mouseup)="onLaneGridResizeMouseUp($event)"
-                                (document:mousemove)="onLaneGridResizeMouseMove($event)">
-        </div>
-    </div>
+
 
     <!-- Horizontal scrollbar to scroll the lane grid -->
     <div class="horizontalScrollContainer"
