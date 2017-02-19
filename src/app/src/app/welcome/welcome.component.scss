@@ -2,6 +2,7 @@
     list-style: none;
     border: 1px solid lightgray;
     overflow-y: auto;
+    background: var(--theme-workspace-background);
 
     .name {
         font-size: 1.5em;

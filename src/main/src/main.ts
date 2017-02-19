@@ -35,8 +35,8 @@ class MainProcess {
             protocol: "file:",
             slashes: true
         });
-        this.mainWindow.loadURL(appUrl);
         this.mainWindow.setMenu(null);
+        this.mainWindow.loadURL(appUrl);
 
         if (process.argv.indexOf("--reload-on-change") !== -1) {
             fs.watch(__dirname, {}, (eventType, filename) => {

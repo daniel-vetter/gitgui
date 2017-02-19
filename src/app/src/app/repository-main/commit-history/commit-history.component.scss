@@ -1,5 +1,6 @@
 .root {
     position: relative;
+    background: var(--theme-workspace-background);
 }
 
 .root:focus {
@@ -59,7 +60,7 @@
     transition: opacity 0.2s linear;
     pointer-events: none;
     height: 100%;
-    box-shadow: 0px 0px 10px;
+    box-shadow: 0px 0px 10px black;
     opacity: 0;
 
     &.visible {

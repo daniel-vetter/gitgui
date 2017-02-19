@@ -19,6 +19,8 @@ import { CommitHistoryModule } from "./repository-main/commit-history/commit-his
 import { CurrentRepository } from "./services/current-repository";
 import { RefsReader } from "./services/git/refs-reader";
 import { WidthCalculator } from "./repository-main/commit-history/commit-annotations/services/width-calculator";
+import { MenuManager } from "./services/menu-manager";
+import { ThemeManager } from "./services/theme-manager";
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { WidthCalculator } from "./repository-main/commit-history/commit-annotat
       RepositoryReader,
       RefsReader,
       CurrentRepository,
-      WidthCalculator
+      MenuManager,
+      ThemeManager
+
   ],
   bootstrap: [AppComponent]
 })

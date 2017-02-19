@@ -13,6 +13,7 @@ import { Metrics } from "./services/metrics";
 import { LineRangeQueryHelper } from "./services/line-range-query-helper";
 import { CommitAnnotationsComponent } from "./commit-annotations/commit-annotations.component";
 import { CommitSelectionBackgroundComponent } from "./commit-selection-background/commit-selection-background.component";
+import { WidthCalculator } from "./commit-annotations/services/width-calculator";
 @NgModule({
     declarations: [
         CommitHistoryComponent,
@@ -32,7 +33,8 @@ import { CommitSelectionBackgroundComponent } from "./commit-selection-backgroun
         LineRangeQueryHelper,
         ReusePool,
         RepositoryToHistoryRepositoryMapper,
-        Metrics
+        Metrics,
+        WidthCalculator
     ],
     exports: [
         CommitHistoryComponent
