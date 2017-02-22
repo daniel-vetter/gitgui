@@ -9,6 +9,10 @@ export class ThemeManager {
     private rootStyleElement: HTMLStyleElement = undefined;
 
     init() {
+        this.applyCurrentTheme();
+    }
+
+    applyCurrentTheme() {
         const vars = new Map<string, string>();
         let customCss = "";
 
@@ -31,11 +35,12 @@ export class ThemeManager {
                         }`;
         }
         this.setGlobalVars(vars, customCss);
+        this.redrawAllScrollBars();
     }
 
     switchTheme(theme: Theme) {
         this.currentTheme = theme;
-        this.init();
+        this.applyCurrentTheme();
     }
 
     private setGlobalVars(vars: Map<string, string>, customCss: string) {
@@ -51,6 +56,14 @@ export class ThemeManager {
         });
 
         this.rootStyleElement.innerHTML = ":root {" + css + "}\n\n" + customCss;
+    }
+
+    private redrawAllScrollBars() {
+        // Yes, this is a hack
+        document.body.style.display = "none";
+        // tslint:disable-next-line:no-unused-expression
+        document.body.offsetHeight;
+        document.body.style.display = "";
     }
 }
 
