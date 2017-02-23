@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class LaneColorProvider {
-    getColorForLane(lane: number, light = 0.4): string {
-        return this.hslToRgb(((lane + 6) * 0.1) % 1, 1, light);
+    getColorForLane(lane: number, transparent = undefined): string {
+        return this.hslToRgb(((lane + 6) * 0.1) % 1, 1, 0.4, transparent);
     }
 
-    private hslToRgb(h: number, s: number, l: number): string {
+    private hslToRgb(h: number, s: number, l: number, a: number): string {
         let r, g, b;
 
         if (s === 0) {
@@ -28,14 +28,7 @@ export class LaneColorProvider {
             b = hue2rgb(p, q, h - 1 / 3);
         }
 
-        return "#" +
-                this.toHex(Math.round(r * 255)) +
-                this.toHex(Math.round(g * 255)) +
-                this.toHex(Math.round(b * 255));
-    }
-
-    private toHex(c: number) {
-        const hex = c.toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
+        if (a === undefined) a = 1;
+        return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${a})`;
     }
 }

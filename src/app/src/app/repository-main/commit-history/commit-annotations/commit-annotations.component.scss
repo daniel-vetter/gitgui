@@ -14,18 +14,21 @@
 
 .refBox {
     margin-right: 10px;
-    padding: 0.3em;
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
     border-style: solid;
     border-left-width: 3px;
     border-right-width: 1px;
     border-top-width: 1px;
     border-bottom-width: 1px;
     z-index: 10;
+}
+
+.refBoxInner {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0.3em;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
 }
 
 .line {

@@ -9,19 +9,18 @@
         <div class="line" [style.top.px]="metrics.commitHeight / 2" [style.borderColor]="annotationBundle.color"></div>
         <div [style.width.px]="annotationBundle.totalWidth" [style.height.px]="metrics.commitHeight" style="position: absolute"></div>
         <div *ngFor="let annotation of annotationBundle.annotations"
+              style="position: relative; background: var(--theme-workspace-background)"
               class="refBox"
-              [style.background]="annotationBundle.colorLight"
               [style.borderColor]="annotationBundle.color"
               [style.width.px]="annotation.width"
               [style.minWidth.px]="annotation.width"
               draggable="true">
-
-
-
-            <i *ngIf="annotation.isTag" class="material-icons" [style.color]="annotationBundle.color">label</i>
-            <i *ngIf="annotation.isLocal" class="material-icons" [style.color]="annotationBundle.color">computer</i>
-            <i *ngIf="annotation.isRemote" class="material-icons" [style.color]="annotationBundle.color">wifi</i>
-            {{ annotation.name }}
+            <div class="refBoxInner" [style.background]="annotationBundle.colorLight">
+                <i *ngIf="annotation.isTag" class="material-icons" [style.color]="annotationBundle.color">label</i>
+                <i *ngIf="annotation.isLocal" class="material-icons" [style.color]="annotationBundle.color">computer</i>
+                <i *ngIf="annotation.isRemote" class="material-icons" [style.color]="annotationBundle.color">wifi</i>
+                {{ annotation.name }}
+            </div>
         </div>
 
         <div *ngIf="annotationBundle.hiddenAnnotationCount > 0" class="refBox" style="text-overflow: unset; border-left-width: 1px; min-width: 22px; width: 22px; text-align: center; background: white"

@@ -3,7 +3,7 @@
 
     <div style="transform: translateZ(0)">
         <div *ngFor="let line of visibleLines.viewModels"
-            style="position: absolute; border-width: 3px; border-style: solid; box-sizing: border-box; opacity: 0.7;"
+            style="position: absolute; border-width: 3px; border-style: solid; box-sizing: border-box;"
             [hidden]="!line.visible"
             [style.top.px]="line.positionTop"
             [style.left.px]="line.positionLeft"

@@ -45,7 +45,7 @@ export class CommitAnnotationsComponent implements OnChanges {
             // create one annotation bundle for each commit with refs
             const vm = this.annotationBundles.giveViewModelFor(commit);
             vm.top = this.metrics.commitHeight * commit.index;
-            vm.colorLight = this.laneColorProvider.getColorForLane(commit.lane, 0.97);
+            vm.colorLight = this.laneColorProvider.getColorForLane(commit.lane, 0.05);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
 
             // fill bundle with annotations (tag, branches)
