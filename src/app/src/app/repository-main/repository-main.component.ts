@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Repository } from "../model/model";
+import { Repository, RepositoryCommit } from "../model/model";
 import { CurrentRepository } from "../services/current-repository";
 import { EventAggregator, SubscriptionBag } from "../services/event-aggregator";
 import { CurrentRepositoryChanged } from "../model/events";
@@ -11,6 +11,7 @@ import { CurrentRepositoryChanged } from "../model/events";
 export class RepositoryMainComponent implements OnInit, OnDestroy {
 
     repository: Repository;
+    selectedCommit: RepositoryCommit;
     private subscriptions = new SubscriptionBag(this.eventAggregator);
 
     constructor(private currentRepository: CurrentRepository,

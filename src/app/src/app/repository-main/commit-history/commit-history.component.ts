@@ -1,7 +1,7 @@
-import { Component, Input, ViewChild, OnChanges, ChangeDetectorRef } from "@angular/core";
+import { Component, Input, Output, ViewChild, OnChanges, ChangeDetectorRef, EventEmitter } from "@angular/core";
 import { LaneColorProvider } from "./services/lane-color-provider";
 import { LaneAssigner } from "./services/lane-assigner";
-import { Repository } from "../../model/model";
+import { Repository, RepositoryCommit } from "../../model/model";
 import { VisibleRange, HistoryRepository, HistoryCommit } from "./model/model";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 import { Metrics } from "./services/metrics";
@@ -15,6 +15,7 @@ import { OncePerFrame } from "./services/once-per-frame";
 export class CommitHistoryComponent implements OnChanges {
 
     @Input() repository: Repository = undefined;
+    @Output() selectedCommitChange = new EventEmitter<RepositoryCommit>();
     @ViewChild("canvas") canvas;
     @ViewChild("scrollWrapper") scrollWrapper;
     @ViewChild("root") root;
@@ -31,9 +32,9 @@ export class CommitHistoryComponent implements OnChanges {
     mouseIsInLaneGrid = false;
 
     commitClicked: HistoryCommit;
-    commitSelected: HistoryCommit;
     commitHighlighted: HistoryCommit;
-
+    commitSelected: HistoryCommit;
+    
     showLeftLaneGridBorder: boolean = false;
     showRightLaneGridBorder: boolean = false;
 
@@ -47,8 +48,8 @@ export class CommitHistoryComponent implements OnChanges {
         changeDetectorRef.detach();
     }
 
-    ngOnChanges() {
-        if (this.repository && this.repository.commits) {
+    ngOnChanges(changes) {
+        if (changes.repository) {
             this.historyRepository = this.repositoryToHistoryRepositoryMapper.map(this.repository);
             this.totalLaneGridWidth = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
             this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, this.metrics.getBubbleRight(10));
@@ -68,6 +69,17 @@ export class CommitHistoryComponent implements OnChanges {
             this.updateVisibleRange();
             this.changeDetectorRef.detectChanges();
         });
+    }
+
+    @Input()
+    get selectedCommit() {
+        if (this.commitSelected === undefined)
+            return undefined;
+        return this.commitSelected.repositoryCommit;
+    }
+
+    set selectedCommit(commit: RepositoryCommit) {
+
     }
 
     private updateVisibleRange() {
@@ -166,6 +178,7 @@ export class CommitHistoryComponent implements OnChanges {
 
     onMouseDown(event) {
         this.commitSelected = this.commitClicked = this.hitTest(event.clientX, event.clientY);
+        this.selectedCommitChange.emit(this.selectedCommit);
         this.changeDetectorRef.detectChanges();
     }
 
@@ -202,6 +215,7 @@ export class CommitHistoryComponent implements OnChanges {
 
         const newIndex = Math.min(Math.max(0, this.commitSelected.index + move), this.historyRepository.commits.length - 1);
         this.commitSelected = this.historyRepository.commits[newIndex];
+        this.selectedCommitChange.emit(this.selectedCommit);
         this.scrollToCurrentSelection();
         this.changeDetectorRef.detectChanges();
     }

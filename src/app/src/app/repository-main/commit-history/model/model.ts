@@ -1,3 +1,5 @@
+import { RepositoryCommit } from "../../../model/model";
+
 export class HistoryRepository {
     totalLaneCount = 0;
     commits: HistoryCommit[];
@@ -18,6 +20,7 @@ export class HistoryCommit {
     lane: number;
     tags: HistoryTag[];
     branches: HistoryBranch[];
+    repositoryCommit: RepositoryCommit;
 }
 
 export class HistoryTag {

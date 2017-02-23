@@ -14,9 +14,13 @@ export class RepositoryToHistoryRepositoryMapper {
         historyRepository.commits = [];
         const hashToHistoryCommitMap = new Map<string, HistoryCommit>();
         const hashToRepositoryCommitMap = new Map<string, RepositoryCommit>();
+        if (repository === undefined) 
+            return historyRepository;
+
         for (let i = 0; i < repository.commits.length; i++) {
             const commit = repository.commits[i];
             const r = new HistoryCommit();
+            r.repositoryCommit = commit;
             r.index = i;
             r.hash = commit.hash;
             r.title = commit.title;
