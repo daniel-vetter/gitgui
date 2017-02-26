@@ -1,7 +1,7 @@
 import { Component, Input, Output, ViewChild, OnChanges, ChangeDetectorRef, EventEmitter } from "@angular/core";
 import { LaneColorProvider } from "./services/lane-color-provider";
 import { LaneAssigner } from "./services/lane-assigner";
-import { Repository, RepositoryCommit } from "../../model/model";
+import { Repository, RepositoryCommit } from "../../../model/model";
 import { VisibleRange, HistoryRepository, HistoryCommit } from "./model/model";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 import { Metrics } from "./services/metrics";
@@ -34,7 +34,7 @@ export class CommitHistoryComponent implements OnChanges {
     commitClicked: HistoryCommit;
     commitHighlighted: HistoryCommit;
     commitSelected: HistoryCommit;
-    
+
     showLeftLaneGridBorder: boolean = false;
     showRightLaneGridBorder: boolean = false;
 

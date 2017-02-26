@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Repository, RepositoryCommit } from "../model/model";
-import { CurrentRepository } from "../services/current-repository";
-import { EventAggregator, SubscriptionBag } from "../services/event-aggregator";
-import { CurrentRepositoryChanged } from "../model/events";
+import { Repository, RepositoryCommit } from "../../model/model";
+import { CurrentRepository } from "../../services/current-repository";
+import { EventAggregator, SubscriptionBag } from "../../services/event-aggregator";
+import { CurrentRepositoryChanged } from "../../model/events";
 
 @Component({
-    selector: "repository-main",
-    templateUrl: "./repository-main.component.html"
+    selector: "repository",
+    templateUrl: "./repository.component.html"
 })
-export class RepositoryMainComponent implements OnInit, OnDestroy {
+export class RepositoryComponent implements OnInit, OnDestroy {
 
     repository: Repository;
     selectedCommit: RepositoryCommit;

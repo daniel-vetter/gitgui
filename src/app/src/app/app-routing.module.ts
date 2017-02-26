@@ -1,12 +1,10 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { RepositoryMainComponent } from './repository-main/repository-main.component';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { RepositoryComponent } from "./routes/repository/repository.component";
 
 const routes: Routes = [
-    { path: '', redirectTo: '/welcome', pathMatch: 'full' },
-    { path: 'welcome', component: WelcomeComponent },
-    { path: 'main', component: RepositoryMainComponent }
+    { path: "", redirectTo: "/repository", pathMatch: "full" },
+    { path: "repository", component: RepositoryComponent }
 ];
 
 @NgModule({

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { RepositoryCommit } from "../../model/model";
-import { CommitDetailsReader } from "../../services/git/commit-details-reader";
+import { RepositoryCommit } from "../../../model/model";
+import { CommitDetailsReader } from "../../../services/git/commit-details-reader";
 @Component({
     selector: "commit-details",
     styleUrls: ["./commit-details.component.scss"],

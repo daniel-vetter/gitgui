@@ -1,5 +1,5 @@
 import { HistoryRepository, HistoryCommit, HistoryTag, HistoryBranch } from "../model/model";
-import { Repository, RepositoryCommit, RepositoryTagRef, RepositoryHeadRef, RepositoryRemoteRef } from "../../../model/model";
+import { Repository, RepositoryCommit, RepositoryTagRef, RepositoryHeadRef, RepositoryRemoteRef } from "../../../../model/model";
 import { LaneAssigner } from "./lane-assigner";
 import { Injectable } from "@angular/core";
 
@@ -14,7 +14,7 @@ export class RepositoryToHistoryRepositoryMapper {
         historyRepository.commits = [];
         const hashToHistoryCommitMap = new Map<string, HistoryCommit>();
         const hashToRepositoryCommitMap = new Map<string, RepositoryCommit>();
-        if (repository === undefined) 
+        if (repository === undefined)
             return historyRepository;
 
         for (let i = 0; i < repository.commits.length; i++) {

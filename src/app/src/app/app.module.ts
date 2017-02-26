@@ -7,19 +7,19 @@ import { AppComponent } from "./app.component";
 import { WelcomeComponent } from "./welcome/welcome.component";
 import { EventAggregator } from "./services/event-aggregator";
 import { Config } from "./services/config";
-import { RepositoryMainComponent } from "./repository-main/repository-main.component";
-import { CommitHistoryModule } from "./repository-main/commit-history/commit-history.module";
+import { CommitHistoryModule } from "./routes/repository/commit-history/commit-history.module";
 import { CurrentRepository } from "./services/current-repository";
 import { MenuManager } from "./services/menu-manager";
 import { ThemeManager } from "./services/theme-manager";
-import { CommitDetailsComponent } from "./repository-main/commit-details/commit-details-component";
+import { CommitDetailsComponent } from "./routes/repository/commit-details/commit-details-component";
 import { GitModule } from "./services/git/git.module";
+import { RepositoryComponent } from "./routes/repository/repository.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
-    RepositoryMainComponent,
+    RepositoryComponent,
     CommitDetailsComponent
   ],
   imports: [
