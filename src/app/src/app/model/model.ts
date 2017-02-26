@@ -36,6 +36,7 @@ export class RepositoryCommit {
     parents: RepositoryCommit[] = [];
     children: RepositoryCommit[] = [];
     refs: RepositoryRef[] = [];
+    repository: Repository;
 }
 
 export class RepositoryRef {

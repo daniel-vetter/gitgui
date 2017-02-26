@@ -23,6 +23,7 @@ export class RepositoryReader {
         )
         .flatMap((result) => {
             repository.commits = result[0];
+            repository.commits.forEach(x => x.repository = repository);
             repository.status = result[1];
             return this.refsReader.readAllRefs(repositoryPath, repository.commits);
         })
