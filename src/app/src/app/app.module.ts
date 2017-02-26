@@ -4,7 +4,6 @@ import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { WelcomeComponent } from "./welcome/welcome.component";
 import { EventAggregator } from "./services/event-aggregator";
 import { Config } from "./services/config";
 import { CommitHistoryModule } from "./routes/repository/commit-history/commit-history.module";
@@ -18,7 +17,6 @@ import { MenuModule } from "./menu/menu.module";
 @NgModule({
   declarations: [
     AppComponent,
-    WelcomeComponent,
     RepositoryComponent,
     CommitDetailsComponent
   ],

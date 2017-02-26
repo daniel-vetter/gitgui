@@ -2,7 +2,6 @@ import { Injectable, NgZone } from "@angular/core";
 import { Config } from "../../services/config";
 import { RepositoryReader } from "../../services/git/repository-reader";
 import { CurrentRepository } from "../../services/current-repository";
-import { EventAggregator } from "../../services/event-aggregator";
 const remote = (<any>window).require("electron").remote;
 
 @Injectable()
