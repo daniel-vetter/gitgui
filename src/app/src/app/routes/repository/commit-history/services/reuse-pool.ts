@@ -1,13 +1,8 @@
-import { Injectable } from "@angular/core";
-
-@Injectable()
 export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 
     public viewModels: TViewModel[] = [];
 
-    constructor(private viewModelFactory: () => TViewModel) {
-
-    }
+    constructor(private viewModelFactory: () => TViewModel) {}
 
     giveViewModelFor(model: TModel) {
         for (let i = 0; i < this.viewModels.length; i++) {

@@ -30,8 +30,6 @@ import { WidthCalculator } from "./commit-annotations/services/width-calculator"
         GravatarUrlBuilder,
         LaneAssigner,
         LaneColorProvider,
-        LineRangeQueryHelper,
-        ReusePool,
         RepositoryToHistoryRepositoryMapper,
         Metrics,
         WidthCalculator

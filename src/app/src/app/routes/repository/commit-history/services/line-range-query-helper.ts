@@ -1,7 +1,5 @@
 import { Line, HistoryCommit, LaneSwitchPosition } from "../model/model";
-import { Injectable } from "@angular/core";
 
-@Injectable()
 export class LineRangeQueryHelper {
 
     private lineIndex: { [lineIndex: number]: Line[]; } = [];
