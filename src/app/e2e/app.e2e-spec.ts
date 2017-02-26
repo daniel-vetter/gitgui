@@ -1,6 +1,6 @@
 import { GitGuiPage } from './app.po';
 
-describe('git-gui App', function() {
+describe('git-gui App', () => {
   let page: GitGuiPage;
 
   beforeEach(() => {
