@@ -1,4 +1,4 @@
-import { RepositoryCommit } from "../../../model/model";
+import { RepositoryCommit } from "../../../../model/model";
 
 export class HistoryRepository {
     totalLaneCount = 0;
