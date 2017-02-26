@@ -9,11 +9,11 @@ import { EventAggregator } from "./services/event-aggregator";
 import { Config } from "./services/config";
 import { CommitHistoryModule } from "./routes/repository/commit-history/commit-history.module";
 import { CurrentRepository } from "./services/current-repository";
-import { MenuManager } from "./services/menu-manager";
 import { ThemeManager } from "./services/theme-manager";
 import { CommitDetailsComponent } from "./routes/repository/commit-details/commit-details-component";
 import { GitModule } from "./services/git/git.module";
 import { RepositoryComponent } from "./routes/repository/repository.component";
+import { MenuModule } from "./menu/menu.module";
 
 @NgModule({
   declarations: [
@@ -28,13 +28,13 @@ import { RepositoryComponent } from "./routes/repository/repository.component";
     HttpModule,
     AppRoutingModule,
     CommitHistoryModule,
-    GitModule
+    GitModule,
+    MenuModule
   ],
   providers: [
       EventAggregator,
       Config,
       CurrentRepository,
-      MenuManager,
       ThemeManager,
   ],
   bootstrap: [AppComponent]

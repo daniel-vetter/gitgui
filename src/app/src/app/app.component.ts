@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import * as Rx from "rxjs";
-import { MenuManager } from "./services/menu-manager";
 import { ThemeManager } from "./services/theme-manager";
+import { MenuManager } from "./menu/menu-manager";
 
 @Component({
     selector: "app-root",
