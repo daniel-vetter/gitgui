@@ -2,7 +2,7 @@
 if exist build rmdir /S /Q build
 cd src\app
 cmd /c npm install
-node node_modules\angular-cli\bin\ng build -prod -o
+node node_modules\@angular\cli\bin\ng build -prod
 cd ..
 cd main
 cmd /c npm install

@@ -2,7 +2,7 @@
 rm -rf ./build
 cd src/app
 npm install
-node node_modules/angular-cli/bin/ng build -prod -o
+node node_modules/@angular/cli/bin/ng build -prod
 cd ..
 cd main
 npm install
