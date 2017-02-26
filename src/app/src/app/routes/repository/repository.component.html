@@ -1,6 +1,12 @@
-<div style="display: flex; flex-direction: column" class="fill">
-    <div style="flex: 1; display: flex" class="fill">
-        <div style="width: 300px; box-shadow: 0px 0px 8px;">
+<div style="display: flex; flex-direction: column" class="fill root">
+    <div *ngIf="!repositoryIsOpening && !repository">
+        Welcome
+    </div>
+    <div *ngIf="repositoryIsOpening">
+        Loading
+    </div>
+    <div *ngIf="repository" style="flex: 1; display: flex" class="fill repository">
+        <div style="width: 300px">
 
         </div>
         <div style="background: white" class="fill">

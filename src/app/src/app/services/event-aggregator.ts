@@ -1,16 +1,19 @@
 import { Injectable, EventEmitter } from "@angular/core";
+import { AppEvents } from "../model/events";
 
 @Injectable()
 export class EventAggregator {
 
     private emitters = new Map<string, EventEmitter<any>>();
 
-    subscribe(messageType: any, handler: (any) => void): Subscription {
-        return this.getEmitter(messageType.name).subscribe(x => handler(x));
+    subscribe<K extends keyof AppEvents>(type: K, handler: (ev: AppEvents[K]) => void): Subscription {
+        console.log("sub" + type)
+        return this.getEmitter(type).subscribe(x => handler(x));
     }
 
-    publish(message: any) {
-        this.getEmitter(message.constructor.name).emit(message);
+    publish<K extends keyof AppEvents>(type: K, message: AppEvents[K] = undefined): void {
+        console.log("emit " + type)
+        this.getEmitter(type).emit(message);
     }
 
     private getEmitter(messageType: string) {
@@ -28,8 +31,8 @@ export class SubscriptionBag {
 
     constructor(private eventAggregator: EventAggregator) { }
 
-    subscribe(messageType: any, handler: (any) => void) {
-        this.eventAggregator.subscribe(messageType, handler);
+    subscribe<K extends keyof AppEvents>(type: K, handler: (ev: AppEvents[K]) => void): void {
+        this.subscriptions.push(this.eventAggregator.subscribe(type, handler));
     }
 
     unsubscribeAll() {

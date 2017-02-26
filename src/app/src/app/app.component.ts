@@ -1,10 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import * as Rx from "rxjs";
 import { ThemeManager } from "./services/theme-manager";
 import { MenuManager } from "./menu/menu-manager";
 import { Config } from "./services/config";
-import { CurrentRepository } from "./services/current-repository";
-import { RepositoryReader } from "./services/git/repository-reader";
+import { RepositoryOpener } from "./services/repository-opener";
 
 @Component({
     selector: "app-root",
@@ -16,8 +14,7 @@ export class AppComponent implements OnInit {
     constructor(private menuManager: MenuManager,
         private themeManager: ThemeManager,
         private config: Config,
-        private currentRepository: CurrentRepository,
-        private repositoryReader: RepositoryReader) { }
+        private repositoryOpener: RepositoryOpener) { }
 
     ngOnInit() {
         this.menuManager.init();
@@ -28,10 +25,7 @@ export class AppComponent implements OnInit {
     private loadLastRepository() {
         const recentRepositories = this.config.get().recentRepositories;
         if (recentRepositories !== undefined && recentRepositories.length > 0) {
-            const lastRepository = recentRepositories[recentRepositories.length - 1];
-            this.repositoryReader.readRepository(lastRepository).subscribe(x => {
-                this.currentRepository.set(x);
-            });
+            this.repositoryOpener.open(recentRepositories[recentRepositories.length - 1]);
         }
     }
 }

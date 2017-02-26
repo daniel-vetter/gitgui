@@ -1,7 +1,6 @@
 import { Repository } from "../model/model";
 import { Injectable } from "@angular/core";
 import { EventAggregator } from "./event-aggregator";
-import { CurrentRepositoryChanged } from "../model/events";
 
 @Injectable()
 export class CurrentRepository {
@@ -17,7 +16,7 @@ export class CurrentRepository {
     set(repository: Repository) {
         if (this.currentRepository !== repository) {
             this.currentRepository = repository;
-            this.eventAggregator.publish(new CurrentRepositoryChanged());
+            this.eventAggregator.publish("CurrentRepositoryChanged");
         }
     }
 }

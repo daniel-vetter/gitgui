@@ -1,7 +1,6 @@
 import { Injectable, NgZone } from "@angular/core";
 import { Config } from "../../services/config";
-import { RepositoryReader } from "../../services/git/repository-reader";
-import { CurrentRepository } from "../../services/current-repository";
+import { RepositoryOpener } from "../../services/repository-opener";
 const remote = (<any>window).require("electron").remote;
 
 @Injectable()
@@ -9,8 +8,7 @@ export class FileOpenRepository {
 
     constructor(private zone: NgZone,
                 private config: Config,
-                private repositoryReader: RepositoryReader,
-                private currentRepository: CurrentRepository) {}
+                private repositoryOpener: RepositoryOpener) {}
 
     createMenu(): any {
         return { label: "Open repository...", click: () => this.onClick() };
@@ -27,9 +25,7 @@ export class FileOpenRepository {
 
                 this.config.get().recentRepositories.push(pathArray[0]);
                 this.config.save();
-                this.repositoryReader.readRepository(pathArray[0]).subscribe(x => {
-                    this.currentRepository.set(x);
-                });
+                this.repositoryOpener.open(pathArray[0]);
             });
         });
     }

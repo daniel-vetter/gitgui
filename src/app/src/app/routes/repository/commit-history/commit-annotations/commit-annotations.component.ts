@@ -4,6 +4,7 @@ import { Metrics } from "../services/metrics";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { WidthCalculator } from "./services/width-calculator";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
+
 @Component({
     selector: "commit-annotations",
     templateUrl: "./commit-annotations.component.html",
