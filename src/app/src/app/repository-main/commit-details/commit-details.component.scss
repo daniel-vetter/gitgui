@@ -1,0 +1,19 @@
+.commitTitle {
+    border: 1px solid rgb(192,192,192);
+    background: white;
+    padding: 0.2em;
+    user-select: auto;
+    margin-top: 0.5em;
+}
+
+.dataTable {
+    width: 100%;
+}
+
+.row td:nth-child(1) {
+    width: 30%;
+}
+
+.row td:nth-child(2) {
+    width: 70%;
+}

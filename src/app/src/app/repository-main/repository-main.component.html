@@ -6,8 +6,8 @@
         <div style="background: white" class="fill">
             <commit-history [repository]="repository" [(selectedCommit)]="selectedCommit"></commit-history>
         </div>
-        <div style="width: 500px; box-shadow: 0px 0px 8px;">
-            {{ selectedCommit?.title }}
+        <div style="width: 500px;">
+            <commit-details [commit]="selectedCommit"></commit-details>
         </div>
     </div>
 </div>
