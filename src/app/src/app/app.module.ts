@@ -4,7 +4,6 @@ import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { RepositoryOpenComponent } from "./repository-open/repository-open.component";
 import { WelcomeComponent } from "./welcome/welcome.component";
 import { EventAggregator } from "./services/event-aggregator";
 import { Config } from "./services/config";
@@ -19,7 +18,6 @@ import { GitModule } from "./services/git/git.module";
 @NgModule({
   declarations: [
     AppComponent,
-    RepositoryOpenComponent,
     WelcomeComponent,
     RepositoryMainComponent,
     CommitDetailsComponent
