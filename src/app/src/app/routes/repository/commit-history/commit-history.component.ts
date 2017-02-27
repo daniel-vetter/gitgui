@@ -64,7 +64,7 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     onScroll(event) {
-        this.oncePerFrame.run(() => {
+        this.oncePerFrame.run("scroll", () => {
             this.commitHighlighted = undefined;
             this.updateVisibleRange();
             this.changeDetectorRef.detectChanges();
@@ -206,18 +206,20 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     onKeyDown(event) {
-        if (!this.commitSelected) return;
-        let move = 0;
-        if (event.keyCode === 40) move = 1;
-        if (event.keyCode === 38) move = -1;
-        if (event.keyCode === 33) move = -Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight);
-        if (event.keyCode === 34) move = Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight);
+        this.oncePerFrame.run("keydown", () => {
+            if (!this.commitSelected) return;
+            let move = 0;
+            if (event.keyCode === 40) move = 1;
+            if (event.keyCode === 38) move = -1;
+            if (event.keyCode === 33) move = -Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight);
+            if (event.keyCode === 34) move = Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight);
 
-        const newIndex = Math.min(Math.max(0, this.commitSelected.index + move), this.historyRepository.commits.length - 1);
-        this.commitSelected = this.historyRepository.commits[newIndex];
-        this.selectedCommitChange.emit(this.selectedCommit);
-        this.scrollToCurrentSelection();
-        this.changeDetectorRef.detectChanges();
+            const newIndex = Math.min(Math.max(0, this.commitSelected.index + move), this.historyRepository.commits.length - 1);
+            this.commitSelected = this.historyRepository.commits[newIndex];
+            this.selectedCommitChange.emit(this.selectedCommit);
+            this.scrollToCurrentSelection();
+            this.changeDetectorRef.detectChanges();
+        });
     }
 
     private scrollToCurrentSelection() {

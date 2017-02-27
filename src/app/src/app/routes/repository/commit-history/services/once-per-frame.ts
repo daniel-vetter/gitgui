@@ -1,9 +1,9 @@
 export class OncePerFrame {
-    actionToRun: () => void;
+    actionsToRun = new Map<string, () => void>()
     isRunning = false;
 
-    run(action: () => void): void {
-        this.actionToRun = action;
+    run(key: string, action: () => void): void {
+        this.actionsToRun.set(key, action);
         this.startRequest();
     }
 
@@ -15,14 +15,15 @@ export class OncePerFrame {
     }
 
     onRequest() {
-        if (this.actionToRun === undefined) {
+        if (this.actionsToRun.size === 0) {
             this.isRunning = false;
             return;
         }
-
-        const action = this.actionToRun;
-        this.actionToRun = undefined;
-        action();
+        const actions = this.actionsToRun;
+        this.actionsToRun = new Map<string, () => void>();
+        for (const key of Array.from(actions.keys())) {
+            actions.get(key)();
+        }
         requestAnimationFrame(() => this.onRequest());
     }
 }
