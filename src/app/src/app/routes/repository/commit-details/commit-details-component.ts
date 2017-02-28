@@ -25,10 +25,14 @@ export class CommitDetailsComponent implements OnChanges, OnInit {
         if (!this.commit)
             return;
 
-        this.commitTitle = this.commit.title;
         this.authorName = this.commit.authorName;
         this.authorMail = this.commit.authorMail;
         this.authorDate = this.commit.authorDate.toLocaleDateString() + " " + this.commit.authorDate.toLocaleTimeString();
+        this.commitTitle = undefined;
+        this.commitDetailsReader.getLongCommitMessage(this.commit).subscribe(x => {
+            if (x.commit === this.commit)
+                this.commitTitle = x.message;
+        });
     }
 
     ngOnInit() {
