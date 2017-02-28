@@ -1,19 +1,36 @@
-.commitTitle {
-    border: 1px solid rgb(192,192,192);
-    background: white;
-    padding: 0.2em;
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.content {
+    padding-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+
+    div:last-child {
+        flex: 1;
+    }
+
+    div:first-child {
+        font-weight: bold;
+        opacity: 0.5;
+    }
+}
+
+.commitMessage {
+    font-family: Consolas;
     user-select: auto;
-    margin-top: 0.5em;
+    background: var(--theme-workspace-background);
+    border: 1px solid rgb(192,192,192);
+    padding: 0.5em;
+    word-wrap: break-word;
 }
 
-.dataTable {
-    width: 100%;
-}
-
-.row td:nth-child(1) {
-    width: 30%;
-}
-
-.row td:nth-child(2) {
-    width: 70%;
+.treeView {
+    background: var(--theme-workspace-background);
+    border: 1px solid rgb(192,192,192);
 }

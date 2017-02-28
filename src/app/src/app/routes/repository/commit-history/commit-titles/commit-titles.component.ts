@@ -3,7 +3,7 @@ import { HistoryCommit, HistoryRepository, VisibleRange } from "../model/model";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { Metrics } from "../services/metrics";
-import { GravatarUrlBuilder } from "../services/gravatar-url-builder";
+import { RepositoryCommit } from "../../../../model/model";
 
 @Component({
     selector: "commit-titles",
@@ -18,8 +18,7 @@ export class CommitTitlesComponent implements OnChanges {
     visibleCommits = new ReusePool<HistoryCommit, CommitTitleViewModel>(() => new CommitTitleViewModel());
 
     constructor(private laneColorProvider: LaneColorProvider,
-                private metrics: Metrics,
-                private gravatarUrlBuilder: GravatarUrlBuilder) {
+                private metrics: Metrics) {
         this.commits = new HistoryRepository();
         this.visibleRange = new VisibleRange(0, 0);
     }
@@ -44,7 +43,7 @@ export class CommitTitlesComponent implements OnChanges {
             vm.title = commit.title;
             vm.positionTop = this.metrics.commitHeight * i;
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
-            vm.profileImageUrl = this.gravatarUrlBuilder.getUrlFor(commit.authorMail);
+            vm.profileImageCommit = commit.repositoryCommit;
         }
     }
 
@@ -61,6 +60,7 @@ export class CommitTitleViewModel implements PoolableViewModel<HistoryCommit> {
     color: string;
     profileImageUrl: string;
     visible: boolean;
+    profileImageCommit: RepositoryCommit;
 
     clear() {
         this.id = undefined;

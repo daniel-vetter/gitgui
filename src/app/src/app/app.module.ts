@@ -14,6 +14,7 @@ import { GitModule } from "./services/git/git.module";
 import { RepositoryComponent } from "./routes/repository/repository.component";
 import { MenuModule } from "./menu/menu.module";
 import { RepositoryOpener } from "./services/repository-opener";
+import { SharedModule } from "./shared/shared.module";
 import { StatusBarComponent } from "./routes/repository/status-bar/status-bar.component";
 
 @NgModule({
@@ -30,7 +31,8 @@ import { StatusBarComponent } from "./routes/repository/status-bar/status-bar.co
     AppRoutingModule,
     CommitHistoryModule,
     GitModule,
-    MenuModule
+    MenuModule,
+    SharedModule
   ],
   providers: [
       EventAggregator,

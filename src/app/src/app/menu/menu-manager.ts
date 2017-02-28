@@ -37,9 +37,7 @@ export class MenuManager {
                 ]
             }
         ];
-        console.log(map);
         const menu = Menu.buildFromTemplate(map);
-        console.log(menu)
         remote.getCurrentWindow().setMenu(menu);
     }
 }

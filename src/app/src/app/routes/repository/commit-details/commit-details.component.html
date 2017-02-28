@@ -1,25 +1,24 @@
-<div style="padding: 1em;">
-    <table class="dataTable">
-        <tr class="row">
-            <td>Author:</td>
-            <td>{{ authorName }}</td>
-        </tr>
-        <tr class="row">
-            <td>Author mail:</td>
-            <td>{{ authorMail }}</td>
-        </tr>
-        <tr class="row">
-            <td>Commit date:</td>
-            <td>01.01.2017 13:22:33</td>
-        </tr>
-        <tr class="row">
-            <td>Author date:</td>
-            <td>01.01.2017 13:22:33</td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <div type="text" class="commitTitle">{{ commitTitle }}</div>
-            </td>
-        </tr>
-    </table>
+<div class="root">
+
+    <div style="display: flex; padding-bottom: 1em;">
+        <div style="height: 48px; width: 48px; border: 1px solid rgb(192, 192, 192)">
+            <profile-image [commit]="commit"></profile-image>
+        </div>
+        <div style="flex: 1; margin-left: 1em; overflow: hidden">
+            <div style="text-overflow: ellipsis; overflow: hidden">{{ authorName }}</div>
+            <div style="text-overflow: ellipsis; overflow: hidden">{{ authorMail }}</div>
+            <div style="text-overflow: ellipsis; overflow: hidden">01.01.2017 13:22:22</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div>Message:</div>
+        <div class="commitMessage">{{ commitTitle }}</div>
+    </div>
+
+    <div class="content" style="flex: 1">
+        <div>Changes:</div>
+        <div class="treeView">
+        </div>
+    </div>
 </div>

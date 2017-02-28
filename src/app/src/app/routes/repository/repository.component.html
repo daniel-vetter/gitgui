@@ -6,13 +6,13 @@
         Loading
     </div>
     <div *ngIf="repository" style="flex: 1; display: flex" class="fill repository">
-        <div style="width: 300px">
-
+        <div style="width: 250px; overflow: hidden">
+            &nbsp;
         </div>
-        <div style="background: white" class="fill">
+        <div style="background: white; flex: 1">
             <commit-history [repository]="repository" [(selectedCommit)]="selectedCommit"></commit-history>
         </div>
-        <div style="width: 500px;">
+        <div style="width: 350px; overflow: hidden">
             <commit-details [commit]="selectedCommit"></commit-details>
         </div>
     </div>

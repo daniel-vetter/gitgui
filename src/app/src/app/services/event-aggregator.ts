@@ -7,12 +7,10 @@ export class EventAggregator {
     private emitters = new Map<string, EventEmitter<any>>();
 
     subscribe<K extends keyof AppEvents>(type: K, handler: (ev: AppEvents[K]) => void): Subscription {
-        console.log("sub" + type)
         return this.getEmitter(type).subscribe(x => handler(x));
     }
 
     publish<K extends keyof AppEvents>(type: K, message: AppEvents[K] = undefined): void {
-        console.log("emit " + type)
         this.getEmitter(type).emit(message);
     }
 
