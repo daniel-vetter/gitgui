@@ -13,6 +13,7 @@ export class CommitDetailsComponent implements OnChanges {
     commitTitle: string = "";
     authorName: string = "";
     authorMail: string = "";
+    authorDate: string = "";
 
     constructor(private commitDetailsReader: CommitDetailsReader) {}
 
@@ -23,5 +24,6 @@ export class CommitDetailsComponent implements OnChanges {
         this.commitTitle = this.commit.title;
         this.authorName = this.commit.authorName;
         this.authorMail = this.commit.authorMail;
+        this.authorDate = this.commit.authorDate.toLocaleDateString() + " " + this.commit.authorDate.toLocaleTimeString();
     }
 }

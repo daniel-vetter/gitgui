@@ -10,7 +10,7 @@ export class CommitsReader {
 
     readAllCommits(repositoryPath: string): Rx.Observable<RepositoryCommit[]> {
 
-        const prettyParts = ["ae", "an", "P", "s"];
+        const prettyParts = ["ae", "an", "P", "s", "aD", "cD"];
         const args = ["rev-list", "--all", "--pretty=" + prettyParts.map(x => "%" + x).join("%n")];
         return this.gitRaw.run(repositoryPath, args).map(x => {
             const parts = x.data.split("\n");
@@ -30,6 +30,8 @@ export class CommitsReader {
                 commit.authorName = parts[i + 2];
                 parents.set(commit.hash, parts[i + 3].split(" "));
                 commit.title = parts[i + 4];
+                commit.authorDate = new Date(Date.parse(parts[i + 5]));
+                commit.commitDate = new Date(Date.parse(parts[i + 6]));
                 allCommits.push(commit);
                 commitIndex.set(commit.hash, commit);
             }
