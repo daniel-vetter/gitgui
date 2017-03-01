@@ -1,0 +1,12 @@
+<div *ngFor="let line of treeLines" style="display: flex; width: 100%">
+    <div [style.width.px]="line.paddingLeft"></div>
+    <div class="expander">
+        <div *ngIf="line.hasChildren" (click)="onExpanderClicked(line)">
+            <i class="material-icons">expand_more</i>
+        </div>
+    </div>
+    <div style="flex: 1">
+        <ng-template [ngTemplateOutlet]="templateRef" [ngOutletContext]="{ $implicit: line.data }">
+        </ng-template>
+    </div>
+</div>

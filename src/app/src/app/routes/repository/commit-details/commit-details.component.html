@@ -19,7 +19,11 @@
     <div class="content" style="flex: 1">
         <div>Changes:</div>
         <div class="treeView">
-            <tree-view [data]="samples" [adapter]="adapter"></tree-view>
+            <tree-view [data]="samples" [adapter]="adapter">
+                <ng-template let-data>
+                    <div>{{ data.label }}</div>
+                </ng-template>
+            </tree-view>
         </div>
     </div>
 </div>
