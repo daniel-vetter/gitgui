@@ -2,7 +2,15 @@
     width: 20px;
     text-align: center;
 
+    .button {
+        transform: rotate(-90deg);
+    }
+
     &:hover {
         background: lightgray;
     }
+}
+
+.expanded .button {
+    transform: rotate(0deg)
 }

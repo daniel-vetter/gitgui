@@ -17,8 +17,8 @@ export class TreeViewComponent implements OnChanges {
     }
 
     private updateLines() {
+        this.treeLines = [];
         if (this.adapter === undefined || this.data === undefined) {
-            this.treeLines = [];
             return;
         }
 

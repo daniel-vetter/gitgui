@@ -16,8 +16,8 @@ export class CommitDetailsComponent implements OnChanges, OnInit {
     authorMail: string = "";
     authorDate: string = "";
 
-    samples: SampleModel[];
-    adapter: SampleModelTreeAdapter;
+    samples: ChangeFileTreeNodeModel[];
+    adapter: ChangeFileTreeNodeModelAdapter;
 
     constructor(private commitDetailsReader: CommitDetailsReader) {}
 
@@ -25,43 +25,50 @@ export class CommitDetailsComponent implements OnChanges, OnInit {
         if (!this.commit)
             return;
 
+        const localCommit = this.commit;
+
         this.authorName = this.commit.authorName;
         this.authorMail = this.commit.authorMail;
         this.authorDate = this.commit.authorDate.toLocaleDateString() + " " + this.commit.authorDate.toLocaleTimeString();
         this.commitDetailsReader.getLongCommitMessage(this.commit).subscribe(x => {
-            if (x.commit === this.commit)
-                this.commitTitle = x.message;
+            if (localCommit === this.commit)
+                this.commitTitle = x;
+        });
+        this.commitDetailsReader.getFileChangesOfCommit(this.commit).subscribe(x => {
+            const root = new ChangeFileTreeNodeModel();
+            for (const change of x) {
+                const parts = change.path.split("/");
+                let curNode = root;
+                for (const part of parts) {
+                    let childNode = curNode.children.find(y => y.label === part);
+                    if (!childNode) {
+                        childNode = new ChangeFileTreeNodeModel();
+                        childNode.label = part;
+                        curNode.children.push(childNode);
+                    }
+                    curNode = childNode;
+                }
+            }
+            this.samples = root.children;
         });
     }
 
     ngOnInit() {
-        this.samples = [
-            new SampleModel("Node 1", [
-                new SampleModel("SubNode 1"),
-                new SampleModel("SubNode 2"),
-                new SampleModel("SubNode 3"),
-            ]),
-            new SampleModel("Node 2", [
-                new SampleModel("SubNode 4"),
-                new SampleModel("SubNode 5"),
-                new SampleModel("SubNode 6"),
-            ]),
-            new SampleModel("Node 3")
-        ]
-        this.adapter = new SampleModelTreeAdapter();
+        this.adapter = new ChangeFileTreeNodeModelAdapter();
     }
 }
 
 
-export class SampleModel {
-    constructor(public label: string = "", public childs: SampleModel[] = []) {}
+export class ChangeFileTreeNodeModel {
+    label: string = "";
+    children: ChangeFileTreeNodeModel[] = [];
 }
 
-export class SampleModelTreeAdapter implements ITreeViewAdapter<SampleModel> {
-    hasChildren(data: SampleModel): boolean {
-        return data.childs.length > 0
+export class ChangeFileTreeNodeModelAdapter implements ITreeViewAdapter<ChangeFileTreeNodeModel> {
+    hasChildren(data: ChangeFileTreeNodeModel): boolean {
+        return data.children.length > 0;
     }
-    getChildren(data: SampleModel): SampleModel[] {
-        return data.childs;
+    getChildren(data: ChangeFileTreeNodeModel): ChangeFileTreeNodeModel[] {
+        return data.children;
     }
 }
