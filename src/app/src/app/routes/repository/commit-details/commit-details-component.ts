@@ -1,13 +1,15 @@
-import { Component, Input, OnChanges, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
 import { RepositoryCommit } from "../../../model/model";
 import { CommitDetailsReader } from "../../../services/git/commit-details-reader";
-import { ITreeViewAdapter } from "../../../shared/tree-view/tree-view.component";
+import { ChangedFileTreeNodeModel, FileTreeBuilder } from "./services/file-tree-builder";
+import { ChangedFileTreeNodeModelAdapter } from "./services/changed-file-tree-node-model-adapter";
+
 @Component({
     selector: "commit-details",
     styleUrls: ["./commit-details.component.scss"],
     templateUrl: "./commit-details.component.html"
 })
-export class CommitDetailsComponent implements OnChanges, OnInit {
+export class CommitDetailsComponent implements OnChanges {
 
     @Input() commit: RepositoryCommit;
 
@@ -16,10 +18,11 @@ export class CommitDetailsComponent implements OnChanges, OnInit {
     authorMail: string = "";
     authorDate: string = "";
 
-    samples: ChangeFileTreeNodeModel[];
-    adapter: ChangeFileTreeNodeModelAdapter;
+    changeFilesTree: ChangedFileTreeNodeModel[];
+    adapter = new ChangedFileTreeNodeModelAdapter();
 
-    constructor(private commitDetailsReader: CommitDetailsReader) {}
+    constructor(private commitDetailsReader: CommitDetailsReader,
+        private fileTreeBuilder: FileTreeBuilder) { }
 
     ngOnChanges() {
         if (!this.commit)
@@ -35,40 +38,8 @@ export class CommitDetailsComponent implements OnChanges, OnInit {
                 this.commitTitle = x;
         });
         this.commitDetailsReader.getFileChangesOfCommit(this.commit).subscribe(x => {
-            const root = new ChangeFileTreeNodeModel();
-            for (const change of x) {
-                const parts = change.path.split("/");
-                let curNode = root;
-                for (const part of parts) {
-                    let childNode = curNode.children.find(y => y.label === part);
-                    if (!childNode) {
-                        childNode = new ChangeFileTreeNodeModel();
-                        childNode.label = part;
-                        curNode.children.push(childNode);
-                    }
-                    curNode = childNode;
-                }
-            }
-            this.samples = root.children;
+            console.log("new map");
+            this.changeFilesTree = this.fileTreeBuilder.getTree(x);
         });
-    }
-
-    ngOnInit() {
-        this.adapter = new ChangeFileTreeNodeModelAdapter();
-    }
-}
-
-
-export class ChangeFileTreeNodeModel {
-    label: string = "";
-    children: ChangeFileTreeNodeModel[] = [];
-}
-
-export class ChangeFileTreeNodeModelAdapter implements ITreeViewAdapter<ChangeFileTreeNodeModel> {
-    hasChildren(data: ChangeFileTreeNodeModel): boolean {
-        return data.children.length > 0;
-    }
-    getChildren(data: ChangeFileTreeNodeModel): ChangeFileTreeNodeModel[] {
-        return data.children;
     }
 }

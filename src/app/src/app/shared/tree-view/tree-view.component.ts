@@ -23,21 +23,31 @@ export class TreeViewComponent implements OnChanges {
         }
 
         for (const data of this.data) {
-            this.treeLines.push(this.getLineFromData(data));
+            const newLine = this.getLineFromData(data);
+            this.treeLines.push(newLine);
+            this.applyExpandState(newLine);
         }
     }
 
     onExpanderClicked(vm: TreeLineViewModel) {
-        if (vm.isExpanded === false) {
-            vm.isExpanded = true;
+        const newState = !this.adapter.getExpandedState(vm.data);
+        this.adapter.setExpandedState(vm.data, newState);
+        this.applyExpandState(vm, newState);
+    }
+
+    private applyExpandState(vm: TreeLineViewModel, currentState: boolean = undefined) {
+        if (currentState === undefined)
+            currentState = this.adapter.getExpandedState(vm.data);
+        if (currentState) {
             const lineIndex = this.treeLines.indexOf(vm);
             const children = this.adapter.getChildren(vm.data);
             children.reverse();
             for (const child of children) {
-                this.treeLines.splice(lineIndex + 1, 0, this.getLineFromData(child, vm));
+                const newLine = this.getLineFromData(child, vm);
+                this.treeLines.splice(lineIndex + 1, 0, newLine);
+                this.applyExpandState(newLine);
             }
         } else {
-            vm.isExpanded = false;
             const lineIndex = this.treeLines.indexOf(vm);
             while (this.treeLines[lineIndex + 1].depth > vm.depth) {
                 this.treeLines.splice(lineIndex + 1, 1);
@@ -50,12 +60,9 @@ export class TreeViewComponent implements OnChanges {
         line.data = data;
         line.hasChildren = this.adapter.hasChildren(data);
         line.depth = 0;
-        line.isExpanded = false;
-
         if (parent) {
             line.depth = parent.depth + 1;
         }
-
         return line;
     }
 }
@@ -64,11 +71,12 @@ export class TreeLineViewModel {
     data: any;
     hasChildren: boolean;
     depth: number;
-    isExpanded: boolean;
     get paddingLeft() { return this.depth * 20; }
 }
 
 export interface ITreeViewAdapter<TModel> {
     hasChildren(data: TModel): boolean;
     getChildren(data: TModel): TModel[];
+    getExpandedState(data: TModel): boolean;
+    setExpandedState(data: TModel, expanded: boolean): void;
 }

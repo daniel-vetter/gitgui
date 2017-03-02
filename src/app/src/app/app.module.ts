@@ -16,6 +16,7 @@ import { MenuModule } from "./menu/menu.module";
 import { RepositoryOpener } from "./services/repository-opener";
 import { SharedModule } from "./shared/shared.module";
 import { StatusBarComponent } from "./routes/repository/status-bar/status-bar.component";
+import { FileTreeBuilder } from "./routes/repository/commit-details/services/file-tree-builder";
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { StatusBarComponent } from "./routes/repository/status-bar/status-bar.co
       Config,
       CurrentRepository,
       ThemeManager,
-      RepositoryOpener
+      RepositoryOpener,
+      FileTreeBuilder
   ],
   bootstrap: [AppComponent]
 })

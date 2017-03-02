@@ -19,9 +19,12 @@
     <div class="content" style="flex: 1">
         <div>Changes:</div>
         <div class="treeView">
-            <tree-view [data]="samples" [adapter]="adapter">
+            <tree-view [data]="changeFilesTree" [adapter]="adapter">
                 <ng-template let-data>
-                    <div>{{ data.label }}</div>
+                    <div style="white-space: nowrap; display: flex">
+                        <div *ngIf="data.isFolder"><i class="material-icons" style="padding-right: 4px">folder</i></div>
+                        {{ data.label }}
+                    </div>
                 </ng-template>
             </tree-view>
         </div>
