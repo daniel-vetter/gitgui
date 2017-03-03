@@ -38,7 +38,6 @@ export class CommitDetailsComponent implements OnChanges {
                 this.commitTitle = x;
         });
         this.commitDetailsReader.getFileChangesOfCommit(this.commit).subscribe(x => {
-            console.log("new map");
             this.changeFilesTree = this.fileTreeBuilder.getTree(x);
         });
     }

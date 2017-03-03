@@ -5,12 +5,17 @@
     .button {
         transform: rotate(-90deg);
     }
-
-    &:hover {
-        background: lightgray;
-    }
 }
 
 .expanded .button {
     transform: rotate(0deg)
+}
+
+.line {
+    display: flex;
+    overflow: hidden;
+    padding: 4px;
+    &:hover {
+        background: rgba(30, 144, 255, 0.1);
+    }
 }

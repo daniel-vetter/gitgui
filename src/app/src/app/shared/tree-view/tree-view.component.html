@@ -1,12 +1,12 @@
-<div class="fill" style="overflow: auto">
-    <div *ngFor="let line of treeLines" style="display: flex; width: 100%;">
+<div class="fill" style="overflow-y: auto; overflow-x: hidden">
+    <div *ngFor="let line of treeLines" (click)="onExpanderClicked(line)" class="line">
         <div [style.minWidth.px]="line.paddingLeft"></div>
         <div class="expander" [class.expanded]="line.isExpanded">
-            <div class="button" *ngIf="line.hasChildren" (click)="onExpanderClicked(line)">
-                <i class="material-icons">expand_more</i>
+            <div *ngIf="line.hasChildren">
+                <i class="material-icons" style="font-size: 14px;">expand_more</i>
             </div>
         </div>
-        <div style="flex: 1">
+        <div style="flex: 1; overflow: hidden">
             <ng-template [ngTemplateOutlet]="templateRef" [ngOutletContext]="{ $implicit: line.data }">
             </ng-template>
         </div>

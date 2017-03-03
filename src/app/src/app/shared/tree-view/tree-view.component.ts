@@ -40,8 +40,7 @@ export class TreeViewComponent implements OnChanges {
             currentState = this.adapter.getExpandedState(vm.data);
         if (currentState) {
             const lineIndex = this.treeLines.indexOf(vm);
-            const children = this.adapter.getChildren(vm.data);
-            children.reverse();
+            const children = Array.from(this.adapter.getChildren(vm.data)).reverse();
             for (const child of children) {
                 const newLine = this.getLineFromData(child, vm);
                 this.treeLines.splice(lineIndex + 1, 0, newLine);
@@ -49,7 +48,7 @@ export class TreeViewComponent implements OnChanges {
             }
         } else {
             const lineIndex = this.treeLines.indexOf(vm);
-            while (this.treeLines[lineIndex + 1].depth > vm.depth) {
+            while (lineIndex < this.treeLines.length - 1 && this.treeLines[lineIndex + 1].depth > vm.depth) {
                 this.treeLines.splice(lineIndex + 1, 1);
             }
         }
@@ -71,7 +70,7 @@ export class TreeLineViewModel {
     data: any;
     hasChildren: boolean;
     depth: number;
-    get paddingLeft() { return this.depth * 20; }
+    get paddingLeft() { return this.depth * 15; }
 }
 
 export interface ITreeViewAdapter<TModel> {

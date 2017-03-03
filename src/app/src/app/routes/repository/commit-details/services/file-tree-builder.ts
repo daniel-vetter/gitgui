@@ -3,7 +3,9 @@ import { ChangedFile } from "../../../../services/git/commit-details-reader";
 export class FileTreeBuilder {
     getTree(changedFiles: ChangedFile[]): ChangedFileTreeNodeModel[] {
         const root = this.createBaseTree(changedFiles);
+        this.combineFolderWithOneParent(root);
         this.orderChildren(root);
+        this.addMetadata(root);
         return root.children;
     }
 
@@ -27,29 +29,58 @@ export class FileTreeBuilder {
     }
 
     private orderChildren(node: ChangedFileTreeNodeModel) {
-        node.children.sort((a, b) => {
-            if (a.children.length > 0 && b.children.length === 0)
-                return -1;
-            if (a.children.length === 0 && b.children.length > 0)
-                return 1;
-            if (a.label < b.label)
-                return -1;
-            if (a.label > b.label)
-                return 1;
-            if (a.label === b.label)
-                return 0;
+        this.forEachNode(node, x => {
+            x.children.sort((a, b) => {
+                if (a.children.length > 0 && b.children.length === 0)
+                    return -1;
+                if (a.children.length === 0 && b.children.length > 0)
+                    return 1;
+                if (a.label < b.label)
+                    return -1;
+                if (a.label > b.label)
+                    return 1;
+                if (a.label === b.label)
+                    return 0;
+            });
         });
+    }
 
-        node.isFolder = node.children.length > 0;
+    private combineFolderWithOneParent(root: ChangedFileTreeNodeModel) {
+        for(const child of root.children) {
+            this.forEachNode(child, x => {
+                while (x.children.length === 1 && x.children[0].children.length !== 0) {
+                    x.label += "/" + x.children[0].label;
+                    x.children = x.children[0].children;
+                }
+            });
+        }
+    }
 
+    private addMetadata(node: ChangedFileTreeNodeModel) {
+        this.forEachNode(node, x => {
+            x.isFolder = x.children.length > 0;
+            if (x.isFolder) {
+                x.iconExpanded = "folder_open";
+                x.iconCollapsed = "folder";
+            } else {
+                x.iconExpanded = "insert_drive_file";
+                x.iconCollapsed = "insert_drive_file";
+            }
+        });
+    }
+
+    private forEachNode(node: ChangedFileTreeNodeModel, action: (node: ChangedFileTreeNodeModel) => void) {
+        action(node);
         for (const child of node.children) {
-            this.orderChildren(child);
+            this.forEachNode(child, action);
         }
     }
 }
 
 export class ChangedFileTreeNodeModel {
     label: string = "";
+    iconExpanded: string = "";
+    iconCollapsed: string = "";
     isFolder: boolean;
     expanded: boolean;
     children: ChangedFileTreeNodeModel[] = [];
