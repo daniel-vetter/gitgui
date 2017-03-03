@@ -4,13 +4,24 @@ import { ProcessStartRequest, PROCESS_START_REQUEST, PROCESS_START_RESPONSE, Pro
 
 export class ProcessStartRequestHandler {
 
+    private state = new Map<number, string>();
+
     setup() {
         ipcMain.on(PROCESS_START_REQUEST, (event, arg) => { this.onProcessStart(event, arg) });
     }
 
+
     private onProcessStart(event, arg: ProcessStartRequest) {
-        const process = spawn(arg.command, arg.args, { cwd: arg.workDirectory })
+        this.state.set(arg.id, "");
+        const process = spawn(arg.command, arg.args, { cwd: arg.workDirectory });
         process.on("exit", code => {
+
+            event.sender.send(PROCESS_START_RESPONSE, <ProcessStartResponse>{
+                id: arg.id,
+                type: PROCESS_START_RESPONSE_TYPE_STDOUT,
+                data: this.state.get(arg.id)
+            });
+
             event.sender.send(PROCESS_START_RESPONSE, <ProcessStartResponse>{
                 id: arg.id,
                 type: PROCESS_START_RESPONSE_TYPE_EXIT,
@@ -19,19 +30,11 @@ export class ProcessStartRequestHandler {
         });
 
         process.stdout.on("data", data => {
-            event.sender.send(PROCESS_START_RESPONSE, <ProcessStartResponse>{
-                id: arg.id,
-                type: PROCESS_START_RESPONSE_TYPE_STDOUT,
-                data: (<any>data).toString("utf8")
-            });
+            this.state.set(arg.id, this.state.get(arg.id) + (<any>data).toString("utf8"));
         });
 
         process.stderr.on("data", data => {
-            event.sender.send(PROCESS_START_RESPONSE, <ProcessStartResponse>{
-                id: arg.id,
-                type: PROCESS_START_RESPONSE_TYPE_STDERR,
-                data: (<any>data).toString("utf8")
-            });
+            this.state.set(arg.id, this.state.get(arg.id) + (<any>data).toString("utf8"));
         });
     }
 }
