@@ -16,12 +16,12 @@
         <div class="commitMessage">{{ commitTitle }}</div>
     </div>
 
-    <div class="content" style="display: felx; flex-direction: column; flex: 1">
+    <div class="content" style="display: flex; flex-direction: column; flex: 1">
         <div>Changes:</div>
         <div class="treeView">
             <tree-view [data]="changeFilesTree" [adapter]="adapter">
                 <ng-template let-data>
-                    <div style="display: flex; overflow: hidden">
+                    <div style="display: flex; overflow: hidden" [title]="data.label">
                         <div style="white-space: nowrap; text-overflow: ellipsis">
                             <i class="material-icons" style="padding-right: 4px; font-size: 14px;">{{ data.expanded ? data.iconExpanded : data.iconCollapsed }}</i>
                         </div>
