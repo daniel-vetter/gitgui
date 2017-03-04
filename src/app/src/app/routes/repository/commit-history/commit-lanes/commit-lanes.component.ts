@@ -23,7 +23,7 @@ export class CommitLanesComponent implements OnChanges {
     private totalLaneCount = 0;
 
     constructor(private laneColorProvider: LaneColorProvider,
-                private metrics: Metrics) {}
+        private metrics: Metrics) { }
 
     ngOnChanges(changes: any) {
         if (changes.commits) {
@@ -52,18 +52,15 @@ export class CommitLanesComponent implements OnChanges {
         const end = this.visibleRange.end;
 
         this.visibleBubbles.makeAllInvisible();
-
-        for (let i = start; i <= end && i < this.commits.commits.length; i++) {
-            const commit = this.commits.commits[i];
-            const vm = this.visibleBubbles.giveViewModelFor(commit);
-            vm.data = commit;
+        this.visibleBubbles.remapRange(this.commits.commits, start, end, (commit, vm) => {
             vm.id = commit.hash;
-            vm.positionTop = this.metrics.getBubbleTop(i);
+            vm.positionTop = this.metrics.getBubbleTop(commit.index);
             vm.positionLeft = this.metrics.getBubbleLeft(commit.lane) - this.horizontalScroll;
             vm.lineWidth = Math.max(0, vm.positionLeft + this.metrics.bubbleWidth / 2);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
             vm.showAnnotationLine = commit.tags.length > 0 || commit.branches.length > 0;
-        }
+            return true;
+        });
     }
 
     private updateLines() {
@@ -73,10 +70,7 @@ export class CommitLanesComponent implements OnChanges {
         const linesToRender = this.lineQueryHelper.getLinesInRange(startX, this.visibleRange.start, endX, this.visibleRange.end);
         this.visibleLines.makeAllInvisible();
 
-        for (const line of linesToRender) {
-
-            const vm = this.visibleLines.giveViewModelFor(line);
-            vm.data = line;
+        this.visibleLines.remap(linesToRender, (line, vm) => {
             vm.positionLeft = this.metrics.getBubbleCenterX(Math.min(line.laneStart, line.laneEnd)) - this.horizontalScroll;
             vm.width = this.metrics.getBubbleCenterX(Math.max(line.laneStart, line.laneEnd)) - vm.positionLeft - this.horizontalScroll;
             vm.width = (Math.max(line.laneStart, line.laneEnd) - Math.min(line.laneStart, line.laneEnd)) * this.metrics.bubbleSpacing;
@@ -112,7 +106,9 @@ export class CommitLanesComponent implements OnChanges {
             if (!vm.borderLeftColor) vm.borderLeftColor = "transparent";
             if (!vm.borderRightColor) vm.borderRightColor = "transparent";
             if (!vm.borderBottomColor) vm.borderBottomColor = "transparent";
-        }
+
+            return true;
+        });
     }
 }
 

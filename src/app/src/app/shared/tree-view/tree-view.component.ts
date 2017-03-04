@@ -1,4 +1,7 @@
-import { Component, Input, OnChanges, TemplateRef, ContentChild } from "@angular/core";
+import { Component, Input, OnChanges, TemplateRef, ContentChild, ViewChild } from "@angular/core";
+
+import { TreeLineList, TreeLine } from "./tree-line-list";
+import { ReusePool, PoolableViewModel } from "../../routes/repository/commit-history/services/reuse-pool";
 
 @Component({
     selector: "tree-view",
@@ -8,69 +11,64 @@ import { Component, Input, OnChanges, TemplateRef, ContentChild } from "@angular
 export class TreeViewComponent implements OnChanges {
     @Input() adapter: ITreeViewAdapter<any> = undefined;
     @Input() data: any[] = [];
+    @Input() lineHeight: number = 20;
     @ContentChild(TemplateRef) templateRef: TemplateRef<any>;
+    @ViewChild("scrollWrapper") scrollWrapper;
 
-    treeLines: TreeLineViewModel[] = [];
+    private treeLineList = new TreeLineList([], undefined);
+    visibleTreeLines = new ReusePool<TreeLine, TreeLineViewModel>(() => new TreeLineViewModel());
+    totalScrollHeight: number;
 
     ngOnChanges() {
         this.updateLines();
+        this.updateVisibleLines();
     }
 
     private updateLines() {
-        this.treeLines = [];
-        if (this.adapter === undefined || this.data === undefined) {
-            return;
-        }
-
-        for (const data of this.data) {
-            const newLine = this.getLineFromData(data);
-            this.treeLines.push(newLine);
-            this.applyExpandState(newLine);
-        }
+        this.treeLineList = new TreeLineList(this.data, this.adapter);
     }
 
     onExpanderClicked(vm: TreeLineViewModel) {
-        const newState = !this.adapter.getExpandedState(vm.data);
-        this.adapter.setExpandedState(vm.data, newState);
-        this.applyExpandState(vm, newState);
+        this.treeLineList.toggleExpandState(vm.data);
+        this.updateVisibleLines();
     }
 
-    private applyExpandState(vm: TreeLineViewModel, currentState: boolean = undefined) {
-        if (currentState === undefined)
-            currentState = this.adapter.getExpandedState(vm.data);
-        if (currentState) {
-            const lineIndex = this.treeLines.indexOf(vm);
-            const children = Array.from(this.adapter.getChildren(vm.data)).reverse();
-            for (const child of children) {
-                const newLine = this.getLineFromData(child, vm);
-                this.treeLines.splice(lineIndex + 1, 0, newLine);
-                this.applyExpandState(newLine);
-            }
-        } else {
-            const lineIndex = this.treeLines.indexOf(vm);
-            while (lineIndex < this.treeLines.length - 1 && this.treeLines[lineIndex + 1].depth > vm.depth) {
-                this.treeLines.splice(lineIndex + 1, 1);
-            }
-        }
+    private updateVisibleLines() {
+
+        const visibleStart = Math.max(0, Math.floor(this.scrollWrapper.nativeElement.scrollTop / this.lineHeight));
+        const visibleEnd = Math.floor(visibleStart + this.scrollWrapper.nativeElement.clientHeight / this.lineHeight) + 1;
+
+        this.visibleTreeLines.remapRange(this.treeLineList.items, visibleStart, visibleEnd, (from, to) => {
+            to.hasChildren = from.hasChildren;
+            to.isExpanded = from.isExpanded;
+            to.paddingLeft = from.depth * 20;
+            to.top = from.index * this.lineHeight;
+            return true;
+        });
+
+        console.log(this.treeLineList.items,this.visibleTreeLines.viewModels ,visibleStart, visibleEnd);
+
+        this.totalScrollHeight = this.lineHeight * this.treeLineList.items.length;
     }
 
-    private getLineFromData(data: any, parent: TreeLineViewModel = undefined): TreeLineViewModel {
-        const line = new TreeLineViewModel();
-        line.data = data;
-        line.hasChildren = this.adapter.hasChildren(data);
-        line.depth = 0;
-        if (parent) {
-            line.depth = parent.depth + 1;
-        }
-        return line;
+    onScroll() {
+        this.updateVisibleLines();
     }
 }
 
-export class TreeLineViewModel {
-    data: any;
+export class TreeLineViewModel implements PoolableViewModel<TreeLine> {
+    data: TreeLine;
+    visible: boolean;
+    top: number;
+    paddingLeft: number;
+    isExpanded: boolean;
     hasChildren: boolean;
-    depth: number;
-    get paddingLeft() { return this.depth * 15; }
+    clear() {
+        this.hasChildren = undefined;
+        this.isExpanded = undefined;
+        this.paddingLeft = undefined;
+        this.top = undefined;
+    }
 }
 
 export interface ITreeViewAdapter<TModel> {

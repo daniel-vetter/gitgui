@@ -29,6 +29,7 @@
                                     [width]="annotationGridWidth">
                 </commit-annotations>
             </div>
+
             <div [style.width.px]="currentLaneGridWidth" style="position: relative">
                 <commit-lanes [commits]="historyRepository"
                               [visibleRange]="visibleRange"
@@ -36,6 +37,7 @@
                               [horizontalScroll]="laneGridScrollPosition">
                 </commit-lanes>
             </div>
+
             <div style="flex: 1;">
                 <commit-titles [commits]="historyRepository"
                                [visibleRange]="visibleRange">

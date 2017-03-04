@@ -12,13 +12,13 @@ import { RepositoryCommit } from "../../../../model/model";
 })
 export class CommitTitlesComponent implements OnChanges {
 
-    @Input() commits: HistoryRepository =  undefined;
+    @Input() commits: HistoryRepository = undefined;
     @Input() visibleRange: VisibleRange = undefined;
 
     visibleCommits = new ReusePool<HistoryCommit, CommitTitleViewModel>(() => new CommitTitleViewModel());
 
     constructor(private laneColorProvider: LaneColorProvider,
-                private metrics: Metrics) {
+        private metrics: Metrics) {
         this.commits = new HistoryRepository();
         this.visibleRange = new VisibleRange(0, 0);
     }
@@ -34,17 +34,15 @@ export class CommitTitlesComponent implements OnChanges {
         const start = Math.max(0, this.visibleRange.start);
         const end = this.visibleRange.end;
 
-        this.visibleCommits.makeAllInvisible();
-        for (let i = start; i <= end && i < this.commits.commits.length; i++) {
-            const commit = this.commits.commits[i];
-            const vm = this.visibleCommits.giveViewModelFor(commit);
-            vm.id = commit.hash;
-            vm.data = commit;
-            vm.title = commit.title;
-            vm.positionTop = this.metrics.commitHeight * i;
-            vm.color = this.laneColorProvider.getColorForLane(commit.lane);
-            vm.profileImageCommit = commit.repositoryCommit;
-        }
+        this.visibleCommits.remapRange(this.commits.commits, start, end, (from, to) => {
+            to.id = from.hash;
+            to.data = from;
+            to.title = from.title;
+            to.positionTop = this.metrics.commitHeight * from.index;
+            to.color = this.laneColorProvider.getColorForLane(from.lane);
+            to.profileImageCommit = from.repositoryCommit;
+            return true;
+        });
     }
 
     show(item) {

@@ -37,14 +37,11 @@ export class CommitAnnotationsComponent implements OnChanges {
             return;
         }
 
-        for (let i = Math.max(0, this.visibleRange.start); i < Math.min(this.visibleRange.end, this.commits.commits.length); i++) {
-            const commit = this.commits.commits[i];
+        this.annotationBundles.remapRange(this.commits.commits, this.visibleRange.start, this.visibleRange.end, (commit, vm) => {
             if (commit.tags.length === 0 &&
                 commit.branches.length === 0)
-                continue;
+                return false;
 
-            // create one annotation bundle for each commit with refs
-            const vm = this.annotationBundles.giveViewModelFor(commit);
             vm.top = this.metrics.commitHeight * commit.index;
             vm.colorLight = this.laneColorProvider.getColorForLane(commit.lane, 0.05);
             vm.color = this.laneColorProvider.getColorForLane(commit.lane);
@@ -115,7 +112,9 @@ export class CommitAnnotationsComponent implements OnChanges {
             } else {
                 vm.totalWidth = 0;
             }
-        }
+
+            return true;
+        });
     }
 
     private getEstimatedAnnotationWidth(annotation: AnnotationViewModel): number {

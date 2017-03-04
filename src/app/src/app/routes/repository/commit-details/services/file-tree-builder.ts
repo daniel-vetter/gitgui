@@ -10,17 +10,19 @@ export class FileTreeBuilder {
     }
 
     private createBaseTree(changedFiles: ChangedFile[]): ChangedFileTreeNodeModel {
+        const index = new ChildIndex();
         const root = new ChangedFileTreeNodeModel();
         for (const change of changedFiles) {
             const parts = change.path.split("/");
             let curNode = root;
             for (const part of parts) {
-                let childNode = curNode.children.find(y => y.label === part);
+                let childNode = index.get(curNode, part);
                 if (!childNode) {
                     childNode = new ChangedFileTreeNodeModel();
                     childNode.label = part;
                     childNode.expanded = true;
                     curNode.children.push(childNode);
+                    index.set(curNode, childNode);
                 }
                 curNode = childNode;
             }
@@ -86,3 +88,25 @@ export class ChangedFileTreeNodeModel {
     children: ChangedFileTreeNodeModel[] = [];
 }
 
+class ChildIndex {
+
+    private data = new Map<ChangedFileTreeNodeModel, Map<string, ChangedFileTreeNodeModel>>();
+
+    set(node: ChangedFileTreeNodeModel, child: ChangedFileTreeNodeModel) {
+        return this.getSubIndex(node).set(child.label, child);
+    }
+
+    get (node: ChangedFileTreeNodeModel, childLabel: string): ChangedFileTreeNodeModel {
+        return this.getSubIndex(node).get(childLabel);
+    }
+
+    private getSubIndex(node: ChangedFileTreeNodeModel): Map<string, ChangedFileTreeNodeModel> {
+        let subIndex = this.data.get(node);
+        if (subIndex) {
+            return subIndex;
+        }
+        subIndex = new Map<string, ChangedFileTreeNodeModel>();
+        this.data.set(node, subIndex);
+        return subIndex;
+    }
+}
