@@ -17,7 +17,12 @@ export class CommitDetailsReader {
     }
 
     getFileChangesOfCommit(commit: RepositoryCommit): Rx.Observable<ChangedFile[]> {
-        return this.gitRaw.run(commit.repository.location, ["diff-tree", "--no-commit-id", "--name-status", "-r", "-m", "-z", commit.hash])
+        const params = ["diff-tree", "--no-commit-id", "--name-status", "-r", "-m", "-z", commit.hash]
+        if (commit.parents.length === 0) {
+            // if the
+            params.push("4b825dc642cb6eb9a060e54bf8d69288fbee4904");
+        }
+        return this.gitRaw.run(commit.repository.location, params)
             .map(x => {
                 const lines = x.data.split("\0").filter(y => y !== "");
                 const list: ChangedFile[] = [];
