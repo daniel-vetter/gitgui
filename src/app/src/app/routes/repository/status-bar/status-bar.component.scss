@@ -1,8 +1,18 @@
 .root {
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
     padding-left: 0.5em;
     padding-right: 0.5em;
     background: dodgerblue;
     color: white;
+
+    span {
+        padding-top: 0.2em;
+        padding-bottom: 0.2em;
+        display: inline-block;
+    }
+
+    .material-icons {
+        font-size: 17px;
+        position: relative;
+        top: 3px
+    }
 }
