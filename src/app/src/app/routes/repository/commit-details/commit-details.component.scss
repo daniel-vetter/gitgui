@@ -25,7 +25,7 @@
     font-family: Consolas;
     user-select: auto;
     background: var(--theme-workspace-background);
-    border: 1px solid rgb(192,192,192);
+    border: 1px solid var(--theme-workspace-border);
     padding: 0.5em;
     word-wrap: break-word;
     white-space: pre-wrap;
@@ -33,6 +33,12 @@
 
 .treeView {
     background: var(--theme-workspace-background);
-    border: 1px solid rgb(192,192,192);
+    border: 1px solid var(--theme-workspace-border);
     overflow: hidden;
+}
+
+.profileImage {
+    height: 48px;
+    width: 48px;
+    border: 1px solid var(--theme-workspace-border);
 }

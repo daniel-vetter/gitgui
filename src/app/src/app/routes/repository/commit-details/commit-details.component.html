@@ -1,7 +1,7 @@
 <div class="root">
 
     <div style="display: flex; padding-bottom: 1em;">
-        <div style="height: 48px; width: 48px; border: 1px solid rgb(192, 192, 192)">
+        <div class="profileImage">
             <profile-image [commit]="commit"></profile-image>
         </div>
         <div style="flex: 1; margin-left: 1em; overflow: hidden">
@@ -18,6 +18,9 @@
 
     <div class="content" style="display: flex; flex-direction: column; flex: 1">
         <div>Changes:</div>
+        <div style="margin-bottom: 4px">
+            <input type="text" placeholder="Filter" style="width: 100%">
+        </div>
         <div class="treeView">
             <tree-view [data]="changeFilesTree" [adapter]="adapter">
                 <ng-template let-data>

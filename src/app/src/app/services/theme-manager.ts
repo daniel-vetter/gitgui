@@ -20,10 +20,12 @@ export class ThemeManager {
             vars.set("theme-window-background", systemPreferences.getColor("menu"));
             vars.set("theme-font-color", systemPreferences.getColor("window-text"));
             vars.set("theme-workspace-background", "#FFFFFF");
+            vars.set("theme-workspace-border", "#C0C0C0");
         } else {
             vars.set("theme-window-background", "#1E1E1E");
             vars.set("theme-font-color", "#CCCCCC");
             vars.set("theme-workspace-background", "#252526");
+            vars.set("theme-workspace-border", "#252526");
             customCss = `::-webkit-scrollbar {
                             width: 1em;
                             height: 1em;

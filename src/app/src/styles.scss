@@ -11,6 +11,18 @@ html, body {
     cursor: default;
 }
 
+input {
+    padding: 3px;
+    font: small-caption;
+    color: var(--theme-font-color);
+    background-color: var(--theme-workspace-background);
+    border: 1px solid var(--theme-workspace-border);
+
+    &:focus {
+        outline: none;
+    }
+}
+
 html {
   box-sizing: border-box;
 }
