@@ -1,6 +1,7 @@
 import { ChangedFile } from "../../../../services/git/commit-details-reader";
 import { IconDefinition, FileIconManager } from "../../../../services/file-icon/file-icon";
 import { Injectable } from "@angular/core";
+import { Path } from "../../../../services/path";
 
 @Injectable()
 export class FileTreeBuilder {
@@ -57,7 +58,7 @@ export class FileTreeBuilder {
         for(const child of root.children) {
             this.forEachNode(child, x => {
                 while (x.children.length === 1 && x.children[0].children.length !== 0) {
-                    x.label += "/" + x.children[0].label;
+                    x.label = Path.combine(x.label, x.children[0].label);
                     x.children = x.children[0].children;
                 }
             });
