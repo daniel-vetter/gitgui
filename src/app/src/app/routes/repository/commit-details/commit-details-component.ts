@@ -4,6 +4,7 @@ import { CommitDetailsReader, ChangedFile } from "../../../services/git/commit-d
 import { ChangedFileTreeNodeModel, FileTreeBuilder } from "./services/file-tree-builder";
 import { ChangedFileTreeNodeModelAdapter } from "./services/changed-file-tree-node-model-adapter";
 import { Path } from "../../../services/path";
+import { FileIconManager } from "../../../services/file-icon/file-icon";
 
 @Component({
     selector: "commit-details",
@@ -25,7 +26,8 @@ export class CommitDetailsComponent implements OnChanges {
     adapter = new ChangedFileTreeNodeModelAdapter();
 
     constructor(private commitDetailsReader: CommitDetailsReader,
-        private fileTreeBuilder: FileTreeBuilder) { }
+        private fileTreeBuilder: FileTreeBuilder,
+        private fileIconsManager: FileIconManager) { }
 
     ngOnChanges() {
         if (!this.commit)
@@ -45,7 +47,11 @@ export class CommitDetailsComponent implements OnChanges {
             this.changedFiles = x;
             this.updateTree();
         });
+
+        this.fileIconsManager.onFileIconsChanged.subscribe(() => this.updateTree());
+
         this.updateTree();
+
     }
 
     private updateTree() {

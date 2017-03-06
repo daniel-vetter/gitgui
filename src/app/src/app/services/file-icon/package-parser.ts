@@ -9,7 +9,7 @@ export class PackageParser {
 
     constructor(private fileSystem: FileSystem) { }
 
-    parse(manifestPath: string): IconPackage {
+    parse(manifestPath: string, lightTheme: boolean): IconPackage {
         const iconFile = this.fileSystem.readJson(manifestPath);
         const allIconDefinitions = new Map<string, IconDefinition>();
         for (const key in iconFile.iconDefinitions) {
@@ -19,10 +19,11 @@ export class PackageParser {
                 allIconDefinitions.set(key, iconDef);
             }
         }
-debugger;
+
         const pack = new IconPackage();
         this.parseFileContent(pack, iconFile, allIconDefinitions);
-        this.parseFileContent(pack, iconFile.light, allIconDefinitions);
+        if (lightTheme)
+            this.parseFileContent(pack, iconFile.light, allIconDefinitions);
         return pack;
     }
 

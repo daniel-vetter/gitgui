@@ -1,12 +1,17 @@
-import { Injectable } from "@angular/core";
+import { Injectable, EventEmitter } from "@angular/core";
 const remote = (<any>window).require("electron").remote;
 const systemPreferences = remote.systemPreferences;
 
 @Injectable()
 export class ThemeManager {
 
-    private currentTheme: Theme = "light";
-    private rootStyleElement: HTMLStyleElement = undefined;
+    private _currentTheme: Theme = "light";
+    private _rootStyleElement: HTMLStyleElement = undefined;
+
+    public onCurrentThemeChanged = new EventEmitter();
+    public get currentTheme(): Theme {
+        return this._currentTheme;
+    }
 
     init() {
         this.applyCurrentTheme();
@@ -16,7 +21,7 @@ export class ThemeManager {
         const vars = new Map<string, string>();
         let customCss = "";
 
-        if (this.currentTheme === "light") {
+        if (this._currentTheme === "light") {
             vars.set("theme-window-background", systemPreferences.getColor("menu"));
             vars.set("theme-font-color", systemPreferences.getColor("window-text"));
             vars.set("theme-workspace-background", "#FFFFFF");
@@ -38,18 +43,19 @@ export class ThemeManager {
         }
         this.setGlobalVars(vars, customCss);
         this.redrawAllScrollBars();
+        this.onCurrentThemeChanged.emit();
     }
 
     switchTheme(theme: Theme) {
-        this.currentTheme = theme;
+        this._currentTheme = theme;
         this.applyCurrentTheme();
     }
 
     private setGlobalVars(vars: Map<string, string>, customCss: string) {
-        if (!this.rootStyleElement) {
-            this.rootStyleElement = document.createElement("style");
-            this.rootStyleElement.type = "text/css";
-            document.head.appendChild(this.rootStyleElement);
+        if (!this._rootStyleElement) {
+            this._rootStyleElement = document.createElement("style");
+            this._rootStyleElement.type = "text/css";
+            document.head.appendChild(this._rootStyleElement);
         }
 
         let css = "";
@@ -57,7 +63,7 @@ export class ThemeManager {
             css += "--" + k + ": " + v + ";";
         });
 
-        this.rootStyleElement.innerHTML = ":root {" + css + "}\n\n" + customCss;
+        this._rootStyleElement.innerHTML = ":root {" + css + "}\n\n" + customCss;
     }
 
     private redrawAllScrollBars() {

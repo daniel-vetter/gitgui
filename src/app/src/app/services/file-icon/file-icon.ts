@@ -1,18 +1,24 @@
 import * as Rx from "rxjs";
 import { Config } from "../config";
-import { Injectable } from "@angular/core";
+import { Injectable, EventEmitter } from "@angular/core";
 import { PackageLoader } from "./package-loader";
 import { PackageParser, IconPackage } from "./package-parser";
 import { Path } from "../path";
+import { ThemeManager } from "../theme-manager";
 
 @Injectable()
 export class FileIconManager {
 
     iconPackage: IconPackage;
-    defaultFolderIcon: IconBundle ;
+    defaultFolderIcon: IconBundle;
     defaultFileIcon: IconDefinition;
 
-    constructor(private config: Config, private packageLoader: PackageLoader, private packageParser: PackageParser) {
+    onFileIconsChanged = new EventEmitter();
+
+    constructor(private config: Config,
+        private packageLoader: PackageLoader,
+        private packageParser: PackageParser,
+        private themeManager: ThemeManager) {
         this.defaultFolderIcon = new IconBundle();
         this.defaultFolderIcon.collapsed = new IconMaterialDefinition("folder");
         this.defaultFolderIcon.expanded = new IconMaterialDefinition("folder_open");
@@ -20,12 +26,19 @@ export class FileIconManager {
     }
 
     init() {
+        this.loadIcons();
+        this.themeManager.onCurrentThemeChanged.subscribe(() => this.loadIcons());
+    }
+
+    private loadIcons() {
         this.packageLoader.load(this.config.get().fileIconPackageUrl).subscribe(manifestPath => {
             try {
-                if (manifestPath)
-                    this.iconPackage = this.packageParser.parse(manifestPath);
-                else
+                if (manifestPath) {
+                    this.iconPackage = this.packageParser.parse(manifestPath, this.themeManager.currentTheme === "light");
+                    this.onFileIconsChanged.emit();
+                } else {
                     console.warn("no manifest file found in icon package");
+                }
             } catch (error) {
                 console.warn("error while parsing icon package", error);
             }
@@ -81,7 +94,7 @@ export class IconImageDefinition extends IconDefinition {
 }
 
 export class IconMaterialDefinition extends IconDefinition {
-    constructor (public name: string) {
+    constructor(public name: string) {
         super();
     }
 }
