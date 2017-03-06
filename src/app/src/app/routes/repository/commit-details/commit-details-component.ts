@@ -1,8 +1,9 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
 import { RepositoryCommit } from "../../../model/model";
-import { CommitDetailsReader } from "../../../services/git/commit-details-reader";
+import { CommitDetailsReader, ChangedFile } from "../../../services/git/commit-details-reader";
 import { ChangedFileTreeNodeModel, FileTreeBuilder } from "./services/file-tree-builder";
 import { ChangedFileTreeNodeModelAdapter } from "./services/changed-file-tree-node-model-adapter";
+import { Path } from "../../../services/path";
 
 @Component({
     selector: "commit-details",
@@ -17,7 +18,9 @@ export class CommitDetailsComponent implements OnChanges {
     authorName: string = "";
     authorMail: string = "";
     authorDate: string = "";
+    filter: string = "";
 
+    changedFiles: ChangedFile[];
     changeFilesTree: ChangedFileTreeNodeModel[];
     adapter = new ChangedFileTreeNodeModelAdapter();
 
@@ -28,6 +31,7 @@ export class CommitDetailsComponent implements OnChanges {
         if (!this.commit)
             return;
 
+        this.filter = "";
         const localCommit = this.commit;
 
         this.authorName = this.commit.authorName;
@@ -38,7 +42,24 @@ export class CommitDetailsComponent implements OnChanges {
                 this.commitTitle = x;
         });
         this.commitDetailsReader.getFileChangesOfCommit(this.commit).subscribe(x => {
-            this.changeFilesTree = this.fileTreeBuilder.getTree(x);
+            this.changedFiles = x;
+            this.updateTree();
         });
+        this.updateTree();
+    }
+
+    private updateTree() {
+        if (!this.changedFiles) {
+            this.changeFilesTree = [];
+        } else {
+            let changedFiles = this.changedFiles;
+            if (this.filter && this.filter !== "")
+                changedFiles = this.changedFiles.filter(x => Path.getLastPart(x.path).indexOf(this.filter) !== -1);
+            this.changeFilesTree = this.fileTreeBuilder.getTree(changedFiles);
+        }
+    }
+
+    onFilterChange() {
+        this.updateTree();
     }
 }

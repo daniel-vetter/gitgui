@@ -19,7 +19,7 @@
     <div class="content" style="display: flex; flex-direction: column; flex: 1">
         <div>Changes:</div>
         <div style="margin-bottom: 4px">
-            <input type="text" placeholder="Filter" style="width: 100%">
+            <input type="text" placeholder="Filter" style="width: 100%" [(ngModel)]="filter" (ngModelChange)="onFilterChange()">
         </div>
         <div class="treeView">
             <tree-view [data]="changeFilesTree" [adapter]="adapter">

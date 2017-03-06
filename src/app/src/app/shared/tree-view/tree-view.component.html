@@ -8,11 +8,13 @@
         [style.top.px]="lineViewModel.top"
         [hidden]="!lineViewModel.visible">
         <div [style.minWidth.px]="lineViewModel.paddingLeft"></div>
-        <div class="expander" [class.expanded]="lineViewModel.isExpanded">
+        <!--
+        <div  class="expander" [class.expanded]="lineViewModel.isExpanded">
             <div *ngIf="lineViewModel.hasChildren">
                 <i class="material-icons" style="font-size: 14px;">expand_more</i>
             </div>
         </div>
+        -->
         <div style="flex: 1; overflow: hidden">
             <ng-template [ngTemplateOutlet]="templateRef" [ngOutletContext]="{ $implicit: lineViewModel.data.data }">
             </ng-template>
