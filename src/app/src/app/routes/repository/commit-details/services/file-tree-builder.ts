@@ -1,6 +1,12 @@
 import { ChangedFile } from "../../../../services/git/commit-details-reader";
+import { IconDefinition, FileIconManager } from "../../../../services/file-icon/file-icon";
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class FileTreeBuilder {
+
+    constructor(private fileIconManager: FileIconManager) {}
+
     getTree(changedFiles: ChangedFile[]): ChangedFileTreeNodeModel[] {
         const root = this.createBaseTree(changedFiles);
         this.combineFolderWithOneParent(root);
@@ -62,11 +68,13 @@ export class FileTreeBuilder {
         this.forEachNode(node, x => {
             x.isFolder = x.children.length > 0;
             if (x.isFolder) {
-                x.iconExpanded = "folder_open";
-                x.iconCollapsed = "folder";
+                const iconDefinition = this.fileIconManager.getFolderIcon(x.label);
+                x.iconExpanded = iconDefinition.expanded;
+                x.iconCollapsed = iconDefinition.collapsed;
             } else {
-                x.iconExpanded = "insert_drive_file";
-                x.iconCollapsed = "insert_drive_file";
+                const iconDefinition = this.fileIconManager.getFileIcon(x.label);
+                x.iconExpanded = iconDefinition;
+                x.iconCollapsed = iconDefinition;
             }
         });
     }
@@ -81,8 +89,8 @@ export class FileTreeBuilder {
 
 export class ChangedFileTreeNodeModel {
     label: string = "";
-    iconExpanded: string = "";
-    iconCollapsed: string = "";
+    iconExpanded: IconDefinition;
+    iconCollapsed: IconDefinition;
     isFolder: boolean;
     expanded: boolean;
     children: ChangedFileTreeNodeModel[] = [];

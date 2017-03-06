@@ -3,6 +3,7 @@ import { ThemeManager } from "./services/theme-manager";
 import { MenuManager } from "./menu/menu-manager";
 import { Config } from "./services/config";
 import { RepositoryOpener } from "./services/repository-opener";
+import { FileIconManager } from "./services/file-icon/file-icon";
 
 @Component({
     selector: "app-root",
@@ -14,11 +15,13 @@ export class AppComponent implements OnInit {
     constructor(private menuManager: MenuManager,
         private themeManager: ThemeManager,
         private config: Config,
-        private repositoryOpener: RepositoryOpener) { }
+        private repositoryOpener: RepositoryOpener,
+        private fileIconManager: FileIconManager) { }
 
     ngOnInit() {
         this.menuManager.init();
         this.themeManager.init();
+        this.fileIconManager.init();
         this.loadLastRepository();
     }
 

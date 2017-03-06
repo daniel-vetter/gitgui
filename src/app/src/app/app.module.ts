@@ -18,12 +18,20 @@ import { SharedModule } from "./shared/shared.module";
 import { StatusBarComponent } from "./routes/repository/status-bar/status-bar.component";
 import { FileTreeBuilder } from "./routes/repository/commit-details/services/file-tree-builder";
 import { Status } from "./services/status";
+import { Platform } from "./services/platform";
+import { FileSystem } from "./services/file-system";
+import { FileIconManager } from "./services/file-icon/file-icon";
+import { PackageLoader } from "./services/file-icon/package-loader";
+import { Clone } from "./services/git/clone";
+import { PackageParser } from "./services/file-icon/package-parser";
+import { FileIconComponent } from "./routes/repository/commit-details/file-icon/file-icon.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     RepositoryComponent,
     CommitDetailsComponent,
+    FileIconComponent,
     StatusBarComponent
   ],
   imports: [
@@ -38,12 +46,17 @@ import { Status } from "./services/status";
   ],
   providers: [
       EventAggregator,
+      Platform,
       Config,
       CurrentRepository,
       ThemeManager,
       RepositoryOpener,
       FileTreeBuilder,
-      Status
+      Status,
+      FileSystem,
+      FileIconManager,
+      PackageLoader,
+      PackageParser
   ],
   bootstrap: [AppComponent]
 })

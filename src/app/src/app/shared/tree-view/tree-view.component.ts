@@ -46,8 +46,6 @@ export class TreeViewComponent implements OnChanges {
             return true;
         });
 
-        console.log(this.treeLineList.items,this.visibleTreeLines.viewModels ,visibleStart, visibleEnd);
-
         this.totalScrollHeight = this.lineHeight * this.treeLineList.items.length;
     }
 

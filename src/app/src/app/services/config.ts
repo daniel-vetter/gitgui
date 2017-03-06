@@ -1,53 +1,41 @@
 import { Injectable } from "@angular/core";
 import * as Rx from "rxjs";
 import { ConfigData } from "../model/config";
-const remote = (<any>window).require("electron").remote;
-const fs = remote.require("fs");
-const process = remote.process;
+import { Platform } from "./platform";
+import { Path } from "./path";
+import { FileSystem } from "./file-system";
 
 @Injectable()
 export class Config {
 
     private config: ConfigData;
 
+    constructor(private platform: Platform, private fileSystem: FileSystem) {}
+
     get(): ConfigData {
         if (this.config) {
             return this.config;
         }
-        const configFilePath = this.getConfigFilePath();
+        const configFilePath = this.configFilePath;
 
-        if (!fs.existsSync(configFilePath)) {
+        if (!this.fileSystem.exists(configFilePath)) {
             console.warn("Configuration file was not found. Default configuration will be used.");
             this.config = new ConfigData();
             return this.config;
         }
-
-        const jsonData = fs.readFileSync(configFilePath, "utf8");
-        this.config = JSON.parse(jsonData);
+        this.config = this.fileSystem.readJson(configFilePath);
         return this.config;
     }
 
     save(sync = false) {
-        const data =  JSON.stringify(this.config, undefined, 2);
         if (sync) {
-            fs.writeFileSync(this.getConfigFilePath(), data, { encoding: "utf8" });
+            this.fileSystem.saveJson(this.configFilePath, this.config);
         } else {
-            fs.writeFile(this.getConfigFilePath(), data, { encoding: "utf8" }, () => { });
+            this.fileSystem.saveJsonAsync(this.configFilePath, this.config).subscribe(() => {});
         }
     }
 
-    private getConfigFilePath() {
-        let baseDir: string = undefined;
-        if (process.platform === "win32") {
-            baseDir = process.env["LOCALAPPDATA"] + "\\GitGui";    
-        } else if (process.platform === "linux") {
-            baseDir = process.env["HOME"] + "/.gitgui";
-        } else {
-            throw new Error("TODO: Find user app data directory for other platforms than win32 and linux.")
-        }
-        if (!fs.existsSync(baseDir)) {
-            fs.mkdirSync(baseDir);
-        }
-        return baseDir + "/config.json";
+    private get configFilePath() {
+        return Path.combine(this.platform.appDataDirectory, "config.json");
     }
 }

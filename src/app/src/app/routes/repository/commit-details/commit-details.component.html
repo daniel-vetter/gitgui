@@ -22,8 +22,8 @@
             <tree-view [data]="changeFilesTree" [adapter]="adapter">
                 <ng-template let-data>
                     <div style="display: flex; overflow: hidden" [title]="data.label">
-                        <div style="white-space: nowrap; text-overflow: ellipsis">
-                            <i class="material-icons" style="padding-right: 4px; font-size: 14px;">{{ data.expanded ? data.iconExpanded : data.iconCollapsed }}</i>
+                        <div style="padding-right: 4px">
+                            <file-icon [icon]="data.expanded ? data.iconExpanded : data.iconCollapsed"></file-icon>
                         </div>
                         <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ data.label }}</span>
                     </div>
