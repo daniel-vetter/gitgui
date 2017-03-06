@@ -1,4 +1,4 @@
-import { ChangedFile } from "../../../../services/git/commit-details-reader";
+import { ChangedFile, ChangeType } from "../../../../services/git/commit-details-reader";
 import { IconDefinition, FileIconManager } from "../../../../services/file-icon/file-icon";
 import { Injectable } from "@angular/core";
 import { Path } from "../../../../services/path";
@@ -6,7 +6,7 @@ import { Path } from "../../../../services/path";
 @Injectable()
 export class FileTreeBuilder {
 
-    constructor(private fileIconManager: FileIconManager) {}
+    constructor(private fileIconManager: FileIconManager) { }
 
     getTree(changedFiles: ChangedFile[]): ChangedFileTreeNodeModel[] {
         const root = this.createBaseTree(changedFiles);
@@ -22,12 +22,18 @@ export class FileTreeBuilder {
         for (const change of changedFiles) {
             const parts = change.path.split("/");
             let curNode = root;
-            for (const part of parts) {
+            for (let i = 0; i < parts.length; i++) {
+                const part = parts[i];
                 let childNode = index.get(curNode, part);
                 if (!childNode) {
                     childNode = new ChangedFileTreeNodeModel();
                     childNode.label = part;
                     childNode.expanded = true;
+                    if (i === parts.length - 1) {
+                        if (change.type === ChangeType.Added) childNode.textClass = "entryAdd";
+                        else if (change.type === ChangeType.Deleted) childNode.textClass = "entryRemove";
+                        else childNode.textClass = "entryChange";
+                    }
                     curNode.children.push(childNode);
                     index.set(curNode, childNode);
                 }
@@ -55,7 +61,7 @@ export class FileTreeBuilder {
     }
 
     private combineFolderWithOneParent(root: ChangedFileTreeNodeModel) {
-        for(const child of root.children) {
+        for (const child of root.children) {
             this.forEachNode(child, x => {
                 while (x.children.length === 1 && x.children[0].children.length !== 0) {
                     x.label = Path.combine(x.label, x.children[0].label);
@@ -94,6 +100,7 @@ export class ChangedFileTreeNodeModel {
     iconCollapsed: IconDefinition;
     isFolder: boolean;
     expanded: boolean;
+    textClass: string;
     children: ChangedFileTreeNodeModel[] = [];
 }
 
@@ -105,7 +112,7 @@ class ChildIndex {
         return this.getSubIndex(node).set(child.label, child);
     }
 
-    get (node: ChangedFileTreeNodeModel, childLabel: string): ChangedFileTreeNodeModel {
+    get(node: ChangedFileTreeNodeModel, childLabel: string): ChangedFileTreeNodeModel {
         return this.getSubIndex(node).get(childLabel);
     }
 
