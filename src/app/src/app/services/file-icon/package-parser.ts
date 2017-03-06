@@ -19,37 +19,49 @@ export class PackageParser {
                 allIconDefinitions.set(key, iconDef);
             }
         }
-
+debugger;
         const pack = new IconPackage();
-        pack.file = allIconDefinitions.get(iconFile.file);
-        pack.folder = allIconDefinitions.get(iconFile.folder);
-        pack.folderExpanded = allIconDefinitions.get(iconFile.folderExpanded);
-        pack.fileExtensions = this.readReferences(iconFile.fileExtensions, allIconDefinitions);
-        pack.fileNames = this.readReferences(iconFile.fileNames, allIconDefinitions);
-        pack.folderNames = this.readReferences(iconFile.fileNames, allIconDefinitions);
-        pack.folderNamesExpanded = this.readReferences(iconFile.fileNames, allIconDefinitions);
+        this.parseFileContent(pack, iconFile, allIconDefinitions);
+        this.parseFileContent(pack, iconFile.light, allIconDefinitions);
         return pack;
     }
 
-    readReferences(data: any, allIconDefinitions: Map<string, IconDefinition>): Map<string, IconDefinition> {
-        const result = new Map<string, IconDefinition>();
+    private parseFileContent(pack: IconPackage, data: any, allIconDefinitions: Map<string, IconDefinition>) {
+        if (!data)
+            return;
+        if (data.file && allIconDefinitions.get(data.file))
+            pack.file = allIconDefinitions.get(data.file);
+        if (data.folder && allIconDefinitions.get(data.folder))
+            pack.folder = allIconDefinitions.get(data.folder);
+        if (data.folderExpanded && allIconDefinitions.get(data.folderExpanded))
+            pack.folderExpanded = allIconDefinitions.get(data.folderExpanded);
+
+        this.readReferences(data.fileExtensions, pack.fileExtensions, allIconDefinitions);
+        this.readReferences(data.fileNames, pack.fileNames, allIconDefinitions);
+        this.readReferences(data.folderNames, pack.folderNames, allIconDefinitions);
+        this.readReferences(data.folderNamesExpanded, pack.folderNamesExpanded, allIconDefinitions);
+
+    }
+
+    readReferences(data: any,
+                   target: Map<string, IconDefinition>,
+                   allIconDefinitions: Map<string, IconDefinition>): void {
         for (const key in data) {
             if (data.hasOwnProperty(key)) {
-                result.set(key, allIconDefinitions.get(data[key]));
+                target.set(key, allIconDefinitions.get(data[key]));
             }
         }
-        return result;
     }
 }
 
 export class IconPackage {
-    fileExtensions: Map<string, IconDefinition>;
-    fileNames: Map<string, IconDefinition>;
+    fileExtensions = new Map<string, IconDefinition>();
+    fileNames = new Map<string, IconDefinition>();
     file: IconDefinition;
     folder: IconDefinition;
     folderExpanded: IconDefinition;
-    folderNames: Map<string, IconDefinition>;
-    folderNamesExpanded: Map<string, IconDefinition>;
+    folderNames = new Map<string, IconDefinition>();
+    folderNamesExpanded = new Map<string, IconDefinition>();
 }
 
 
