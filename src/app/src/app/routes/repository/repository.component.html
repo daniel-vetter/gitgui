@@ -7,7 +7,7 @@
     </div>
     <div *ngIf="repository" style="flex: 1; display: flex" class="fill repository">
         <div style="width: 250px; overflow: hidden">
-            &nbsp;
+            <side-bar [repository]="repository"></side-bar>
         </div>
         <div style="background: white; flex: 1">
             <commit-history [repository]="repository" [(selectedCommit)]="selectedCommit"></commit-history>

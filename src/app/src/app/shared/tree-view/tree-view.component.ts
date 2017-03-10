@@ -26,6 +26,7 @@ export class TreeViewComponent implements OnChanges {
 
     private updateLines() {
         this.treeLineList = new TreeLineList(this.data, this.adapter);
+        console.log(this.treeLineList);
     }
 
     onExpanderClicked(vm: TreeLineViewModel) {
@@ -37,7 +38,7 @@ export class TreeViewComponent implements OnChanges {
 
         const visibleStart = Math.max(0, Math.floor(this.scrollWrapper.nativeElement.scrollTop / this.lineHeight));
         const visibleEnd = Math.floor(visibleStart + this.scrollWrapper.nativeElement.clientHeight / this.lineHeight) + 1;
-
+console.log(visibleStart, visibleEnd);
         this.visibleTreeLines.remapRange(this.treeLineList.items, visibleStart, visibleEnd, (from, to) => {
             to.hasChildren = from.hasChildren;
             to.isExpanded = from.isExpanded;

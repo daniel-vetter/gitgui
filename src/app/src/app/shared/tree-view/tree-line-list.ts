@@ -4,7 +4,7 @@ export class TreeLineList {
 
     items: TreeLine[];
 
-    constructor (private data: any[], private adapter: ITreeViewAdapter<any>) {
+    constructor(private data: any[], private adapter: ITreeViewAdapter<any>) {
         this.update();
     }
 
@@ -36,10 +36,12 @@ export class TreeLineList {
         if (currentState) {
             const lineIndex = this.items.indexOf(vm);
             const children = this.adapter.getChildren(vm.data);
-            for (let i = children.length - 1; i >= 0; i--) {
-                const newLine = this.getLineFromData(children[i], vm);
-                this.items.splice(lineIndex + 1, 0, newLine);
-                this.applyExpandState(newLine);
+            if (children) {
+                for (let i = children.length - 1; i >= 0; i--) {
+                    const newLine = this.getLineFromData(children[i], vm);
+                    this.items.splice(lineIndex + 1, 0, newLine);
+                    this.applyExpandState(newLine);
+                }
             }
         } else {
             const lineIndex = this.items.indexOf(vm);

@@ -22,9 +22,9 @@ import { Platform } from "./services/platform";
 import { FileSystem } from "./services/file-system";
 import { FileIconManager } from "./services/file-icon/file-icon";
 import { PackageLoader } from "./services/file-icon/package-loader";
-import { Clone } from "./services/git/clone";
 import { PackageParser } from "./services/file-icon/package-parser";
 import { FileIconComponent } from "./routes/repository/commit-details/file-icon/file-icon.component";
+import { SideBarComponent } from "./routes/repository/side-bar/side-bar.component";
 
 @NgModule({
   declarations: [
@@ -32,7 +32,8 @@ import { FileIconComponent } from "./routes/repository/commit-details/file-icon/
     RepositoryComponent,
     CommitDetailsComponent,
     FileIconComponent,
-    StatusBarComponent
+    StatusBarComponent,
+    SideBarComponent
   ],
   imports: [
     BrowserModule,
