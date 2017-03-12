@@ -1,0 +1,59 @@
+.root {
+    border-bottom: 1px solid dodgerblue;
+    background: rgb(250, 250, 250);
+    padding-top: 5px;
+
+    ::-webkit-scrollbar {
+        width: 1em;
+        height: 5px;
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: rgb(64,64,64);
+    }
+}
+
+.tab {
+    margin-right: 5px;
+    white-space: nowrap;
+    vertical-align: middle;
+
+    &:hover {
+        background: lighten(dodgerblue, 10%);
+        color: white;
+
+        .close {
+            visibility: visible;
+        }
+    }
+}
+
+.title {
+    padding: 0.2em;
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+}
+
+.close {
+    padding: 0.2em;
+    padding-right: 0.3em;
+    padding-left: 0.3em;
+    margin-left: -0.3em;
+    visibility: hidden;
+    vertical-align: middle;
+
+    &:hover {
+        background: lighten(dodgerblue, 20%)
+    }
+}
+
+
+.active {
+    background: dodgerblue !important;
+    color: white;
+    .close {
+        visibility: visible;
+    }
+}
+
+

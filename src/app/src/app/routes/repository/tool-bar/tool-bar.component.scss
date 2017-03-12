@@ -1,0 +1,18 @@
+.root {
+    border-top: 1px solid var(--theme-workspace-border);
+    border-bottom: 1px solid var(--theme-workspace-border);
+    display: inline-flex;
+    width: 100%;
+}
+
+.button {
+    padding: 0.3em;
+    padding-left: 1em;
+    padding-right: 1em;
+    vertical-align: middle;
+    &:hover {
+        background: rgba(30, 144, 255, 0.1);
+    }
+}
+
+

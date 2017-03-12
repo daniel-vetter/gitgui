@@ -25,6 +25,8 @@ import { PackageLoader } from "./services/file-icon/package-loader";
 import { PackageParser } from "./services/file-icon/package-parser";
 import { FileIconComponent } from "./routes/repository/commit-details/file-icon/file-icon.component";
 import { SideBarComponent } from "./routes/repository/side-bar/side-bar.component";
+import { ToolBarComponent } from "./routes/repository/tool-bar/tool-bar.component";
+import { TabHeaderComponent } from "./routes/repository/tab-header/tab-header-component";
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { SideBarComponent } from "./routes/repository/side-bar/side-bar.componen
     CommitDetailsComponent,
     FileIconComponent,
     StatusBarComponent,
-    SideBarComponent
+    SideBarComponent,
+    ToolBarComponent,
+    TabHeaderComponent
   ],
   imports: [
     BrowserModule,

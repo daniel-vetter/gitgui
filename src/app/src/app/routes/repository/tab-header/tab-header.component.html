@@ -1,0 +1,10 @@
+<div class="root">
+    <div style="overflow-x: auto; overflow-y: hidden; display: flex">
+        <div *ngFor="let tab of tabs" class="tab" style="display: flex;" [class.active]="selectedTab === tab" (click)="onTabClicked(tab)">
+            <div class="title" style="flex: 1">{{ tab.title }}</div>
+            <div class="close" *ngIf="tab.closeable" (click)="onCloseClicked(tab)">
+                <i class="material-icons" >close</i>
+            </div>
+        </div>
+    </div>
+</div>
