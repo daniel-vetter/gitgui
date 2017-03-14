@@ -15,9 +15,9 @@ export class SideBarComponent implements OnChanges {
 
     ngOnChanges() {
         this.nodes = [
-            this.mapRefs("Local branches", "git-branch", true, this.repository.refs.filter(x => x instanceof RepositoryHeadRef)),
-            this.mapRefs("Remote branches", "git-branch", false, this.repository.refs.filter(x => x instanceof RepositoryRemoteRef)),
-            this.mapRefs("Tags", "tag", false, this.repository.refs.filter(x => x instanceof RepositoryTagRef))
+            this.mapRefs("Local branches", "call_split", true, this.repository.refs.filter(x => x instanceof RepositoryHeadRef)),
+            this.mapRefs("Remote branches", "call_split", false, this.repository.refs.filter(x => x instanceof RepositoryRemoteRef)),
+            this.mapRefs("Tags", "label_outline", false, this.repository.refs.filter(x => x instanceof RepositoryTagRef))
         ];
     }
 
@@ -48,8 +48,8 @@ export class SideBarComponent implements OnChanges {
 
         const traverse = (x: RefNode) => {
             if (x.children.length > 0) {
-                x.iconExpanded = "chevron-down";
-                x.iconCollapsed = "chevron-right";
+                x.iconExpanded = "keyboard_arrow_down";
+                x.iconCollapsed = "keyboard_arrow_right";
             } else {
                 x.iconCollapsed = icon;
                 x.iconExpanded = icon;

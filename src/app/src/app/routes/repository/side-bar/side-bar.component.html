@@ -7,7 +7,7 @@
             <ng-template let-data>
                 <div style="display: flex; overflow: hidden; padding-left: 5px; padding-right: 5px" [title]="data.name">
                     <div style="padding-right: 4px">
-                        <img src="assets/icons/{{ data.expanded ? data.iconExpanded : data.iconCollapsed }}.svg" style="height: 16px; width: 16px; margin-top: 4px">
+                        <i class="material-icons" style="font-size: 18px">{{ data.expanded ? data.iconExpanded : data.iconCollapsed }}</i>
                     </div>
                     <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 23px">{{ data.name }}</span>
                 </div>
