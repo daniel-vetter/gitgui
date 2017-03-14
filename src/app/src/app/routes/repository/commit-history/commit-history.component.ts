@@ -177,9 +177,13 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     onMouseDown(event) {
-        this.commitSelected = this.commitClicked = this.hitTest(event.clientX, event.clientY);
-        this.selectedCommitChange.emit(this.selectedCommit);
-        this.changeDetectorRef.detectChanges();
+        const clickedCommit = this.hitTest(event.clientX, event.clientY);
+        if (clickedCommit) {
+            this.commitSelected = this.commitClicked = clickedCommit;
+            this.selectedCommitChange.emit(this.selectedCommit);
+            this.changeDetectorRef.detectChanges();
+        }
+
     }
 
     onMouseUp(event) {

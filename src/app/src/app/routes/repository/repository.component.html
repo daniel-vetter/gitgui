@@ -17,7 +17,7 @@
                 <div style="background: white; flex: 1">
                     <commit-history [repository]="repository" [(selectedCommit)]="selectedCommit"></commit-history>
                 </div>
-                <div style="width: 350px; overflow: hidden">
+                <div *ngIf="selectedCommit" style="width: 350px; overflow: hidden">
                     <commit-details [commit]="selectedCommit"></commit-details>
                 </div>
             </div>
