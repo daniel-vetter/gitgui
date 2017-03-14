@@ -72,7 +72,8 @@ export class CommitAnnotationsComponent implements OnChanges {
 
             if (commit !== this.currentExpandedCommit) {
                 // go in reverse order through all annotations and shorten or remove them if they exceed the component width
-                const border = 10;
+                const borderRight = 10;
+                const borderLeft = 5;
                 const minAnnotationWidth = 50;
                 vm.hiddenAnnotationCount = 0;
                 while (true) {
@@ -85,8 +86,8 @@ export class CommitAnnotationsComponent implements OnChanges {
                     // calc max width for this annotation
                     const moreAnnotationsMarkerWidth = vm.hiddenAnnotationCount === 0
                         ? 0
-                        : this.getEstimatedHiddenAnnotationCountWidth(vm.hiddenAnnotationCount) + border;
-                    const maxWidth = this.width - lastAnnotation.left - border - moreAnnotationsMarkerWidth;
+                        : this.getEstimatedHiddenAnnotationCountWidth(vm.hiddenAnnotationCount) + borderRight + borderLeft;
+                    const maxWidth = this.width - lastAnnotation.left - borderRight - borderLeft - moreAnnotationsMarkerWidth;
 
                     // if this annotation is small enough, everything is fine
                     if (lastAnnotation.width < maxWidth)
