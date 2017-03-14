@@ -1,6 +1,6 @@
 <div class="fill root" style="display: flex; flex-direction: column;">
     <div style="padding: 5px">
-        <input type="text" placeholder="Filter" style="width: 100%" [(ngModel)]="filter" (ngModelChange)="onFilterChanged()">
+        <input type="search" placeholder="Filter" style="width: 100%" [(ngModel)]="filter" (ngModelChange)="onFilterChanged()">
     </div>
     <div style="flex: 1; overflow: hidden">
         <tree-view [adapter]="branchNodeAdapter" [data]="nodes" [lineHeight]="20">
