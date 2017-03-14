@@ -10,15 +10,25 @@ import { ITreeViewAdapter } from "../../../shared/tree-view/tree-view.component"
 export class SideBarComponent implements OnChanges {
     @Input() repository: Repository;
 
+    filter: string = "";
     nodes: RefNode[];
     branchNodeAdapter = new BranchNodeAdapter();
 
     ngOnChanges() {
+        this.update();
+    }
+
+    onFilterChanged() {
+        this.update();
+    }
+
+    private update() {
+        const matchingRefs = this.repository.refs.filter(x => x.shortName.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1);
         this.nodes = [
-            this.mapRefs("Local branches", "call_split", true, this.repository.refs.filter(x => x instanceof RepositoryHeadRef)),
-            this.mapRefs("Remote branches", "call_split", false, this.repository.refs.filter(x => x instanceof RepositoryRemoteRef)),
-            this.mapRefs("Tags", "label_outline", false, this.repository.refs.filter(x => x instanceof RepositoryTagRef))
-        ];
+            this.mapRefs("Local branches", "call_split", true, matchingRefs.filter(x => x instanceof RepositoryHeadRef)),
+            this.mapRefs("Remote branches", "call_split", this.filter !== "", matchingRefs.filter(x => x instanceof RepositoryRemoteRef)),
+            this.mapRefs("Tags", "label_outline", this.filter !== "", matchingRefs.filter(x => x instanceof RepositoryTagRef))
+        ].filter(x => x.children.length > 0);
     }
 
     private mapRefs(name: string, icon: string, expanded: boolean, refs: RepositoryRef[]): RefNode {

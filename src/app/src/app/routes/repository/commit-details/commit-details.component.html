@@ -22,9 +22,9 @@
             <input type="text" placeholder="Filter" style="width: 100%" [(ngModel)]="filter" (ngModelChange)="onFilterChange()">
         </div>
         <div class="treeView">
-            <tree-view [data]="changeFilesTree" [adapter]="adapter">
+            <tree-view [data]="changeFilesTree" [adapter]="adapter" [lineHeight]="22">
                 <ng-template let-data>
-                    <div style="display: flex; overflow: hidden" [title]="data.label">
+                    <div style="display: flex; overflow: hidden; padding: 3px" [title]="data.label">
                         <i class="material-icons" [style.display]="data.textClass=='entryAdd' ? 'block' : 'none'" style="color: green;  font-weight: bold">add</i>
                         <i class="material-icons" [style.display]="data.textClass=='entryRemove' ? 'block' : 'none'" style="color: red;  font-weight: bold">remove</i>
                         <i class="material-icons" [style.display]="data.textClass=='entryChange' ? 'block' : 'none'" style="color: dodgerblue;">create</i>

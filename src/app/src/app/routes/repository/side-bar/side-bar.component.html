@@ -1,15 +1,15 @@
 <div class="fill root" style="display: flex; flex-direction: column;">
     <div style="padding: 5px">
-        <input type="text" placeholder="Filter" style="width: 100%">
+        <input type="text" placeholder="Filter" style="width: 100%" [(ngModel)]="filter" (ngModelChange)="onFilterChanged()">
     </div>
     <div style="flex: 1; overflow: hidden">
-        <tree-view [adapter]="branchNodeAdapter" [data]="nodes" [lineHeight]="30">
+        <tree-view [adapter]="branchNodeAdapter" [data]="nodes" [lineHeight]="20">
             <ng-template let-data>
                 <div style="display: flex; overflow: hidden; padding-left: 5px; padding-right: 5px" [title]="data.name">
                     <div style="padding-right: 4px">
                         <i class="material-icons" style="font-size: 18px">{{ data.expanded ? data.iconExpanded : data.iconCollapsed }}</i>
                     </div>
-                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 23px">{{ data.name }}</span>
+                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 20px;">{{ data.name }}</span>
                 </div>
             </ng-template>
         </tree-view>
