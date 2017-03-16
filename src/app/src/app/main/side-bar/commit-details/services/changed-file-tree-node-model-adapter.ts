@@ -1,5 +1,5 @@
 import { ChangedFileTreeNodeModel } from "./file-tree-builder";
-import { ITreeViewAdapter } from "../../../../../shared/tree-view/tree-view.component";
+import { ITreeViewAdapter } from "../../../../shared/tree-view/tree-view.component";
 
 export class ChangedFileTreeNodeModelAdapter implements ITreeViewAdapter<ChangedFileTreeNodeModel> {
     hasChildren(data: ChangedFileTreeNodeModel): boolean {

@@ -11,6 +11,12 @@ export class TabManager {
     onTabChanged = new EventEmitter<Tab>();
 
     createNewTab(tab: Tab) {
+
+        let tempTab;
+        while ((tempTab = this._allTabs.find(x => !x.isPersistent)) !== undefined) {
+            this.closeTab(tempTab);
+        }
+
         (<Tab>tab).onDetailsChange = (x) => { this.onTabChanged.emit(x); };
         this._allTabs.push(tab);
         this.onTabListChanged.emit(this.allTabs);
@@ -28,7 +34,12 @@ export class TabManager {
         if (index === -1)
             throw new Error("The given tab can not be removed because its not part of the tab list.");
         if (this._selectedTab === tab) {
-            this.selectedTab = undefined;
+            let newIndex = index;
+            if (index > this._allTabs.length - 1)
+                newIndex--;
+            if (this._allTabs[index] === tab)
+                newIndex--;
+            this.selectedTab = this._allTabs[newIndex];
         }
         this._allTabs.splice(index, 1);
         this.onTabListChanged.emit(this.allTabs);

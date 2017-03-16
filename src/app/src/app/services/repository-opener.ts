@@ -6,6 +6,7 @@ import { EventAggregator } from "./event-aggregator";
 import { Status } from "./status";
 import { TabManager } from "./tab-manager";
 import { HistoryTab } from "../main/tabs/tabs";
+import { Path } from "./path";
 
 @Injectable()
 export class RepositoryOpener {
@@ -31,7 +32,10 @@ export class RepositoryOpener {
             this.tabManager.closeAllTabs();
             const tab = new HistoryTab();
             tab.repository = x;
-            this.tabManager.createNewTab(tab, true);
+            tab.title = "History";
+            tab.isCloseable = false;
+            tab.isPersistent = true;
+            this.tabManager.createNewTab(tab);
             this._isOpening = false;
             this.eventAggregator.publish("OpenRepositoryEnded");
             status.completed();

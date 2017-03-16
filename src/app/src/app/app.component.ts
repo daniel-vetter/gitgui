@@ -26,8 +26,6 @@ export class AppComponent implements OnInit {
         this.themeManager.init();
         this.fileIconManager.init();
         this.loadLastRepository();
-
-        this.tabManager.createNewTab(new HistoryTab());
     }
 
     private loadLastRepository() {

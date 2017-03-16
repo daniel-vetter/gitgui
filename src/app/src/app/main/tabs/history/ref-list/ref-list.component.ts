@@ -3,11 +3,11 @@ import { Repository, RepositoryHeadRef, RepositoryTagRef, RepositoryRemoteRef, R
 import { ITreeViewAdapter } from "../../../../shared/tree-view/tree-view.component";
 
 @Component({
-    selector: "side-bar",
-    templateUrl: "./side-bar.component.html",
-    styleUrls: ["./side-bar.component.scss"]
+    selector: "ref-list",
+    templateUrl: "./ref-list.component.html",
+    styleUrls: ["./ref-list.component.scss"]
 })
-export class SideBarComponent implements OnChanges {
+export class RefListComponent implements OnChanges {
     @Input() repository: Repository;
 
     filter: string = "";

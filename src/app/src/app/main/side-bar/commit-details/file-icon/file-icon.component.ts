@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { IconDefinition, IconImageDefinition, IconMaterialDefinition } from "../../../../../services/file-icon/file-icon";
+import { IconDefinition, IconImageDefinition, IconMaterialDefinition } from "../../../../services/file-icon/file-icon";
 
 @Component({
     selector: "file-icon",

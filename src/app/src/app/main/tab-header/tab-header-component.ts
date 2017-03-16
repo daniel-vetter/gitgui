@@ -9,7 +9,7 @@ import { TabManager, Tab } from "../../services/tab-manager";
 export class TabHeaderComponent implements OnInit {
     tabs: TabViewModel[] = [];
 
-    constructor(private tabManager: TabManager, private changeDetector: ChangeDetectorRef) {}
+    constructor(private tabManager: TabManager, private changeDetector: ChangeDetectorRef) { }
 
     ngOnInit() {
         this.tabManager.onSelectedTabChanged.subscribe(() => this.update());
@@ -27,16 +27,27 @@ export class TabHeaderComponent implements OnInit {
             vm.title = tab.title;
             vm.isSelected = tab === this.tabManager.selectedTab;
             vm.tab = tab;
+            vm.isPersistent = tab.isPersistent;
             this.tabs.push(vm);
         }
         this.changeDetector.detectChanges();
     }
 
-    onTabClicked(vm: TabViewModel) {
-        this.tabManager.selectedTab = vm.tab;
+    onTabClicked(vm: TabViewModel, event: MouseEvent) {
+        if (event.button === 1) { // mMiddel mouse button
+            this.onCloseClicked(vm);
+            return false;
+        }
+        if (this.tabManager.selectedTab === vm.tab) {
+            this.tabManager.selectedTab.isPersistent = true;
+        } else {
+            this.tabManager.selectedTab = vm.tab;
+        }
     }
 
     onCloseClicked(vm: TabViewModel) {
+        if (!vm.tab.isCloseable)
+            return;
         this.tabManager.closeTab(vm.tab);
         this.update();
     }
@@ -44,6 +55,7 @@ export class TabHeaderComponent implements OnInit {
 
 class TabViewModel {
     isSelected: boolean;
+    isPersistent: boolean;
     title: string;
     closeable: boolean;
     tab: Tab;

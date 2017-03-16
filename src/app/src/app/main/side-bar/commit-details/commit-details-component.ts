@@ -1,12 +1,12 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
-import { RepositoryCommit } from "../../../../model/model";
-import { CommitDetailsReader, ChangedFile } from "../../../../services/git/commit-details-reader";
+import { RepositoryCommit } from "../../../model/model";
+import { CommitDetailsReader, ChangedFile } from "../../../services/git/commit-details-reader";
 import { ChangedFileTreeNodeModel, FileTreeBuilder } from "./services/file-tree-builder";
 import { ChangedFileTreeNodeModelAdapter } from "./services/changed-file-tree-node-model-adapter";
-import { Path } from "../../../../services/path";
-import { FileIconManager } from "../../../../services/file-icon/file-icon";
-import { TabManager } from "../../../../services/tab-manager";
-import { FileChangeTab } from "../../tabs";
+import { Path } from "../../../services/path";
+import { FileIconManager } from "../../../services/file-icon/file-icon";
+import { TabManager } from "../../../services/tab-manager";
+import { FileChangeTab } from "../../tabs/tabs";
 
 @Component({
     selector: "commit-details",

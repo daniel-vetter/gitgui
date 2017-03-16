@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { HistoryTab } from "../tabs";
 import { Repository, RepositoryCommit } from "../../../model/model";
+import { SideBarManager } from "../../../services/side-bar-manager";
 
 @Component({
     selector: "history-tab",
@@ -12,11 +13,17 @@ export class HistoryTabComponent {
     repository: Repository;
     selectedCommit: RepositoryCommit;
 
+    constructor(private sideBarManager: SideBarManager) {}
+
+
     ngOnChanges() {
         this.repository = this.tab.repository;
         if (this.repository) {
-            this.tab.title = this.repository.location;
             this.tab.isCloseable = false;
         }
+    }
+
+    onSelectedCommitChange() {
+        this.sideBarManager.showCommitDetails(this.selectedCommit);
     }
 }

@@ -1,7 +1,7 @@
-import { ChangedFile, ChangeType } from "../../../../../services/git/commit-details-reader";
-import { IconDefinition, FileIconManager } from "../../../../../services/file-icon/file-icon";
+import { ChangedFile, ChangeType } from "../../../../services/git/commit-details-reader";
+import { IconDefinition, FileIconManager } from "../../../../services/file-icon/file-icon";
 import { Injectable } from "@angular/core";
-import { Path } from "../../../../../services/path";
+import { Path } from "../../../../services/path";
 
 @Injectable()
 export class FileTreeBuilder {
