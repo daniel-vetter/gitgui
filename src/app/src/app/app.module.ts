@@ -6,27 +6,30 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { EventAggregator } from "./services/event-aggregator";
 import { Config } from "./services/config";
-import { CommitHistoryModule } from "./routes/repository/commit-history/commit-history.module";
+import { CommitHistoryModule } from "./main/tabs/history/commit-history/commit-history.module";
 import { CurrentRepository } from "./services/current-repository";
 import { ThemeManager } from "./services/theme-manager";
-import { CommitDetailsComponent } from "./routes/repository/commit-details/commit-details-component";
+import { CommitDetailsComponent } from "./main/tabs/history/commit-details/commit-details-component";
 import { GitModule } from "./services/git/git.module";
-import { RepositoryComponent } from "./routes/repository/repository.component";
+import { RepositoryComponent } from "./main/repository.component";
 import { MenuModule } from "./menu/menu.module";
 import { RepositoryOpener } from "./services/repository-opener";
 import { SharedModule } from "./shared/shared.module";
-import { StatusBarComponent } from "./routes/repository/status-bar/status-bar.component";
-import { FileTreeBuilder } from "./routes/repository/commit-details/services/file-tree-builder";
+import { StatusBarComponent } from "./main/status-bar/status-bar.component";
+import { FileTreeBuilder } from "./main/tabs/history/commit-details/services/file-tree-builder";
 import { Status } from "./services/status";
 import { Platform } from "./services/platform";
 import { FileSystem } from "./services/file-system";
 import { FileIconManager } from "./services/file-icon/file-icon";
 import { PackageLoader } from "./services/file-icon/package-loader";
 import { PackageParser } from "./services/file-icon/package-parser";
-import { FileIconComponent } from "./routes/repository/commit-details/file-icon/file-icon.component";
-import { SideBarComponent } from "./routes/repository/side-bar/side-bar.component";
-import { ToolBarComponent } from "./routes/repository/tool-bar/tool-bar.component";
-import { TabHeaderComponent } from "./routes/repository/tab-header/tab-header-component";
+import { FileIconComponent } from "./main/tabs/history/commit-details/file-icon/file-icon.component";
+import { SideBarComponent } from "./main/tabs/history/side-bar/side-bar.component";
+import { ToolBarComponent } from "./main/tool-bar/tool-bar.component";
+import { TabHeaderComponent } from "./main/tab-header/tab-header-component";
+import { TabManager } from "./services/tab-manager";
+import { TabContentComponent } from "./main/tab-content/tab-content.component";
+import { HistoryTabComponent } from "./main/tabs/history/history-tab.component";
 
 @NgModule({
   declarations: [
@@ -37,7 +40,9 @@ import { TabHeaderComponent } from "./routes/repository/tab-header/tab-header-co
     StatusBarComponent,
     SideBarComponent,
     ToolBarComponent,
-    TabHeaderComponent
+    TabHeaderComponent,
+    TabContentComponent,
+    HistoryTabComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +66,8 @@ import { TabHeaderComponent } from "./routes/repository/tab-header/tab-header-co
       FileSystem,
       FileIconManager,
       PackageLoader,
-      PackageParser
+      PackageParser,
+      TabManager
   ],
   bootstrap: [AppComponent]
 })

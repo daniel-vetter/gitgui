@@ -4,6 +4,8 @@ import { MenuManager } from "./menu/menu-manager";
 import { Config } from "./services/config";
 import { RepositoryOpener } from "./services/repository-opener";
 import { FileIconManager } from "./services/file-icon/file-icon";
+import { TabManager } from "./services/tab-manager";
+import { HistoryTab } from "./main/tabs/tabs";
 
 @Component({
     selector: "app-root",
@@ -16,13 +18,16 @@ export class AppComponent implements OnInit {
         private themeManager: ThemeManager,
         private config: Config,
         private repositoryOpener: RepositoryOpener,
-        private fileIconManager: FileIconManager) { }
+        private fileIconManager: FileIconManager,
+        private tabManager: TabManager) { }
 
     ngOnInit() {
         this.menuManager.init();
         this.themeManager.init();
         this.fileIconManager.init();
         this.loadLastRepository();
+
+        this.tabManager.createNewTab(new HistoryTab());
     }
 
     private loadLastRepository() {
@@ -32,3 +37,5 @@ export class AppComponent implements OnInit {
         }
     }
 }
+
+

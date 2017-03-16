@@ -1,0 +1,7 @@
+<div class="fill root">
+    <ng-container *ngFor="let tab of tabs">
+        <div *ngIf="tab.type === 'HistoryTab'" [class.visible]="tab.visible"><history-tab [tab]="tab.data"></history-tab></div>
+    </ng-container>
+
+    <!-- <div [class.hidden]="!isFileChangeTab"><tab-file-change [details]="details"></tab-file-change></div> -->
+</div>

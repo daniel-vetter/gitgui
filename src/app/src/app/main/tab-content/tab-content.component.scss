@@ -1,0 +1,11 @@
+.root {
+    display: flex;
+     &>div {
+        display: none;
+        flex: 1;
+     }
+}
+
+.visible {
+    display: block !important;
+}

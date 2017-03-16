@@ -1,0 +1,40 @@
+<div class="root">
+
+    <div style="display: flex; padding-bottom: 1em;">
+        <div class="profileImage">
+            <profile-image [commit]="commit"></profile-image>
+        </div>
+        <div style="flex: 1; margin-left: 1em; overflow: hidden">
+            <div style="text-overflow: ellipsis; overflow: hidden">{{ authorName }}</div>
+            <div style="text-overflow: ellipsis; overflow: hidden">{{ authorMail }}</div>
+            <div style="text-overflow: ellipsis; overflow: hidden">{{ authorDate }}</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div>Message:</div>
+        <div class="commitMessage">{{ commitTitle }}</div>
+    </div>
+
+    <div class="content" style="display: flex; flex-direction: column; flex: 1">
+        <div>Changes:</div>
+        <div style="margin-bottom: 4px">
+            <input type="search" placeholder="Filter" style="width: 100%" [(ngModel)]="filter" (ngModelChange)="onFilterChange()">
+        </div>
+        <div class="treeView">
+            <tree-view [data]="changeFilesTree" [adapter]="adapter" [lineHeight]="22">
+                <ng-template let-data>
+                    <div style="display: flex; overflow: hidden; padding: 3px" [title]="data.label" (click)="onFileSelected(data)">
+                        <i class="material-icons" [style.display]="data.textClass=='entryAdd' ? 'block' : 'none'" style="color: green;  font-weight: bold">add</i>
+                        <i class="material-icons" [style.display]="data.textClass=='entryRemove' ? 'block' : 'none'" style="color: red;  font-weight: bold">remove</i>
+                        <i class="material-icons" [style.display]="data.textClass=='entryChange' ? 'block' : 'none'" style="color: dodgerblue;">create</i>
+                        <div style="padding-right: 4px">
+                            <file-icon [icon]="data.expanded ? data.iconExpanded : data.iconCollapsed"></file-icon>
+                        </div>
+                        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap" [class]="data.textClass">{{ data.label }}</span>
+                    </div>
+                </ng-template>
+            </tree-view>
+        </div>
+    </div>
+</div>

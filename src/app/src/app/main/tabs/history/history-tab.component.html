@@ -1,0 +1,11 @@
+<div style="display: flex" class="fill">
+    <div style="width: 250px; overflow: hidden">
+        <side-bar [repository]="repository"></side-bar>
+    </div>
+    <div style="background: white; flex: 1">
+        <commit-history [repository]="repository" [(selectedCommit)]="selectedCommit"></commit-history>
+    </div>
+    <div *ngIf="selectedCommit" style="width: 350px; overflow: hidden">
+        <commit-details [commit]="selectedCommit"></commit-details>
+    </div>
+</div>
