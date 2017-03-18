@@ -11,12 +11,12 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="content" style="max-height: 40%">
         <div>Message:</div>
         <div class="commitMessage">{{ commitTitle }}</div>
     </div>
 
-    <div class="content" style="display: flex; flex-direction: column; flex: 1">
+    <div class="content" style="display: flex; flex-direction: column; flex: 1; ">
         <div>Changes:</div>
         <div style="margin-bottom: 4px">
             <input type="search" placeholder="Filter" style="width: 100%" [(ngModel)]="filter" (ngModelChange)="onFilterChange()">
