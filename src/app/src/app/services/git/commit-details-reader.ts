@@ -17,9 +17,8 @@ export class CommitDetailsReader {
     }
 
     getFileChangesOfCommit(commit: RepositoryCommit): Rx.Observable<ChangedFile[]> {
-        const params = ["diff-tree", "--no-commit-id", "--name-status", "-r", "-m", "-z", commit.hash]
+        const params = ["diff-tree", "--no-commit-id", "-r", "-m", "-z", commit.hash]
         if (commit.parents.length === 0) {
-            // if the
             params.push("4b825dc642cb6eb9a060e54bf8d69288fbee4904");
         }
         return this.gitRaw.run(commit.repository.location, params)
@@ -28,7 +27,23 @@ export class CommitDetailsReader {
                 const list: ChangedFile[] = [];
                 for (let i = 0; i < lines.length; i += 2) {
                     const item = new ChangedFile();
-                    const type = lines[i + 0];
+                    const metainfos = lines[i + 0];
+                    const metainfosParts = metainfos.split(" ");
+                    if (metainfos[0] !== ":" || metainfosParts.length !== 5)
+                         throw Error("Invalid data returned from diff-tree.")
+                    item.sourceMode = metainfosParts[0];
+                    if (item.sourceMode === "000000")
+                        item.sourceMode = undefined;
+                    item.destinationMode = metainfosParts[1];
+                    if (item.destinationMode === "000000")
+                        item.destinationMode = undefined;
+                    item.sourceBlob = metainfosParts[2];
+                    if (item.sourceBlob === "0000000000000000000000000000000000000000")
+                        item.sourceBlob = undefined;
+                    item.destinationBlob = metainfosParts[3];
+                    if (item.destinationBlob === "0000000000000000000000000000000000000000")
+                        item.destinationBlob = undefined;
+                    const type = metainfosParts[4];
                     if (type === "A") item.type = ChangeType.Added;
                     if (type === "C") item.type = ChangeType.Copied;
                     if (type === "D") item.type = ChangeType.Deleted;
@@ -49,6 +64,10 @@ export class CommitDetailsReader {
 export class ChangedFile {
     path: string;
     type: ChangeType;
+    sourceMode: string;
+    sourceBlob: string;
+    destinationBlob: string;
+    destinationMode: string;
 }
 
 export enum ChangeType {
