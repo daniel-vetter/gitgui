@@ -32,9 +32,9 @@ export class RepositoryOpener {
             this.tabManager.closeAllTabs();
             const tab = new HistoryTab();
             tab.repository = x;
-            tab.title = "History";
-            tab.isCloseable = false;
-            tab.isPersistent = true;
+            tab.ui.title = "History";
+            tab.ui.isCloseable = false;
+            tab.ui.isPersistent = true;
             this.tabManager.createNewTab(tab);
             this._isOpening = false;
             this.eventAggregator.publish("OpenRepositoryEnded");

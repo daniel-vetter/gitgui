@@ -23,11 +23,11 @@ export class TabHeaderComponent implements OnInit {
         this.tabs = [];
         for (const tab of tabs) {
             const vm = new TabViewModel();
-            vm.closeable = tab.isCloseable;
-            vm.title = tab.title;
+            vm.closeable = tab.ui.isCloseable;
+            vm.title = tab.ui.title;
             vm.isSelected = tab === this.tabManager.selectedTab;
             vm.tab = tab;
-            vm.isPersistent = tab.isPersistent;
+            vm.isPersistent = tab.ui.isPersistent;
             this.tabs.push(vm);
         }
         this.changeDetector.detectChanges();
@@ -39,14 +39,14 @@ export class TabHeaderComponent implements OnInit {
             return false;
         }
         if (this.tabManager.selectedTab === vm.tab) {
-            this.tabManager.selectedTab.isPersistent = true;
+            this.tabManager.selectedTab.ui.isPersistent = true;
         } else {
             this.tabManager.selectedTab = vm.tab;
         }
     }
 
     onCloseClicked(vm: TabViewModel) {
-        if (!vm.tab.isCloseable)
+        if (!vm.tab.ui.isCloseable)
             return;
         this.tabManager.closeTab(vm.tab);
         this.update();

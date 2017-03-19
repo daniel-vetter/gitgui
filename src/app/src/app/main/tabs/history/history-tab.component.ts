@@ -19,7 +19,7 @@ export class HistoryTabComponent {
     ngOnChanges() {
         this.repository = this.tab.repository;
         if (this.repository) {
-            this.tab.isCloseable = false;
+            this.tab.ui.isCloseable = false;
         }
     }
 

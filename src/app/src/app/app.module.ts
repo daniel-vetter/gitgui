@@ -32,6 +32,8 @@ import { TabContentComponent } from "./main/tab-content/tab-content.component";
 import { HistoryTabComponent } from "./main/tabs/history/history-tab.component";
 import { SideBarManager } from "./services/side-bar-manager";
 import { SideBarComponent } from "./main/side-bar/side-bar.component";
+import { FileChangeTab } from "./main/tabs/tabs";
+import { FileChangeTabComponent } from "./main/tabs/file-change/file-change-tab.component";
 
 @NgModule({
   declarations: [
@@ -45,6 +47,7 @@ import { SideBarComponent } from "./main/side-bar/side-bar.component";
     TabHeaderComponent,
     TabContentComponent,
     HistoryTabComponent,
+    FileChangeTabComponent,
     SideBarComponent
   ],
   imports: [

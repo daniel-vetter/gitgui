@@ -73,8 +73,13 @@ export class CommitDetailsComponent implements OnChanges {
     }
 
     onFileSelected(vm: ChangedFileTreeNodeModel) {
+        if (!vm.data)
+            return;
         const tab = new FileChangeTab();
-        tab.title = vm.label;
+        tab.ui.title = vm.label;
+        tab.sourceBlob = vm.data.sourceBlob;
+        tab.destinationBlob = vm.data.destinationBlob;
+        tab.repository = this.commit.repository;
         this.tabManager.createNewTab(tab);
     }
 }

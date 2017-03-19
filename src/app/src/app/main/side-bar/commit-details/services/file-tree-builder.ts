@@ -33,6 +33,7 @@ export class FileTreeBuilder {
                         if (change.type === ChangeType.Added) childNode.textClass = "entryAdd";
                         else if (change.type === ChangeType.Deleted) childNode.textClass = "entryRemove";
                         else childNode.textClass = "entryChange";
+                        childNode.data = change;
                     }
                     curNode.children.push(childNode);
                     index.set(curNode, childNode);
@@ -102,6 +103,7 @@ export class ChangedFileTreeNodeModel {
     expanded: boolean;
     textClass: string;
     children: ChangedFileTreeNodeModel[] = [];
+    data: ChangedFile;
 }
 
 class ChildIndex {

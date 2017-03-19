@@ -13,11 +13,11 @@ export class TabManager {
     createNewTab(tab: Tab) {
 
         let tempTab;
-        while ((tempTab = this._allTabs.find(x => !x.isPersistent)) !== undefined) {
+        while ((tempTab = this._allTabs.find(x => !x.ui.isPersistent)) !== undefined) {
             this.closeTab(tempTab);
         }
 
-        (<Tab>tab).onDetailsChange = (x) => { this.onTabChanged.emit(x); };
+        tab.ui.onDetailsChange = (x) => { this.onTabChanged.emit(x); };
         this._allTabs.push(tab);
         this.onTabListChanged.emit(this.allTabs);
         this.selectedTab = tab;
@@ -64,14 +64,16 @@ export class TabManager {
 }
 
 export abstract class Tab {
+    ui = new TabUi();
+    abstract get key();
+}
+
+export class TabUi {
 
     onDetailsChange: (TabContainer) => void;
     private _title = "";
     private _isCloseable = true;
     private _isPersistent = false;
-    private _details: any;
-
-    abstract get key();
 
     get title(): string {
         return this._title;
@@ -97,15 +99,6 @@ export abstract class Tab {
 
     set isPersistent(value: boolean) {
         this._isPersistent = value;
-        this.raiseChangeEvent();
-    }
-
-    get details(): any {
-        return this._details;
-    }
-
-    set details(value: any) {
-        this._details = value;
         this.raiseChangeEvent();
     }
 

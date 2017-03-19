@@ -1,0 +1,14 @@
+<div class="root" style="display: flex;">
+    <div>
+        {{ tab.sourceBlob }} <br> {{ tab.destinationBlob }} <br>
+    </div>
+    <div style="flex: 1; overflow: auto">
+
+        <ng-container *ngFor="let hunk of hunks">
+            <pre>{{ hunk.header }}</pre><br>
+            <pre *ngFor="let content of hunk.content" style="display: inline;" [class.nochange]="content.type === 0" [class.added]="content.type === 1"
+                [class.removed]="content.type === 2">{{ content.text }}</pre>
+        </ng-container>
+
+    </div>
+</div>
