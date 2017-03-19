@@ -31,14 +31,13 @@ export class TabContentComponent implements OnInit {
         for (const toAdd of missingTabs) {
             const vm = new TabViewModel();
             vm.data = toAdd;
-            vm.type = toAdd.constructor.name;
+            vm.type = toAdd.key;
             this.tabs.push(vm);
         }
 
         for (const vm of this.tabs) {
             vm.visible = vm.data === this.tabManager.selectedTab;
         }
-        console.log(this.tabs);
     }
 }
 

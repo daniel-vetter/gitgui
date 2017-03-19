@@ -63,13 +63,15 @@ export class TabManager {
     }
 }
 
-export class Tab {
+export abstract class Tab {
 
     onDetailsChange: (TabContainer) => void;
     private _title = "";
     private _isCloseable = true;
     private _isPersistent = false;
     private _details: any;
+
+    abstract get key();
 
     get title(): string {
         return this._title;
