@@ -1,23 +1,4 @@
 <div class="root fill" style="display: flex;">
-    <div style="flex: 1" #editorLeft>
-
-    </div>
-    <div style="flex: 1" #editorRight>
-    </div>
-    <!--
-    <div>
-        {{ tab.sourceBlob }} <br> {{ tab.destinationBlob }} <br>
-
-        <div id="blub" style="height: 100%;"></div>
-    </div>
-    <div style="flex: 1; overflow: auto">
-
-        <ng-container *ngFor="let hunk of hunks">
-            <pre>{{ hunk.header }}</pre><br>
-            <pre *ngFor="let content of hunk.content" style="display: inline;" [class.nochange]="content.type === 0" [class.added]="content.type === 1"
-                [class.removed]="content.type === 2">{{ content.text }}</pre>
-        </ng-container>
-
-    </div>
-    -->
+    <div style="flex: 1" #editorLeft></div>
+    <div style="flex: 1" #editorRight></div>
 </div>
