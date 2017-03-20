@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, Input, OnChanges, ViewChild } from "@angular/core";
 import { FileChangeTab } from "../tabs";
-import { BlobDiffReader, Hunk } from "../../../services/git/blob-diff-reader";
+import { BlobDiffReader, Hunk, HunkContentType } from "../../../services/git/blob-diff-reader";
 
 @Component({
     selector: "file-change-tab",
@@ -9,6 +9,9 @@ import { BlobDiffReader, Hunk } from "../../../services/git/blob-diff-reader";
 })
 export class FileChangeTabComponent implements OnChanges {
     @Input() tab: FileChangeTab = undefined;
+
+    @ViewChild("editorLeft") editorLeft;
+    @ViewChild("editorRight") editorRight;
 
     constructor(private blobDiffReader: BlobDiffReader) { }
 
@@ -22,7 +25,74 @@ export class FileChangeTabComponent implements OnChanges {
                 .subscribe(x => {
                     console.log(x)
                     this.hunks = x;
+                    this.update();
                 });
+        }
+
+        this.update();
+    }
+
+    private update() {
+        if (this.hunks && this.hunks.length > 0) {
+
+            let strLeft = new RangeTrackingString();
+            const leftDecorations: monaco.editor.IModelDeltaDecoration[] = [];
+            let strRight = new RangeTrackingString();
+            const rightDecorations: monaco.editor.IModelDeltaDecoration[] = [];
+            for (const part of this.hunks[0].content) {
+                if (part.type === HunkContentType.Unchanged) {
+                    strLeft.append(part.text);
+                    strRight.append(part.text);
+                }
+                if (part.type === HunkContentType.Added) {
+                    const range = strRight.append(part.text);
+                    rightDecorations.push({ range: range, options: { inlineClassName: "addedText" } });
+                }
+                if (part.type === HunkContentType.Removed) {
+                    const range = strLeft.append(part.text);
+                    leftDecorations.push({ range: range, options: { inlineClassName: "removedText"} });
+                }
+            }
+
+            const editorLeft = monaco.editor.create(this.editorLeft.nativeElement, {
+                value: strLeft.fullString,
+                language: "javascript",
+                readOnly: true
+            });
+            editorLeft.deltaDecorations([], leftDecorations);
+
+            const editorRight = monaco.editor.create(this.editorRight.nativeElement, {
+                value: strRight.fullString,
+                language: "javascript",
+                readOnly: true
+            });
+            editorRight.deltaDecorations([], rightDecorations);
         }
     }
 }
+
+export class RangeTrackingString {
+
+    private curLine = 0;
+    private curCol = 0;
+    fullString: string = "";
+
+    append(str: string): monaco.Range {
+        const startCurLine = this.curLine;
+        const startCurCol = this.curCol;
+
+        this.fullString += str;
+
+        for (const ch of str) {
+            if (ch === "\n") {
+                this.curLine++;
+                this.curCol = 0;
+            } else {
+                this.curCol++;
+            }
+        }
+
+        return new monaco.Range(startCurLine + 1, startCurCol + 1, this.curLine + 1, this.curCol + 1);
+    }
+}
+

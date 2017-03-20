@@ -1,14 +1,63 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>GitGui</title>
-  <base href="./">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<head>
+    <meta charset="utf-8">
+    <title>GitGui</title>
+    <base href="./">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
+
 <body>
-  <app-root>Loading...</app-root>
+    <app-root>Loading...</app-root>
 </body>
+<script>
+    var nodeRequire = global.require;
+</script>
+<script src="editor/vs/loader.js"></script>
+<script>
+    var amdRequire = global.require;
+    var myRequire = function(param) {
+        console.log("require" , param);
+        if (param.startsWith("vs/"))
+            return amdRequire(param);
+        return nodeRequire(param)
+    }
+    global.require = myRequire;
+    //global.require = nodeRequire;
+</script>
+<script>
+        var path = require('path');
+        function uriFromPath(_path) {
+            var pathName = path.resolve(_path).replace(/\\/g, '/');
+            if (pathName.length > 0 && pathName.charAt(0) !== '/') {
+                pathName = '/' + pathName;
+            }
+            return encodeURI('file://' + pathName);
+        }
+        amdRequire.config({
+            paths: { 'vs': uriFromPath(path.join(__dirname, "editor/vs")) },
+            baseUrl: uriFromPath(path.join(__dirname, "editor"))
+        });
+
+        window.MonacoEnvironment = {
+            baseUrl: 'editor'
+        };
+
+        // workaround monaco-css not understanding the environment
+        self.module = undefined;
+        // workaround monaco-typescript not understanding the environment
+        self.process.browser = true;
+        window.MonacoEnvironment = {
+            getWorkerUrl: function(workerId, label) {
+                return 'editor/vs/base/worker/workerMain.js';
+            }
+        };
+        amdRequire(['vs/editor/editor.main'], function () {
+            console.log("monaco loaded");
+        });
+</script>
+
 </html>

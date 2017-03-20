@@ -8,10 +8,11 @@ export class BlobDiffReader {
     constructor(private gitRaw: GitRaw) { }
 
     getDiff(gitRepositoryPath: string, sourceBlob: string, destinationBlob: string): Rx.Observable<Hunk[]> {
-        return this.gitRaw.run(gitRepositoryPath, ["diff", sourceBlob, destinationBlob, "--word-diff=porcelain"]).map(x => {
+        return this.gitRaw.run(gitRepositoryPath, ["diff", sourceBlob, destinationBlob, "--word-diff=porcelain", "--word-diff-regex=."]).map(x => {
+            console.log(x.data);
             const lines = x.data.split("\n");
             const allHunks = [];
-            let hunk = undefined;
+            let hunk: Hunk = undefined;
             for (const line of lines) {
                 if (line.startsWith("@")) {
                     hunk = this.parseHunkStart(line);
@@ -21,19 +22,20 @@ export class BlobDiffReader {
                 if (!hunk)
                     continue;
 
+                const predecessor = hunk.content.length > 0 ? hunk.content[hunk.content.length - 1] : undefined;
+
                 const content = new HunkContent();
                 content.text = line.substr(1);
                 if (line[0] === " ") content.type = HunkContentType.Unchanged;
                 if (line[0] === "+") content.type = HunkContentType.Added;
                 if (line[0] === "-") content.type = HunkContentType.Removed;
                 if (line[0] === "~") {
-                    content.type = HunkContentType.Unchanged;
+                    content.type = predecessor ? predecessor.type : HunkContentType.Unchanged;
                     content.text = "\n";
                 }
 
-                if (hunk.content.length > 0 &&
-                    hunk.content[hunk.content.length - 1].type === content.type) {
-                    hunk.content[hunk.content.length - 1].text += content.text;
+                if (predecessor && predecessor.type === content.type) {
+                    predecessor.text += content.text;
                 } else {
                     hunk.content.push(content);
                 }
