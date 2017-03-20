@@ -8,7 +8,7 @@ export class BlobDiffReader {
     constructor(private gitRaw: GitRaw) { }
 
     getDiff(gitRepositoryPath: string, sourceBlob: string, destinationBlob: string): Rx.Observable<Hunk[]> {
-        return this.gitRaw.run(gitRepositoryPath, ["diff", sourceBlob, destinationBlob, "--word-diff=porcelain", "--word-diff-regex=."]).map(x => {
+        return this.gitRaw.run(gitRepositoryPath, ["diff", sourceBlob, destinationBlob, "--word-diff=porcelain", "--word-diff-regex=.", "-U99999999"]).map(x => {
             console.log(x.data);
             const lines = x.data.split("\n");
             const allHunks = [];
