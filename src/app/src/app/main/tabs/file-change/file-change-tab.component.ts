@@ -47,27 +47,68 @@ export class FileChangeTabComponent implements OnChanges {
                 if (part.type === HunkContentType.Added) {
                     const range = strRight.append(part.text);
                     rightDecorations.push({ range: range, options: { inlineClassName: "addedText" } });
+
+                    const lineCount = this.getLineCount(part.text);
+                    strLeft.append(this.createNewLineString(lineCount));
                 }
                 if (part.type === HunkContentType.Removed) {
                     const range = strLeft.append(part.text);
-                    leftDecorations.push({ range: range, options: { inlineClassName: "removedText"} });
+                    leftDecorations.push({ range: range, options: { inlineClassName: "removedText" } });
+
+                    const lineCount = this.getLineCount(part.text);
+                    strRight.append(this.createNewLineString(lineCount));
                 }
             }
 
             const editorLeft = monaco.editor.create(this.editorLeft.nativeElement, {
                 value: strLeft.fullString,
                 language: "javascript",
-                readOnly: true
+                readOnly: true,
+                scrollBeyondLastLine: false,
+                wrappingColumn: -1
             });
             editorLeft.deltaDecorations([], leftDecorations);
 
             const editorRight = monaco.editor.create(this.editorRight.nativeElement, {
                 value: strRight.fullString,
                 language: "javascript",
-                readOnly: true
+                readOnly: true,
+                scrollBeyondLastLine: false,
+                wrappingColumn: -1
             });
             editorRight.deltaDecorations([], rightDecorations);
+            editorRight.onDidScrollChange(e => {
+                editorLeft.setScrollPosition({
+                    scrollLeft: e.scrollLeft,
+                    scrollTop: e.scrollTop
+                })
+            });
+
+            editorLeft.onDidScrollChange(e => {
+                editorRight.setScrollPosition({
+                    scrollLeft: e.scrollLeft,
+                    scrollTop: e.scrollTop
+                })
+            });
+            
         }
+    }
+
+    private getLineCount(str: string): number {
+        let count = 0;
+        for (const ch of str) {
+            if (ch === "\n")
+                count++;
+        }
+        return count;
+    }
+
+    private createNewLineString(lines: number): string {
+        let str = "";
+        for (let i = 0; i < lines; i++) {
+            str += "\n";
+        }
+        return str;
     }
 }
 
