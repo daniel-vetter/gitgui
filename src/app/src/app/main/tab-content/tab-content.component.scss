@@ -1,11 +1,17 @@
 .root {
     display: flex;
+    position: relative;
      &>div {
-        display: none;
+        visibility: hidden;
         flex: 1;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
      }
 }
 
 .visible {
-    display: block !important;
+    visibility: visible !important
 }

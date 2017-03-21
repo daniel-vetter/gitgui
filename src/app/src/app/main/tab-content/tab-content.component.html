@@ -3,6 +3,4 @@
         <div *ngIf="tab.type === 'HistoryTab'" [class.visible]="tab.visible"><history-tab [tab]="tab.data"></history-tab></div>
         <div *ngIf="tab.type === 'FileChangeTab'" [class.visible]="tab.visible"><file-change-tab [tab]="tab.data"></file-change-tab></div>
     </ng-container>
-
-    <!-- <div [class.hidden]="!isFileChangeTab"><tab-file-change [details]="details"></tab-file-change></div> -->
 </div>

@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { TabManager, Tab } from "../../services/tab-manager";
-import { HistoryTab, FileChangeTab } from "../tabs/tabs";
 
 @Component({
     selector: "tab-content",
@@ -20,15 +19,17 @@ export class TabContentComponent implements OnInit {
 
     private update() {
         const tabs = this.tabManager.allTabs;
-        const missingTabs = tabs.filter(x => this.tabs.map(y => y.data).indexOf(x) === -1);
-        const removedTabs = this.tabs.filter(x => tabs.indexOf(x.data) === 1);
+        const tabsToRemove = this.tabs.filter(x => tabs.indexOf(x.data) === -1);
+        const tabsToAdd = tabs.filter(x => this.tabs.map(y => y.data).indexOf(x) === -1);
 
-        for (const toRemove of removedTabs) {
+        this.optimizeTabCreationAndRemoval(tabsToRemove, tabsToAdd);
+
+        for (const toRemove of tabsToRemove) {
             const index = this.tabs.indexOf(toRemove);
             this.tabs.splice(index, 1);
         }
 
-        for (const toAdd of missingTabs) {
+        for (const toAdd of tabsToAdd) {
             const vm = new TabViewModel();
             vm.data = toAdd;
             vm.type = toAdd.key;
@@ -37,6 +38,28 @@ export class TabContentComponent implements OnInit {
 
         for (const vm of this.tabs) {
             vm.visible = vm.data === this.tabManager.selectedTab;
+        }
+    }
+
+    private optimizeTabCreationAndRemoval(tabsToRemove: TabViewModel[], tabsToAdd: Tab[]) {
+        // Optimization: if a new tab should be displayed and a tab of the same type should be
+        // removed (happens often with temporary tabs) -> move the data from the old to
+        // the new tab. This prevents the creation of a new sub component which could result
+        // in flickering.
+
+        const toCleanUp: Tab[] = [];
+
+        for (const tab of tabsToAdd) {
+            const removedWithSameTypeIndex = tabsToRemove.findIndex(y => y.type === tab.key);
+            if (removedWithSameTypeIndex !== -1) {
+                tabsToRemove[removedWithSameTypeIndex].data = tab;
+                tabsToRemove.splice(removedWithSameTypeIndex, 1);
+                toCleanUp.push(tab);
+            }
+        }
+
+        for (const toClean of toCleanUp) {
+            tabsToAdd.splice(tabsToAdd.indexOf(toClean), 1);
         }
     }
 }
