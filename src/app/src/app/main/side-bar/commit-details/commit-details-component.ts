@@ -6,7 +6,7 @@ import { ChangedFileTreeNodeModelAdapter } from "./services/changed-file-tree-no
 import { Path } from "../../../services/path";
 import { FileIconManager } from "../../../services/file-icon/file-icon";
 import { TabManager } from "../../../services/tab-manager";
-import { FileChangeTab } from "../../tabs/tabs";
+import { BlobDiffTab } from "../../tabs/tabs";
 
 @Component({
     selector: "commit-details",
@@ -75,7 +75,7 @@ export class CommitDetailsComponent implements OnChanges {
     onFileSelected(vm: ChangedFileTreeNodeModel) {
         if (!vm.data)
             return;
-        const tab = new FileChangeTab();
+        const tab = new BlobDiffTab();
         tab.ui.title = vm.label;
         tab.sourceBlob = vm.data.sourceBlob;
         tab.destinationBlob = vm.data.destinationBlob;

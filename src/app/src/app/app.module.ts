@@ -32,8 +32,8 @@ import { TabContentComponent } from "./main/tab-content/tab-content.component";
 import { HistoryTabComponent } from "./main/tabs/history/history-tab.component";
 import { SideBarManager } from "./services/side-bar-manager";
 import { SideBarComponent } from "./main/side-bar/side-bar.component";
-import { FileChangeTab } from "./main/tabs/tabs";
-import { FileChangeTabComponent } from "./main/tabs/file-change/file-change-tab.component";
+import { BlobDiffTab } from "./main/tabs/tabs";
+import { BlobDiffTabComponent } from "./main/tabs/blob-diff/blob-diff-tab.component";
 
 @NgModule({
   declarations: [
@@ -47,7 +47,7 @@ import { FileChangeTabComponent } from "./main/tabs/file-change/file-change-tab.
     TabHeaderComponent,
     TabContentComponent,
     HistoryTabComponent,
-    FileChangeTabComponent,
+    BlobDiffTabComponent,
     SideBarComponent
   ],
   imports: [

@@ -6,8 +6,8 @@ export class HistoryTab extends Tab {
     repository: Repository;
 }
 
-export class FileChangeTab extends Tab {
-    key = "FileChangeTab";
+export class BlobDiffTab extends Tab {
+    key = "BlobDiffTab";
     repository: Repository;
     sourceBlob: string;
     destinationBlob: string;
