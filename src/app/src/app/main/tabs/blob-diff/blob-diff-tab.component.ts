@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, ViewChild, OnInit, AfterViewInit } from "@angular/core";
 import { BlobDiffTab } from "../tabs";
 import { BlobDiffReader, Hunk, HunkContentType } from "../../../services/git/blob-diff-reader";
+import { Path } from "../../../services/path";
 
 @Component({
     selector: "blob-diff-tab",
@@ -12,8 +13,11 @@ export class BlobDiffTabComponent implements OnChanges, AfterViewInit {
 
     @ViewChild("container") container;
 
-    hunks: Hunk[];
+    leftFileName: string;
+    rightFileName: string;
+    private isBinary: boolean = false;
 
+    private hunks: Hunk[];
     private editor: monaco.editor.IDiffEditor;
 
     constructor(private blobDiffReader: BlobDiffReader) { }
@@ -22,9 +26,19 @@ export class BlobDiffTabComponent implements OnChanges, AfterViewInit {
         if (this.tab &&
             this.tab.sourceBlob &&
             this.tab.destinationBlob) {
+            this.leftFileName = Path.getLastPart(this.tab.sourcePath);
+            this.rightFileName = Path.getLastPart(this.tab.destinationPath);
+            if (this.leftFileName.toLowerCase() === this.rightFileName.toLowerCase()) {
+                this.tab.ui.title = this.leftFileName;
+            } else {
+                this.tab.ui.title = this.leftFileName + " - " + this.rightFileName;
+            }
+
             this.blobDiffReader.getDiff(this.tab.repository.location, this.tab.sourceBlob, this.tab.destinationBlob)
                 .subscribe(x => {
-                    this.hunks = x;
+                    this.hunks = x.hunks;
+                    this.isBinary = x.isBinary;
+                    console.log(this.isBinary);
                     this.update();
                 });
         }
@@ -60,7 +74,7 @@ export class BlobDiffTabComponent implements OnChanges, AfterViewInit {
             this.editor.setModel({
                 original: monaco.editor.createModel("", "text/plain"),
                 modified: monaco.editor.createModel("", "text/plain")
-            })
+            });
             return;
         }
 
@@ -72,15 +86,15 @@ export class BlobDiffTabComponent implements OnChanges, AfterViewInit {
                 strRight += part.text;
             }
             if (part.type === HunkContentType.Added) {
-                strLeft += part.text;
+                strRight += part.text;
             }
             if (part.type === HunkContentType.Removed) {
-                strRight += part.text;
+                strLeft += part.text;
             }
         }
         this.editor.setModel({
             original: monaco.editor.createModel(strLeft, "text/plain"),
             modified: monaco.editor.createModel(strRight, "text/plain")
-        })
+        });
     }
 }

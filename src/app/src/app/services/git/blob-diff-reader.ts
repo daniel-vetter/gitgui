@@ -7,15 +7,15 @@ export class BlobDiffReader {
 
     constructor(private gitRaw: GitRaw) { }
 
-    getDiff(gitRepositoryPath: string, sourceBlob: string, destinationBlob: string): Rx.Observable<Hunk[]> {
+    getDiff(gitRepositoryPath: string, sourceBlob: string, destinationBlob: string): Rx.Observable<DiffResult> {
         return this.gitRaw.run(gitRepositoryPath, ["diff", sourceBlob, destinationBlob, "--word-diff=porcelain", "--word-diff-regex=.", "-U99999999"]).map(x => {
             const lines = x.data.split("\n");
-            const allHunks = [];
+            const result = new DiffResult();
             let hunk: Hunk = undefined;
             for (const line of lines) {
                 if (line.startsWith("@")) {
                     hunk = this.parseHunkStart(line);
-                    allHunks.push(hunk);
+                    result.hunks.push(hunk);
                     continue;
                 }
                 if (!hunk)
@@ -39,7 +39,12 @@ export class BlobDiffReader {
                     hunk.content.push(content);
                 }
             }
-            return allHunks;
+
+            if (result.hunks.length === 0) {
+                result.isBinary = lines.filter(x => x.startsWith("Binary files") && x.endsWith("differ")).length === 1;
+            }
+
+            return result;
         });
     }
 
@@ -49,6 +54,11 @@ export class BlobDiffReader {
         hunk.content = [];
         return hunk;
     }
+}
+
+export class DiffResult {
+    isBinary: boolean;
+    hunks: Hunk[] = [];
 }
 
 export class Hunk {

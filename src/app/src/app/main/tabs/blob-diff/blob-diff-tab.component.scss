@@ -1,3 +1,23 @@
+.header {
+    background: var(--theme-window-background);
+    border-bottom: 1px solid var(--theme-workspace-border);
+    padding: 5px;
+    display: flex;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.hint {
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.hidden {
+    display: none;
+}
+
 .added {
     color: green;
 }

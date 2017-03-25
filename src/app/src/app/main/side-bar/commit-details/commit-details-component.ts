@@ -76,10 +76,11 @@ export class CommitDetailsComponent implements OnChanges {
         if (!vm.data)
             return;
         const tab = new BlobDiffTab();
-        tab.ui.title = vm.label;
         tab.sourceBlob = vm.data.sourceBlob;
         tab.destinationBlob = vm.data.destinationBlob;
         tab.repository = this.commit.repository;
+        tab.sourcePath = vm.data.path;
+        tab.destinationPath = vm.data.path
         this.tabManager.createNewTab(tab);
     }
 }

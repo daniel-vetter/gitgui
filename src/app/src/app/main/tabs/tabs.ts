@@ -10,5 +10,7 @@ export class BlobDiffTab extends Tab {
     key = "BlobDiffTab";
     repository: Repository;
     sourceBlob: string;
+    sourcePath: string;
     destinationBlob: string;
+    destinationPath: string;
 }
