@@ -14,4 +14,7 @@ export class ChangedFileTreeNodeModelAdapter implements ITreeViewAdapter<Changed
     setExpandedState(data: ChangedFileTreeNodeModel, expanded: boolean): void {
         data.expanded = expanded;
     }
+    isSelectable(data: ChangedFileTreeNodeModel): boolean {
+        return data.children.length === 0;
+    }
 }

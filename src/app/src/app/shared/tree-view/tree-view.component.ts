@@ -12,6 +12,8 @@ export class TreeViewComponent implements OnChanges {
     @Input() adapter: ITreeViewAdapter<any> = undefined;
     @Input() data: any[] = [];
     @Input() lineHeight: number = 20;
+    @Input() selectedItem: any = undefined;
+    @Output() selectedItemChange = new EventEmitter<any>();
     @Output() itemClick = new EventEmitter<any>();
     @Output() itemMouseDown = new EventEmitter<any>();
     @Output() itemMouseUp = new EventEmitter<any>();
@@ -32,13 +34,17 @@ export class TreeViewComponent implements OnChanges {
     }
 
     onExpanderClicked(vm: TreeLineViewModel) {
-        this.treeLineList.toggleExpandState(vm.data);
-        this.updateVisibleLines();
         this.itemClick.emit(vm.data.data);
     }
 
     onMouseDown(vm: TreeLineViewModel) {
+        if (vm.data.isSelectable) {
+            this.selectedItem = vm.data.data;
+            this.selectedItemChange.emit(vm.data.data);
+        }
         this.itemMouseDown.emit(vm.data.data);
+        this.treeLineList.toggleExpandState(vm.data);
+        this.updateVisibleLines();
     }
 
     onMouseUp(vm: TreeLineViewModel) {
@@ -55,6 +61,7 @@ export class TreeViewComponent implements OnChanges {
             to.isExpanded = from.isExpanded;
             to.paddingLeft = from.depth * 20;
             to.top = from.index * this.lineHeight;
+            to.isSelected = this.selectedItem === from.data;
             return true;
         });
 
@@ -72,6 +79,7 @@ export class TreeLineViewModel implements PoolableViewModel<TreeLine> {
     top: number;
     paddingLeft: number;
     isExpanded: boolean;
+    isSelected: boolean;
     hasChildren: boolean;
     clear() {
         this.hasChildren = undefined;
@@ -86,4 +94,5 @@ export interface ITreeViewAdapter<TModel> {
     getChildren(data: TModel): TModel[];
     getExpandedState(data: TModel): boolean;
     setExpandedState(data: TModel, expanded: boolean): void;
+    isSelectable(data: TModel): boolean;
 }

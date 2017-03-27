@@ -6,6 +6,7 @@
         (mousedown)="onMouseDown(lineViewModel)"
         (mouseup)="onMouseUp(lineViewModel)"
         class="line"
+        [class.selected]="lineViewModel.isSelected"
         style="position: absolute; width: 100%"
         [style.top.px]="lineViewModel.top"
         [hidden]="!lineViewModel.visible">

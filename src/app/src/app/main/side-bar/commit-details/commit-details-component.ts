@@ -75,6 +75,7 @@ export class CommitDetailsComponent implements OnChanges {
     onFileSelected(vm: ChangedFileTreeNodeModel) {
         if (!vm.data)
             return;
+
         const tab = new BlobDiffTab();
         tab.sourceBlob = vm.data.sourceBlob;
         tab.destinationBlob = vm.data.destinationBlob;

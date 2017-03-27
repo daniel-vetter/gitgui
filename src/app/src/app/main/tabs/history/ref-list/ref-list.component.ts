@@ -99,6 +99,9 @@ class BranchNodeAdapter implements ITreeViewAdapter<RefNode> {
     setExpandedState(data: RefNode, expanded: boolean): void {
         data.expanded = expanded;
     }
+    isSelectable(data: RefNode): boolean {
+        return false;
+    }
 }
 
 class ChildIndex {
