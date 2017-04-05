@@ -8,7 +8,8 @@ import { GitPathProvider } from "./infrastructure/git-executable-provider";
 import { GitRaw } from "./infrastructure/git-raw";
 import { Process } from "./infrastructure/process";
 import { Clone } from "./clone";
-import { BlobDiffReader } from "./blob-diff-reader";
+import { ObjectDiffReader } from "./object-diff-reader";
+import { ObjectReader } from "./object-reader";
 
 @NgModule({
     providers: [
@@ -21,7 +22,8 @@ import { BlobDiffReader } from "./blob-diff-reader";
         RefsReader,
         CommitDetailsReader,
         Clone,
-        BlobDiffReader
+        ObjectDiffReader,
+        ObjectReader
     ]
 })
 export class GitModule {

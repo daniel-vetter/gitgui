@@ -6,11 +6,11 @@ export class HistoryTab extends Tab {
     repository: Repository;
 }
 
-export class BlobDiffTab extends Tab {
-    key = "BlobDiffTab";
+export class TextDiffTab extends Tab {
+    key = "TextDiffTab";
     repository: Repository;
-    sourceBlob: string;
-    sourcePath: string;
-    destinationBlob: string;
-    destinationPath: string;
+    leftContent: string;
+    leftPath: string;
+    rightContent: string;
+    rightPath: string;
 }

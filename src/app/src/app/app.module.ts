@@ -32,8 +32,7 @@ import { TabContentComponent } from "./main/tab-content/tab-content.component";
 import { HistoryTabComponent } from "./main/tabs/history/history-tab.component";
 import { SideBarManager } from "./services/side-bar-manager";
 import { SideBarComponent } from "./main/side-bar/side-bar.component";
-import { BlobDiffTab } from "./main/tabs/tabs";
-import { BlobDiffTabComponent } from "./main/tabs/blob-diff/blob-diff-tab.component";
+import { TextDiffTabComponent } from "./main/tabs/text-diff/text-diff-tab.component";
 
 @NgModule({
   declarations: [
@@ -47,7 +46,7 @@ import { BlobDiffTabComponent } from "./main/tabs/blob-diff/blob-diff-tab.compon
     TabHeaderComponent,
     TabContentComponent,
     HistoryTabComponent,
-    BlobDiffTabComponent,
+    TextDiffTabComponent,
     SideBarComponent
   ],
   imports: [

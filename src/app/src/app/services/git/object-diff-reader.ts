@@ -3,12 +3,13 @@ import * as Rx from "rxjs";
 import { GitRaw } from "./infrastructure/git-raw";
 
 @Injectable()
-export class BlobDiffReader {
+export class ObjectDiffReader {
 
     constructor(private gitRaw: GitRaw) { }
 
-    getDiff(gitRepositoryPath: string, sourceBlob: string, destinationBlob: string): Rx.Observable<DiffResult> {
-        return this.gitRaw.run(gitRepositoryPath, ["diff", sourceBlob, destinationBlob, "--word-diff=porcelain", "--word-diff-regex=.", "-U99999999"]).map(x => {
+    getDiff(gitRepositoryPath: string, sourceObjectId: string, destinationObjectId: string): Rx.Observable<DiffResult> {
+        const params = ["diff", sourceObjectId, destinationObjectId, "--word-diff=porcelain", "--word-diff-regex=.", "-U99999999"];
+        return this.gitRaw.run(gitRepositoryPath, params).map(x => {
             const lines = x.data.split("\n");
             const result = new DiffResult();
             let hunk: Hunk = undefined;

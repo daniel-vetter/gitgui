@@ -1,6 +1,6 @@
 <div class="fill root">
     <ng-container *ngFor="let tab of tabs">
         <div *ngIf="tab.type === 'HistoryTab'" [class.visible]="tab.visible"><history-tab [tab]="tab.data"></history-tab></div>
-        <div *ngIf="tab.type === 'BlobDiffTab'" [class.visible]="tab.visible"><blob-diff-tab [tab]="tab.data"></blob-diff-tab></div>
+        <div *ngIf="tab.type === 'TextDiffTab'" [class.visible]="tab.visible"><text-diff-tab [tab]="tab.data"></text-diff-tab></div>
     </ng-container>
 </div>
