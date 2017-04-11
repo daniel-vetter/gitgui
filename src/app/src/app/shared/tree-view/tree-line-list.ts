@@ -55,7 +55,6 @@ export class TreeLineList {
         const line = new TreeLine();
         line.data = data;
         line.hasChildren = this.adapter.hasChildren(data);
-        line.isSelectable = this.adapter.isSelectable(data);
         line.depth = 0;
         if (parent) {
             line.depth = parent.depth + 1;
@@ -76,5 +75,4 @@ export class TreeLine {
     depth: number;
     index: number;
     isExpanded: boolean;
-    isSelectable: boolean;
 }

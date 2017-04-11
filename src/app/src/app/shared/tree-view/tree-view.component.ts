@@ -38,10 +38,8 @@ export class TreeViewComponent implements OnChanges {
     }
 
     onMouseDown(vm: TreeLineViewModel) {
-        if (vm.data.isSelectable) {
-            this.selectedItem = vm.data.data;
-            this.selectedItemChange.emit(vm.data.data);
-        }
+        this.selectedItem = vm.data.data;
+        this.selectedItemChange.emit(vm.data.data);
         this.itemMouseDown.emit(vm.data.data);
         this.treeLineList.toggleExpandState(vm.data);
         this.updateVisibleLines();
@@ -49,6 +47,21 @@ export class TreeViewComponent implements OnChanges {
 
     onMouseUp(vm: TreeLineViewModel) {
         this.itemMouseUp.emit(vm.data.data);
+    }
+
+    onKeyDown(event: KeyboardEvent) {
+        let move = 0;
+        if (event.keyCode === 40) move = 1;
+        if (event.keyCode === 38) move = -1;
+        if (event.keyCode === 33) move = -Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.lineHeight);
+        if (event.keyCode === 34) move = Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.lineHeight);
+
+        const curIndex = this.treeLineList.items.findIndex(x => x.data === this.selectedItem);
+        const newIndex = Math.min(Math.max(0, curIndex + move), this.treeLineList.items.length - 1);
+        this.selectedItem = this.treeLineList.items[newIndex].data;
+        this.selectedItemChange.emit(this.selectedItem);
+        this.updateVisibleLines();
+        return false;
     }
 
     private updateVisibleLines() {
@@ -94,5 +107,4 @@ export interface ITreeViewAdapter<TModel> {
     getChildren(data: TModel): TModel[];
     getExpandedState(data: TModel): boolean;
     setExpandedState(data: TModel, expanded: boolean): void;
-    isSelectable(data: TModel): boolean;
 }

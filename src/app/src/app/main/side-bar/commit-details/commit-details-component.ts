@@ -6,7 +6,7 @@ import { ChangedFileTreeNodeModelAdapter } from "./services/changed-file-tree-no
 import { Path } from "../../../services/path";
 import { FileIconManager } from "../../../services/file-icon/file-icon";
 import { TabManager } from "../../../services/tab-manager";
-import { TextDiffTab } from "../../tabs/tabs";
+import { TextDiffTab, TextTab } from "../../tabs/tabs";
 import { ObjectReader } from "../../../services/git/object-reader";
 import * as Rx from "rxjs";
 
@@ -24,6 +24,8 @@ export class CommitDetailsComponent implements OnChanges {
     authorMail: string = "";
     authorDate: string = "";
     filter: string = "";
+
+    private lastRequestId = 0;
 
     changedFiles: ChangedFile[];
     changeFilesTree: ChangedFileTreeNodeModel[];
@@ -79,17 +81,36 @@ export class CommitDetailsComponent implements OnChanges {
         if (!vm.data)
             return;
 
-        Rx.Observable.forkJoin(
-            this.objectReader.getObjectData(this.commit.repository.location, vm.data.sourceBlob),
-            this.objectReader.getObjectData(this.commit.repository.location, vm.data.destinationBlob))
-            .subscribe((x) => {
-                const tab = new TextDiffTab();
-                tab.leftContent = x[0];
-                tab.rightContent = x[1];
+        const curRequestId = ++this.lastRequestId;
+
+        if (!vm.data.sourceBlob || !vm.data.destinationBlob) {
+            const objectId = vm.data.sourceBlob ? vm.data.sourceBlob : vm.data.destinationBlob;
+            this.objectReader.getObjectData(this.commit.repository.location, objectId).subscribe(x => {
+                if (curRequestId !== this.lastRequestId)
+                    return;
+                const tab = new TextTab();
+                tab.content = x;
                 tab.repository = this.commit.repository;
-                tab.leftPath = vm.data.path;
-                tab.rightPath = vm.data.path;
+                tab.path = vm.data.path;
                 this.tabManager.createNewTab(tab);
             });
+        } else {
+            Rx.Observable.forkJoin(
+                this.objectReader.getObjectData(this.commit.repository.location, vm.data.sourceBlob),
+                this.objectReader.getObjectData(this.commit.repository.location, vm.data.destinationBlob))
+                .subscribe((x) => {
+                    if (curRequestId !== this.lastRequestId)
+                        return;
+                    const tab = new TextDiffTab();
+                    tab.leftContent = x[0];
+                    tab.rightContent = x[1];
+                    tab.repository = this.commit.repository;
+                    tab.leftPath = vm.data.path;
+                    tab.rightPath = vm.data.path;
+                    this.tabManager.createNewTab(tab);
+                });
+        }
+
+
     }
 }

@@ -33,6 +33,7 @@ import { HistoryTabComponent } from "./main/tabs/history/history-tab.component";
 import { SideBarManager } from "./services/side-bar-manager";
 import { SideBarComponent } from "./main/side-bar/side-bar.component";
 import { TextDiffTabComponent } from "./main/tabs/text-diff/text-diff-tab.component";
+import { TextTabComponent } from "./main/tabs/text/text-tab.component";
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { TextDiffTabComponent } from "./main/tabs/text-diff/text-diff-tab.compon
     TabContentComponent,
     HistoryTabComponent,
     TextDiffTabComponent,
+    TextTabComponent,
     SideBarComponent
   ],
   imports: [

@@ -1,4 +1,4 @@
-<div class="fill" style="overflow-y: auto; overflow-x: hidden; position: relative; transform: translateZ(0)" (scroll)="onScroll($event)" #scrollWrapper>
+<div class="fill" tabindex="0" class="root" (scroll)="onScroll($event)" (keydown)="onKeyDown($event)" #scrollWrapper>
     <div style="opacity: 0; width: 1px;" [style.height.px]="totalScrollHeight"></div>
 
     <div *ngFor="let lineViewModel of visibleTreeLines.viewModels"

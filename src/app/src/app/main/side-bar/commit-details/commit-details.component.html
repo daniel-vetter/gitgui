@@ -22,7 +22,7 @@
             <input type="search" placeholder="Filter" style="width: 100%" [(ngModel)]="filter" (ngModelChange)="onFilterChange()">
         </div>
         <div class="treeView">
-            <tree-view [data]="changeFilesTree" [adapter]="adapter" [lineHeight]="22" (itemMouseDown)="onFileSelected($event)">
+            <tree-view [data]="changeFilesTree" [adapter]="adapter" [lineHeight]="22" (selectedItemChange)="onFileSelected($event)">
                 <ng-template let-data>
                     <div style="display: flex; overflow: hidden; padding: 3px" [title]="data.label">
                         <i class="material-icons" [style.display]="data.textClass=='entryAdd' ? 'block' : 'none'" style="color: green;  font-weight: bold">add</i>

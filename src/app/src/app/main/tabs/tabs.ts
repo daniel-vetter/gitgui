@@ -14,3 +14,10 @@ export class TextDiffTab extends Tab {
     rightContent: string;
     rightPath: string;
 }
+
+export class TextTab extends Tab {
+    key = "TextTab";
+    repository: Repository;
+    content: string;
+    path: string;
+}
