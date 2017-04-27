@@ -1,5 +1,5 @@
 import { Input, OnChanges, Component } from "@angular/core";
-import { HistoryCommit, HistoryRepository, VisibleRange } from "../model/model";
+import { HistoryCommitEntry, HistoryRepository, VisibleRange, HistoryEntryBase } from "../model/model";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { Metrics } from "../services/metrics";
@@ -12,14 +12,14 @@ import { RepositoryCommit } from "../../../../../model/model";
 })
 export class CommitTitlesComponent implements OnChanges {
 
-    @Input() commits: HistoryRepository = undefined;
+    @Input() historyRepository: HistoryRepository = undefined;
     @Input() visibleRange: VisibleRange = undefined;
 
-    visibleCommits = new ReusePool<HistoryCommit, CommitTitleViewModel>(() => new CommitTitleViewModel());
+    visibleCommits = new ReusePool<HistoryEntryBase, CommitTitleViewModel>(() => new CommitTitleViewModel());
 
     constructor(private laneColorProvider: LaneColorProvider,
         private metrics: Metrics) {
-        this.commits = new HistoryRepository();
+        this.historyRepository = new HistoryRepository();
         this.visibleRange = new VisibleRange(0, 0);
     }
 
@@ -28,19 +28,21 @@ export class CommitTitlesComponent implements OnChanges {
     }
 
     private updateVisibleCommits() {
-        if (!this.commits || !this.commits.commits)
+        if (!this.historyRepository || !this.historyRepository.entries)
             return;
 
         const start = Math.max(0, this.visibleRange.start);
         const end = this.visibleRange.end;
 
-        this.visibleCommits.remapRange(this.commits.commits, start, end, (from, to) => {
-            to.id = from.hash;
-            to.data = from;
-            to.title = from.title;
-            to.positionTop = this.metrics.commitHeight * from.index;
-            to.color = this.laneColorProvider.getColorForLane(from.lane);
-            to.profileImageCommit = from.repositoryCommit;
+        this.visibleCommits.remapRange(this.historyRepository.entries, start, end, (from, to) => {
+            if (from instanceof HistoryCommitEntry) {
+                to.id = from.hash;
+                to.data = from;
+                to.title = from.title;
+                to.positionTop = this.metrics.commitHeight * from.index;
+                to.color = this.laneColorProvider.getColorForLane(from.lane);
+                to.profileImageCommit = from.repositoryCommit;
+            }
             return true;
         });
     }
@@ -50,9 +52,9 @@ export class CommitTitlesComponent implements OnChanges {
     }
 }
 
-export class CommitTitleViewModel implements PoolableViewModel<HistoryCommit> {
+export class CommitTitleViewModel implements PoolableViewModel<HistoryCommitEntry> {
     id: string;
-    data: HistoryCommit;
+    data: HistoryCommitEntry;
     title: string;
     positionTop: number;
     color: string;

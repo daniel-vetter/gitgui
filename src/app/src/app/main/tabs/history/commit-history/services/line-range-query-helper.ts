@@ -1,27 +1,27 @@
-import { Line, HistoryCommit, LaneSwitchPosition } from "../model/model";
+import { Line, LaneSwitchPosition, HistoryEntryBase } from "../model/model";
 
 export class LineRangeQueryHelper {
 
     private lineIndex: { [lineIndex: number]: Line[]; } = [];
     private lines: Line[];
 
-    constructor(private commits: HistoryCommit[]) {
+    constructor(private entries: HistoryEntryBase[]) {
         this.updateIndex();
     }
 
     private updateIndex() {
-        if (!this.commits) return;
+        if (!this.entries) return;
         const lines = [];
         this.lineIndex = [];
 
-        for (const commit of this.commits) {
-            for (const parent of commit.parents) {
+        for (const entry of this.entries) {
+            for (const parent of entry.parents) {
                 const line = new Line();
-                line.indexStart = commit.index;
-                line.laneStart = commit.lane;
+                line.indexStart = entry.index;
+                line.laneStart = entry.lane;
                 line.indexEnd = parent.index;
                 line.laneEnd = parent.lane;
-                line.laneSwitchPosition = commit.parents[0] === parent ? LaneSwitchPosition.End : LaneSwitchPosition.Start;
+                line.laneSwitchPosition = entry.parents[0] === parent ? LaneSwitchPosition.End : LaneSwitchPosition.Start;
                 lines.push(line);
             }
         }

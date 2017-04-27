@@ -2,7 +2,7 @@ import { Component, Input, Output, ViewChild, OnChanges, ChangeDetectorRef, Even
 import { LaneColorProvider } from "./services/lane-color-provider";
 import { LaneAssigner } from "./services/lane-assigner";
 import { Repository, RepositoryCommit } from "../../../../model/model";
-import { VisibleRange, HistoryRepository, HistoryCommit } from "./model/model";
+import { VisibleRange, HistoryRepository, HistoryCommitEntry, HistoryEntryBase } from "./model/model";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 import { Metrics } from "./services/metrics";
 import { OncePerFrame } from "./services/once-per-frame";
@@ -31,9 +31,9 @@ export class CommitHistoryComponent implements OnChanges {
     historyRepository: HistoryRepository;
     mouseIsInLaneGrid = false;
 
-    commitClicked: HistoryCommit;
-    commitHighlighted: HistoryCommit;
-    commitSelected: HistoryCommit;
+    entryClicked: HistoryEntryBase;
+    entryHighlighted: HistoryEntryBase;
+    entrySelected: HistoryEntryBase;
 
     showLeftLaneGridBorder: boolean = false;
     showRightLaneGridBorder: boolean = false;
@@ -56,10 +56,10 @@ export class CommitHistoryComponent implements OnChanges {
             this.historyRepository = this.repositoryToHistoryRepositoryMapper.map(this.repository);
             this.totalLaneGridWidth = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
             this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, this.metrics.getBubbleRight(10));
-            this.maxScrollHeight = this.historyRepository.commits.length * this.metrics.commitHeight;
-            this.commitClicked = undefined;
-            this.commitHighlighted = undefined;
-            this.commitSelected = undefined;
+            this.maxScrollHeight = this.historyRepository.entries.length * this.metrics.commitHeight;
+            this.entryClicked = undefined;
+            this.entryHighlighted = undefined;
+            this.entrySelected = undefined;
         }
         this.updateVisibleRange();
         this.updateShadowVisibility();
@@ -68,17 +68,19 @@ export class CommitHistoryComponent implements OnChanges {
 
     onScroll(event) {
         this.oncePerFrame.run("scroll", () => {
-            this.commitHighlighted = undefined;
+            this.entryHighlighted = undefined;
             this.updateVisibleRange();
             this.changeDetectorRef.detectChanges();
         });
     }
 
     @Input()
-    get selectedCommit() {
-        if (this.commitSelected === undefined)
+    get selectedCommit(): RepositoryCommit {
+        if (this.entrySelected === undefined)
             return undefined;
-        return this.commitSelected.repositoryCommit;
+        if (!(this.entrySelected instanceof HistoryCommitEntry))
+            return undefined;
+        return this.entrySelected.repositoryCommit;
     }
 
     set selectedCommit(commit: RepositoryCommit) {
@@ -164,9 +166,9 @@ export class CommitHistoryComponent implements OnChanges {
         const mouseX = event.clientX - this.scrollWrapper.nativeElement.getBoundingClientRect().left;
         const mouseIsInLaneGrid = mouseX > this.annotationGridWidth && mouseX < this.annotationGridWidth + this.currentLaneGridWidth;
 
-        if (this.commitHighlighted !== commitHighlighted ||
+        if (this.entryHighlighted !== commitHighlighted ||
             this.mouseIsInLaneGrid !== mouseIsInLaneGrid) {
-            this.commitHighlighted = commitHighlighted;
+            this.entryHighlighted = commitHighlighted;
             this.mouseIsInLaneGrid = mouseIsInLaneGrid;
             this.changeDetectorRef.detectChanges();
         }
@@ -176,8 +178,8 @@ export class CommitHistoryComponent implements OnChanges {
         if (!this.repository)
             return;
         if (event === undefined || this.scrollWrapper.nativeElement === event.target) {
-            if (this.commitHighlighted !== undefined) {
-                this.commitHighlighted = undefined;
+            if (this.entryHighlighted !== undefined) {
+                this.entryHighlighted = undefined;
                 this.changeDetectorRef.detectChanges();
             }
         }
@@ -188,7 +190,7 @@ export class CommitHistoryComponent implements OnChanges {
             return;
         const clickedCommit = this.hitTest(event.clientX, event.clientY);
         if (clickedCommit) {
-            this.commitSelected = this.commitClicked = clickedCommit;
+            this.entrySelected = this.entryClicked = clickedCommit;
             this.selectedCommitChange.emit(this.selectedCommit);
             this.changeDetectorRef.detectChanges();
         }
@@ -198,11 +200,11 @@ export class CommitHistoryComponent implements OnChanges {
     onMouseUp(event) {
         if (!this.repository)
             return;
-        this.commitClicked = undefined;
+        this.entryClicked = undefined;
         this.changeDetectorRef.detectChanges();
     }
 
-    hitTest(x: number, y: number): HistoryCommit {
+    hitTest(x: number, y: number): HistoryEntryBase {
         const bounds = this.scrollWrapper.nativeElement.getBoundingClientRect();
         x -= bounds.left;
         y -= bounds.top - this.scrollWrapper.nativeElement.scrollTop;
@@ -210,7 +212,7 @@ export class CommitHistoryComponent implements OnChanges {
             y < 0 || y > this.maxScrollHeight)
             return undefined;
         const index = Math.floor(y / this.metrics.commitHeight);
-        return this.historyRepository.commits[index];
+        return this.historyRepository.entries[index];
     }
 
     onWindowResize() {
@@ -224,15 +226,15 @@ export class CommitHistoryComponent implements OnChanges {
 
     onKeyDown(event) {
         this.oncePerFrame.run("keydown", () => {
-            if (!this.commitSelected) return;
+            if (!this.entrySelected) return;
             let move = 0;
             if (event.keyCode === 40) move = 1;
             if (event.keyCode === 38) move = -1;
             if (event.keyCode === 33) move = -Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight);
             if (event.keyCode === 34) move = Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight);
 
-            const newIndex = Math.min(Math.max(0, this.commitSelected.index + move), this.historyRepository.commits.length - 1);
-            this.commitSelected = this.historyRepository.commits[newIndex];
+            const newIndex = Math.min(Math.max(0, this.entrySelected.index + move), this.historyRepository.entries.length - 1);
+            this.entrySelected = this.historyRepository.entries[newIndex];
             this.selectedCommitChange.emit(this.selectedCommit);
             this.scrollToCurrentSelection();
             this.changeDetectorRef.detectChanges();
@@ -240,8 +242,8 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     private scrollToCurrentSelection() {
-        if (!this.commitSelected) return;
-        const commitTop = this.commitSelected.index * this.metrics.commitHeight;
+        if (!this.entrySelected) return;
+        const commitTop = this.entrySelected.index * this.metrics.commitHeight;
         const commitBottom = commitTop + this.metrics.commitHeight;
 
         if (commitTop < this.scrollWrapper.nativeElement.scrollTop) {

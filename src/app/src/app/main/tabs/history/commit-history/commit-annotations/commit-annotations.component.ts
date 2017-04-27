@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, ElementRef, ChangeDetectorRef } from "@angular/core";
-import { HistoryRepository, VisibleRange, HistoryCommit } from "../model/model";
+import { HistoryRepository, VisibleRange, HistoryCommitEntry, HistoryEntryBase } from "../model/model";
 import { Metrics } from "../services/metrics";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { WidthCalculator } from "./services/width-calculator";
@@ -11,13 +11,13 @@ import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
     styleUrls: ["./commit-annotations.component.scss"]
 })
 export class CommitAnnotationsComponent implements OnChanges {
-    @Input() commits: HistoryRepository = undefined;
+    @Input() historyRepository: HistoryRepository = undefined;
     @Input() visibleRange: VisibleRange = undefined;
     @Input() width = undefined;
 
-    annotationBundles = new ReusePool<HistoryCommit, AnnotationBundleViewModel>(() => new AnnotationBundleViewModel());
+    annotationBundles = new ReusePool<HistoryEntryBase, AnnotationBundleViewModel>(() => new AnnotationBundleViewModel());
     font: string;
-    currentExpandedCommit: HistoryCommit;
+    currentExpandedCommit: HistoryCommitEntry;
 
     constructor(private metrics: Metrics,
         private laneColorProvider: LaneColorProvider,
@@ -33,29 +33,33 @@ export class CommitAnnotationsComponent implements OnChanges {
 
     private updateRefs() {
 
-        if (!this.commits || !this.visibleRange) {
+        if (!this.historyRepository || !this.visibleRange) {
             return;
         }
 
-        this.annotationBundles.remapRange(this.commits.commits, this.visibleRange.start, this.visibleRange.end, (commit, vm) => {
-            if (commit.tags.length === 0 &&
-                commit.branches.length === 0)
+        this.annotationBundles.remapRange(this.historyRepository.entries, this.visibleRange.start, this.visibleRange.end, (entry, vm) => {
+
+            if (!(entry instanceof HistoryCommitEntry))
+                return;
+
+            if (entry.tags.length === 0 &&
+                entry.branches.length === 0)
                 return false;
 
-            vm.top = this.metrics.commitHeight * commit.index;
-            vm.colorLight = this.laneColorProvider.getColorForLane(commit.lane, 0.05);
-            vm.color = this.laneColorProvider.getColorForLane(commit.lane);
+            vm.top = this.metrics.commitHeight * entry.index;
+            vm.colorLight = this.laneColorProvider.getColorForLane(entry.lane, 0.05);
+            vm.color = this.laneColorProvider.getColorForLane(entry.lane);
 
             // fill bundle with annotations (tag, branches)
             vm.annotations = [];
-            for (const branch of commit.branches) {
+            for (const branch of entry.branches) {
                 const annotation = new AnnotationViewModel();
                 annotation.name = branch.localName ? branch.localName : branch.remoteName;
                 annotation.isLocal = !!branch.localName;
                 annotation.isRemote = !!branch.remoteName;
                 vm.annotations.push(annotation);
             }
-            for (const tag of commit.tags) {
+            for (const tag of entry.tags) {
                 const annotation = new AnnotationViewModel();
                 annotation.name = tag.name;
                 annotation.isTag = true;
@@ -70,7 +74,7 @@ export class CommitAnnotationsComponent implements OnChanges {
                 leftPos += annotation.width + 10;
             }
 
-            if (commit !== this.currentExpandedCommit) {
+            if (entry !== this.currentExpandedCommit) {
                 // go in reverse order through all annotations and shorten or remove them if they exceed the component width
                 const borderRight = 10;
                 const borderLeft = 5;
@@ -149,7 +153,7 @@ export class CommitAnnotationsComponent implements OnChanges {
     }
 }
 
-class AnnotationBundleViewModel implements PoolableViewModel<HistoryCommit> {
+class AnnotationBundleViewModel implements PoolableViewModel<HistoryCommitEntry> {
     top: number;
     annotations: AnnotationViewModel[];
     color: string;
@@ -157,7 +161,7 @@ class AnnotationBundleViewModel implements PoolableViewModel<HistoryCommit> {
     hiddenAnnotationCount: number;
     hiddenAnnotationCountWidth: number;
     totalWidth: number;
-    data: HistoryCommit;
+    data: HistoryCommitEntry;
     visible: boolean;
     clear() {
         this.top = undefined;

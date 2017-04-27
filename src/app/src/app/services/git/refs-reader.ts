@@ -27,6 +27,8 @@ export class RefsReader {
                 .filter(y => y.trim() !== "")
                 .map(y => this.parseLine(y));
 
+                console.log(x.data);
+
             // go through each line and create RepositoryRef objects for each
             for (const line of lines) {
 

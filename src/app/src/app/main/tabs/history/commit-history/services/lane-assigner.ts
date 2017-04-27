@@ -10,7 +10,7 @@ export class LaneAssigner {
      */
     assignLanes(repository: HistoryRepository): void {
         const lanes: number[] = [];
-        for (const commit of repository.commits) {
+        for (const commit of repository.entries) {
 
             for (let i = 0; i < lanes.length; i++) {
                 if (lanes[i] <= commit.index)

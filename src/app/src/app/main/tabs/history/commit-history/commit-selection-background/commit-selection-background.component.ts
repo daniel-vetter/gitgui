@@ -1,4 +1,4 @@
-import { HistoryCommit } from "../model/model";
+import { HistoryCommitEntry } from "../model/model";
 import { Input, OnChanges, Component } from "@angular/core";
 import { Metrics } from "../services/metrics";
 
@@ -8,13 +8,13 @@ import { Metrics } from "../services/metrics";
     styleUrls: ["./commit-selection-background.component.scss"]
 })
 export class CommitSelectionBackgroundComponent implements OnChanges {
-    @Input() commitClicked: HistoryCommit;
-    @Input() commitSelected: HistoryCommit;
-    @Input() commitHighlighted: HistoryCommit;
+    @Input() entryClicked: HistoryCommitEntry;
+    @Input() entrySelected: HistoryCommitEntry;
+    @Input() entryHighlighted: HistoryCommitEntry;
 
-    commitSelectedTop: number = undefined;
-    commitHighlightedTop: number = undefined;
-    commitClickedTop: number = undefined;
+    entrySelectedTop: number = undefined;
+    entryHighlightedTop: number = undefined;
+    entryClickedTop: number = undefined;
 
     constructor(private metrics: Metrics) {}
 
@@ -23,27 +23,27 @@ export class CommitSelectionBackgroundComponent implements OnChanges {
     }
 
     private updateHighlightBar() {
-        if (this.commitClicked) {
-            this.commitClickedTop = this.commitClicked.index * this.metrics.commitHeight;
+        if (this.entryClicked) {
+            this.entryClickedTop = this.entryClicked.index * this.metrics.commitHeight;
         } else {
-            this.commitClickedTop = undefined;
+            this.entryClickedTop = undefined;
         }
-        if (this.commitSelected) {
-            this.commitSelectedTop = this.commitSelected.index * this.metrics.commitHeight;
+        if (this.entrySelected) {
+            this.entrySelectedTop = this.entrySelected.index * this.metrics.commitHeight;
         } else {
-            this.commitSelectedTop = undefined;
+            this.entrySelectedTop = undefined;
         }
-        if (this.commitHighlighted) {
-            this.commitHighlightedTop = this.commitHighlighted.index * this.metrics.commitHeight;
+        if (this.entryHighlighted) {
+            this.entryHighlightedTop = this.entryHighlighted.index * this.metrics.commitHeight;
         } else {
-            this.commitHighlightedTop = undefined;
+            this.entryHighlightedTop = undefined;
         }
 
-        if (this.commitHighlighted === this.commitClicked)
-            this.commitHighlightedTop = undefined;
-        if (this.commitHighlighted === this.commitSelected)
-            this.commitHighlightedTop = undefined;
-        if (this.commitSelected === this.commitClicked)
-            this.commitClickedTop = undefined;
+        if (this.entryHighlighted === this.entryClicked)
+            this.entryHighlightedTop = undefined;
+        if (this.entryHighlighted === this.entrySelected)
+            this.entryHighlightedTop = undefined;
+        if (this.entrySelected === this.entryClicked)
+            this.entryClickedTop = undefined;
     }
 }

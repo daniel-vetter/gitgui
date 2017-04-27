@@ -3,6 +3,7 @@ export class Repository {
     commits: RepositoryCommit[] = [];
     refs: RepositoryRef[] = [];
     location: string;
+    head: RepositoryCommit;
 }
 
 export class RepositoryStatus {
@@ -13,7 +14,7 @@ export class RepositoryStatus {
 }
 
 export class FileStatus {
-    fileName: string;
+    filePath: string;
     type: FileStatusType;
 }
 

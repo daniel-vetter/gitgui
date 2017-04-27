@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { HistoryRepository, VisibleRange, HistoryCommit, LaneSwitchPosition, Line } from "../model/model";
+import { HistoryRepository, VisibleRange, HistoryCommitEntry, LaneSwitchPosition, Line, HistoryEntryBase } from "../model/model";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { Metrics } from "../services/metrics";
@@ -11,12 +11,12 @@ import { LineRangeQueryHelper } from "../services/line-range-query-helper";
 })
 export class CommitLanesComponent implements OnChanges {
 
-    @Input() commits: HistoryRepository = undefined;
+    @Input() historyRepository: HistoryRepository = undefined;
     @Input() visibleRange: VisibleRange = undefined;
     @Input() horizontalScroll = 0;
     @Input() width = 0;
 
-    visibleBubbles = new ReusePool<HistoryCommit, CommitBubbleViewModel>(() => new CommitBubbleViewModel());
+    visibleBubbles = new ReusePool<HistoryEntryBase, CommitBubbleViewModel>(() => new CommitBubbleViewModel());
     visibleLines = new ReusePool<Line, LineViewModel>(() => new LineViewModel());
 
     private lineQueryHelper = new LineRangeQueryHelper([]);
@@ -26,13 +26,13 @@ export class CommitLanesComponent implements OnChanges {
         private metrics: Metrics) { }
 
     ngOnChanges(changes: any) {
-        if (!this.commits)
+        if (!this.historyRepository)
             return;
-        if (changes.commits) {
-            this.lineQueryHelper = new LineRangeQueryHelper(this.commits ? this.commits.commits : []);
+        if (changes.historyRepository) {
+            this.lineQueryHelper = new LineRangeQueryHelper(this.historyRepository ? this.historyRepository.entries : []);
             this.totalLaneCount = 0;
-            if (this.commits && this.commits.commits) {
-                for (const commit of this.commits.commits) {
+            if (this.historyRepository && this.historyRepository.entries) {
+                for (const commit of this.historyRepository.entries) {
                     if (commit.lane + 1 > this.totalLaneCount)
                         this.totalLaneCount = commit.lane + 1;
                 }
@@ -47,20 +47,25 @@ export class CommitLanesComponent implements OnChanges {
     }
 
     private updateBubbles() {
-        if (!this.commits || !this.commits.commits)
+        if (!this.historyRepository || !this.historyRepository.entries)
             return;
 
         const start = Math.max(0, this.visibleRange.start);
         const end = this.visibleRange.end;
 
         this.visibleBubbles.makeAllInvisible();
-        this.visibleBubbles.remapRange(this.commits.commits, start, end, (commit, vm) => {
-            vm.id = commit.hash;
-            vm.positionTop = this.metrics.getBubbleTop(commit.index);
-            vm.positionLeft = this.metrics.getBubbleLeft(commit.lane) - this.horizontalScroll;
+        this.visibleBubbles.remapRange(this.historyRepository.entries, start, end, (entry, vm) => {
+
+            vm.positionTop = this.metrics.getBubbleTop(entry.index);
+            vm.positionLeft = this.metrics.getBubbleLeft(entry.lane) - this.horizontalScroll;
             vm.lineWidth = Math.max(0, vm.positionLeft + this.metrics.bubbleWidth / 2);
-            vm.color = this.laneColorProvider.getColorForLane(commit.lane);
-            vm.showAnnotationLine = commit.tags.length > 0 || commit.branches.length > 0;
+            vm.color = this.laneColorProvider.getColorForLane(entry.lane);
+            if (entry instanceof HistoryCommitEntry) {
+                vm.showAnnotationLine = entry.tags.length > 0 || entry.branches.length > 0;
+            } else {
+                vm.showAnnotationLine = false;
+            }
+
             return true;
         });
     }
@@ -114,9 +119,8 @@ export class CommitLanesComponent implements OnChanges {
     }
 }
 
-export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommit> {
-    id: string;
-    data: HistoryCommit;
+export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommitEntry> {
+    data: HistoryCommitEntry;
     color: string;
     positionTop: number;
     positionLeft: number;
@@ -126,7 +130,6 @@ export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommit> {
     visible: boolean;
 
     clear() {
-        this.id = undefined;
         this.data = undefined;
         this.color = undefined;
         this.positionTop = undefined;

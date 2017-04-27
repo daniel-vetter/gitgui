@@ -2,10 +2,23 @@ import { RepositoryCommit } from "../../../../../model/model";
 
 export class HistoryRepository {
     totalLaneCount = 0;
-    commits: HistoryCommit[];
+    entries: HistoryEntryBase[];
 }
 
-export class HistoryCommit {
+export class HistoryEntryBase {
+    index: number;
+    lane: number;
+    parents: HistoryEntryBase[] = [];
+    children: HistoryEntryBase[] = [];
+}
+
+export class HistoryCurrentChangesEntry extends HistoryEntryBase {
+    addedFileCount: number = 0;
+    removedFileCount: number = 0;
+    changedFileCount: number = 0;
+}
+
+export class HistoryCommitEntry extends HistoryEntryBase {
     hash: string;
     title: string;
     committerName: string;
@@ -14,12 +27,8 @@ export class HistoryCommit {
     authorName: string;
     authorMail: string;
     authorDate: Date;
-    parents: HistoryCommit[];
-    children: HistoryCommit[];
-    index: number;
-    lane: number;
-    tags: HistoryTag[];
-    branches: HistoryBranch[];
+    tags: HistoryTag[] = [];
+    branches: HistoryBranch[] = [];
     repositoryCommit: RepositoryCommit;
 }
 

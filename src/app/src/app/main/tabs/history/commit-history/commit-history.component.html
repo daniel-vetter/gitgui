@@ -12,9 +12,9 @@
          <!-- The selection background gets drawn behind all other components -->
         <div class="overlay" [style.height.px]="maxScrollHeight">
             <commit-selection-background
-                                        [commitClicked]="commitClicked"
-                                        [commitSelected]="commitSelected"
-                                        [commitHighlighted]="commitHighlighted">
+                                        [entryClicked]="entryClicked"
+                                        [entrySelected]="entrySelected"
+                                        [entryHighlighted]="entryHighlighted">
             </commit-selection-background>
         </div>
 
@@ -24,14 +24,14 @@
 
 
             <div [style.width.px]="annotationGridWidth">
-                <commit-annotations [commits]="historyRepository"
+                <commit-annotations [historyRepository]="historyRepository"
                                     [visibleRange]="visibleRange"
                                     [width]="annotationGridWidth">
                 </commit-annotations>
             </div>
 
             <div [style.width.px]="currentLaneGridWidth" style="position: relative">
-                <commit-lanes [commits]="historyRepository"
+                <commit-lanes [historyRepository]="historyRepository"
                               [visibleRange]="visibleRange"
                               [width]="currentLaneGridWidth"
                               [horizontalScroll]="laneGridScrollPosition">
@@ -39,7 +39,7 @@
             </div>
 
             <div style="flex: 1;">
-                <commit-titles [commits]="historyRepository"
+                <commit-titles [historyRepository]="historyRepository"
                                [visibleRange]="visibleRange">
                 </commit-titles>
             </div>

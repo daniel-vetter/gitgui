@@ -1,4 +1,4 @@
-import { HistoryRepository, HistoryCommit, HistoryTag, HistoryBranch } from "../model/model";
+import { HistoryRepository, HistoryCommitEntry, HistoryTag, HistoryBranch, HistoryCurrentChangesEntry } from "../model/model";
 import { Repository, RepositoryCommit, RepositoryTagRef, RepositoryHeadRef, RepositoryRemoteRef } from "../../../../../model/model";
 import { LaneAssigner } from "./lane-assigner";
 import { Injectable } from "@angular/core";
@@ -11,41 +11,59 @@ export class RepositoryToHistoryRepositoryMapper {
 
     map(repository: Repository): HistoryRepository {
         const historyRepository = new HistoryRepository();
-        historyRepository.commits = [];
-        const hashToHistoryCommitMap = new Map<string, HistoryCommit>();
+        historyRepository.entries = [];
+        const hashToHistoryCommitMap = new Map<string, HistoryCommitEntry>();
         const hashToRepositoryCommitMap = new Map<string, RepositoryCommit>();
         if (repository === undefined)
             return historyRepository;
 
+        // add "Current changes" entry
+        if (repository.status.staged.length > 0 ||
+            repository.status.unstaged.length > 0) {
+            const entry = new HistoryCurrentChangesEntry();
+            entry.index = 0;
+            historyRepository.entries.push(entry);
+        }
+
+        // add all commits from the repository history
         for (let i = 0; i < repository.commits.length; i++) {
             const commit = repository.commits[i];
-            const r = new HistoryCommit();
-            r.repositoryCommit = commit;
-            r.index = i;
-            r.hash = commit.hash;
-            r.title = commit.title;
-            r.committerName = commit.committerName;
-            r.committerMail = commit.committerMail;
-            r.commitDate = commit.commitDate;
-            r.authorName = commit.authorName;
-            r.authorMail = commit.authorMail;
-            r.authorDate = commit.authorDate;
-            r.parents = [];
-            r.children = [];
-            r.tags = this.getTagsFromCommit(commit);
-            r.branches = this.getBranchesFromCommit(commit);
-            historyRepository.commits.push(r);
-            hashToHistoryCommitMap.set(r.hash, r);
+            const entry = new HistoryCommitEntry();
+            entry.repositoryCommit = commit;
+            entry.index = historyRepository.entries.length;
+            entry.hash = commit.hash;
+            entry.title = commit.title;
+            entry.committerName = commit.committerName;
+            entry.committerMail = commit.committerMail;
+            entry.commitDate = commit.commitDate;
+            entry.authorName = commit.authorName;
+            entry.authorMail = commit.authorMail;
+            entry.authorDate = commit.authorDate;
+            entry.tags = this.getTagsFromCommit(commit);
+            entry.branches = this.getBranchesFromCommit(commit);
+            historyRepository.entries.push(entry);
+            hashToHistoryCommitMap.set(entry.hash, entry);
             hashToRepositoryCommitMap.set(commit.hash, commit);
         }
 
-        for (const historyCommit of historyRepository.commits) {
+        // connect all commit entries with each other (parents, children)
+        for (const historyCommit of historyRepository.entries) {
+            if (!(historyCommit instanceof HistoryCommitEntry))
+                continue;
             const repositoryCommit = hashToRepositoryCommitMap.get(historyCommit.hash);
             for (const parent of repositoryCommit.parents) {
-                const parentHistoryCommit = hashToHistoryCommitMap.get(parent.hash)
+                const parentHistoryCommit = hashToHistoryCommitMap.get(parent.hash);
                 historyCommit.parents.push(parentHistoryCommit);
                 parentHistoryCommit.children.push(historyCommit);
             }
+        }
+
+        // connect "Current changes" entry with the HEAD entry
+        if (historyRepository.entries.length > 0 && historyRepository.entries[0] instanceof HistoryCurrentChangesEntry) {
+            const currentChangeEntry = historyRepository.entries[0];
+            const headCommitEntry = hashToHistoryCommitMap.get(repository.head.hash);
+            currentChangeEntry.parents.push(headCommitEntry);
+            headCommitEntry.children.push(currentChangeEntry);
         }
 
         this.laneAssigner.assignLanes(historyRepository);
