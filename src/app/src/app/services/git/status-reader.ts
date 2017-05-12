@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as Rx from "rxjs";
 import { GitRaw } from "./infrastructure/git-raw";
-import { RepositoryStatus, FileStatus, FileStatusType } from "../../model/model";
+import { RepositoryStatus, FileChangeType, ChangedFile } from "../../model/model";
 
 
 @Injectable()
@@ -23,9 +23,9 @@ export class StatusReader {
                     const p2 = line[1];
                     const path = line.substr(3);
 
-                    const fileStatus = new FileStatus();
-                    fileStatus.filePath = path;
-                    fileStatus.type = FileStatusType.Modified; // TODO: parse status
+                    const fileStatus = new ChangedFile();
+                    fileStatus.path = path;
+                    fileStatus.type = FileChangeType.Modified; // TODO: parse status
                     result.unstaged.push(fileStatus); // TODO: check if staged or unstaged
                 }
 

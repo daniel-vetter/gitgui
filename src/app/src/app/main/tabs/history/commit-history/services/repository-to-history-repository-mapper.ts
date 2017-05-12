@@ -1,5 +1,5 @@
 import { HistoryRepository, HistoryCommitEntry, HistoryTag, HistoryBranch, HistoryCurrentChangesEntry } from "../model/model";
-import { Repository, RepositoryCommit, RepositoryTagRef, RepositoryHeadRef, RepositoryRemoteRef } from "../../../../../model/model";
+import { Repository, RepositoryCommit, RepositoryTagRef, RepositoryHeadRef, RepositoryRemoteRef, FileChangeType } from "../../../../../model/model";
 import { LaneAssigner } from "./lane-assigner";
 import { Injectable } from "@angular/core";
 
@@ -22,6 +22,17 @@ export class RepositoryToHistoryRepositoryMapper {
             repository.status.unstaged.length > 0) {
             const entry = new HistoryCurrentChangesEntry();
             entry.index = 0;
+            for (let i = 0; i < repository.status.staged.length + repository.status.unstaged.length; i++) {
+                const type = i < repository.status.staged.length
+                    ? repository.status.staged[i].type :
+                    repository.status.unstaged[i - repository.status.staged.length].type;
+                if (type === FileChangeType.Added)
+                    entry.addedFileCount++;
+                if (type === FileChangeType.Modified || type === FileChangeType.Moved)
+                    entry.changedFileCount++;
+                if (type === FileChangeType.Removed)
+                    entry.removedFileCount++;
+            }
             historyRepository.entries.push(entry);
         }
 

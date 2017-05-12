@@ -1,4 +1,5 @@
 <div class="root fill">
-    <commit-details *ngIf="commit" [commit]="commit"></commit-details>
+    <commit-details *ngIf="showCommitDetails" [commit]="commit"></commit-details>
+    <repository-status *ngIf="showRepositoryStatus" [repository]="repository"></repository-status>
 </div>
 

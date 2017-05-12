@@ -1,0 +1,31 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1em;
+}
+
+.content {
+    padding-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+
+    &:last-child {
+        padding-bottom: 0;
+    }
+
+    &>div:last-child {
+        flex: 1;
+    }
+
+    &>div:first-child {
+        font-weight: bold;
+        opacity: 0.5;
+    }
+}
+
+.treeView {
+    background: var(--theme-workspace-background);
+    border: 1px solid var(--theme-workspace-border);
+    overflow: hidden;
+}

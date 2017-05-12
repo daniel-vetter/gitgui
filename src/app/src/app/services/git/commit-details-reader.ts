@@ -1,7 +1,7 @@
 import { GitRaw } from "./infrastructure/git-raw";
 import * as Rx from "rxjs";
 import { Injectable } from "@angular/core";
-import { RepositoryCommit } from "../../model/model";
+import { RepositoryCommit, IChangedFile, FileChangeType } from "../../model/model";
 
 @Injectable()
 export class CommitDetailsReader {
@@ -44,15 +44,15 @@ export class CommitDetailsReader {
                     if (item.destinationBlob === "0000000000000000000000000000000000000000")
                         item.destinationBlob = undefined;
                     const type = metainfosParts[4];
-                    if (type === "A") item.type = ChangeType.Added;
-                    if (type === "C") item.type = ChangeType.Copied;
-                    if (type === "D") item.type = ChangeType.Deleted;
-                    if (type === "M") item.type = ChangeType.Modified;
-                    if (type === "R") item.type = ChangeType.Renamed;
-                    if (type === "T") item.type = ChangeType.TypeChange;
-                    if (type === "U") item.type = ChangeType.Unmerged;
-                    if (type === "X") item.type = ChangeType.Unknown;
-                    if (type === "B") item.type = ChangeType.Broken;
+                    if (type === "A") item.type = FileChangeType.Added;
+                    if (type === "C") item.type = FileChangeType.Copied;
+                    if (type === "D") item.type = FileChangeType.Deleted;
+                    if (type === "M") item.type = FileChangeType.Modified;
+                    if (type === "R") item.type = FileChangeType.Renamed;
+                    if (type === "T") item.type = FileChangeType.TypeChange;
+                    if (type === "U") item.type = FileChangeType.Unmerged;
+                    if (type === "X") item.type = FileChangeType.Unknown;
+                    if (type === "B") item.type = FileChangeType.Broken;
                     item.path = lines[i + 1];
                     list.push(item);
                 }
@@ -61,23 +61,11 @@ export class CommitDetailsReader {
     }
 }
 
-export class ChangedFile {
+export class ChangedFile implements IChangedFile {
     path: string;
-    type: ChangeType;
+    type: FileChangeType;
     sourceMode: string;
     sourceBlob: string;
     destinationBlob: string;
     destinationMode: string;
-}
-
-export enum ChangeType {
-    Added,
-    Copied,
-    Deleted,
-    Modified,
-    Renamed,
-    TypeChange,
-    Unmerged,
-    Unknown,
-    Broken
 }

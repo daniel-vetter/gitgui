@@ -1,17 +1,18 @@
-import { ChangedFileTreeNodeModel } from "./file-tree-builder";
+import { FileTreeNode } from "./file-tree-builder";
 import { ITreeViewAdapter } from "../../../../shared/tree-view/tree-view.component";
+import { IChangedFile } from "../../../../model/model";
 
-export class ChangedFileTreeNodeModelAdapter implements ITreeViewAdapter<ChangedFileTreeNodeModel> {
-    hasChildren(data: ChangedFileTreeNodeModel): boolean {
+export class FileTreeNodeToTreeViewAdapter<T extends IChangedFile> implements ITreeViewAdapter<FileTreeNode<T>> {
+    hasChildren(data: FileTreeNode<T>): boolean {
         return data.children.length > 0;
     }
-    getChildren(data: ChangedFileTreeNodeModel): ChangedFileTreeNodeModel[] {
+    getChildren(data: FileTreeNode<T>): FileTreeNode<T>[] {
         return data.children;
     }
-    getExpandedState(data: ChangedFileTreeNodeModel): boolean {
+    getExpandedState(data: FileTreeNode<T>): boolean {
         return data.expanded;
     }
-    setExpandedState(data: ChangedFileTreeNodeModel, expanded: boolean): void {
+    setExpandedState(data: FileTreeNode<T>, expanded: boolean): void {
         data.expanded = expanded;
     }
 }

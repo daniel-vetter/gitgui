@@ -1,5 +1,5 @@
 import { Input, OnChanges, Component } from "@angular/core";
-import { HistoryCommitEntry, HistoryRepository, VisibleRange, HistoryEntryBase } from "../model/model";
+import { HistoryCommitEntry, HistoryRepository, VisibleRange, HistoryEntryBase, HistoryCurrentChangesEntry } from "../model/model";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { Metrics } from "../services/metrics";
@@ -42,6 +42,11 @@ export class CommitTitlesComponent implements OnChanges {
                 to.positionTop = this.metrics.commitHeight * from.index;
                 to.color = this.laneColorProvider.getColorForLane(from.lane);
                 to.profileImageCommit = from.repositoryCommit;
+                to.isVirtual = false;
+            }
+            if (from instanceof HistoryCurrentChangesEntry) {
+                to.isVirtual = true;
+                to.title = "Uncommited changes";
             }
             return true;
         });
@@ -52,15 +57,17 @@ export class CommitTitlesComponent implements OnChanges {
     }
 }
 
-export class CommitTitleViewModel implements PoolableViewModel<HistoryCommitEntry> {
+export class CommitTitleViewModel implements PoolableViewModel<HistoryEntryBase> {
     id: string;
-    data: HistoryCommitEntry;
+    data: HistoryEntryBase;
     title: string;
     positionTop: number;
     color: string;
     profileImageUrl: string;
     visible: boolean;
     profileImageCommit: RepositoryCommit;
+    isVirtual: boolean;
+
 
     clear() {
         this.id = undefined;
@@ -69,5 +76,6 @@ export class CommitTitleViewModel implements PoolableViewModel<HistoryCommitEntr
         this.positionTop = undefined;
         this.color = undefined;
         this.profileImageUrl = undefined;
+        this.isVirtual = undefined;
     }
 }

@@ -1,14 +1,17 @@
-import { ChangedFile, ChangeType } from "../../../../services/git/commit-details-reader";
 import { IconDefinition, FileIconManager } from "../../../../services/file-icon/file-icon";
 import { Injectable } from "@angular/core";
 import { Path } from "../../../../services/path";
+import { FileChangeType, IChangedFile } from "../../../../model/model";
 
+/**
+ * Builds a tree of FileTreeNode objects from a flat list of files.
+ */
 @Injectable()
 export class FileTreeBuilder {
 
     constructor(private fileIconManager: FileIconManager) { }
 
-    getTree(changedFiles: ChangedFile[]): ChangedFileTreeNodeModel[] {
+    getTree<T extends IChangedFile>(changedFiles: T[]): FileTreeNode<T>[] {
         const root = this.createBaseTree(changedFiles);
         this.combineFolderWithOneParent(root);
         this.orderChildren(root);
@@ -16,9 +19,9 @@ export class FileTreeBuilder {
         return root.children;
     }
 
-    private createBaseTree(changedFiles: ChangedFile[]): ChangedFileTreeNodeModel {
+    private createBaseTree<T extends IChangedFile>(changedFiles: T[]): FileTreeNode<T> {
         const index = new ChildIndex();
-        const root = new ChangedFileTreeNodeModel();
+        const root = new FileTreeNode<T>();
         for (const change of changedFiles) {
             const parts = change.path.split("/");
             let curNode = root;
@@ -26,25 +29,25 @@ export class FileTreeBuilder {
                 const part = parts[i];
                 let childNode = index.get(curNode, part);
                 if (!childNode) {
-                    childNode = new ChangedFileTreeNodeModel();
+                    childNode = new FileTreeNode<T>();
                     childNode.label = part;
                     childNode.expanded = true;
                     if (i === parts.length - 1) {
-                        if (change.type === ChangeType.Added) childNode.textClass = "entryAdd";
-                        else if (change.type === ChangeType.Deleted) childNode.textClass = "entryRemove";
+                        if (change.type === FileChangeType.Added) childNode.textClass = "entryAdd";
+                        else if (change.type === FileChangeType.Deleted) childNode.textClass = "entryRemove";
                         else childNode.textClass = "entryChange";
                         childNode.data = change;
                     }
-                    curNode.children.push(childNode);
+                    curNode.children.push(<FileTreeNode<T>>childNode);
                     index.set(curNode, childNode);
                 }
-                curNode = childNode;
+                curNode = <FileTreeNode<T>>childNode;
             }
         }
         return root;
     }
 
-    private orderChildren(node: ChangedFileTreeNodeModel) {
+    private orderChildren<T extends IChangedFile>(node: FileTreeNode<T>) {
         this.forEachNode(node, x => {
             x.children.sort((a, b) => {
                 if (a.children.length > 0 && b.children.length === 0)
@@ -61,7 +64,7 @@ export class FileTreeBuilder {
         });
     }
 
-    private combineFolderWithOneParent(root: ChangedFileTreeNodeModel) {
+    private combineFolderWithOneParent<T extends IChangedFile>(root: FileTreeNode<T>) {
         for (const child of root.children) {
             this.forEachNode(child, x => {
                 while (x.children.length === 1 && x.children[0].children.length !== 0) {
@@ -72,7 +75,7 @@ export class FileTreeBuilder {
         }
     }
 
-    private addMetadata(node: ChangedFileTreeNodeModel) {
+    private addMetadata<T extends IChangedFile>(node: FileTreeNode<T>) {
         this.forEachNode(node, x => {
             x.isFolder = x.children.length > 0;
             if (x.isFolder) {
@@ -87,7 +90,7 @@ export class FileTreeBuilder {
         });
     }
 
-    private forEachNode(node: ChangedFileTreeNodeModel, action: (node: ChangedFileTreeNodeModel) => void) {
+    private forEachNode<T extends IChangedFile>(node: FileTreeNode<T>, action: (node: FileTreeNode<T>) => void) {
         action(node);
         for (const child of node.children) {
             this.forEachNode(child, action);
@@ -95,35 +98,35 @@ export class FileTreeBuilder {
     }
 }
 
-export class ChangedFileTreeNodeModel {
+export class FileTreeNode<T extends IChangedFile> {
     label: string = "";
     iconExpanded: IconDefinition;
     iconCollapsed: IconDefinition;
     isFolder: boolean;
     expanded: boolean;
     textClass: string;
-    children: ChangedFileTreeNodeModel[] = [];
-    data: ChangedFile;
+    children: FileTreeNode<T>[] = [];
+    data: T;
 }
 
-class ChildIndex {
+class ChildIndex<T extends IChangedFile> {
 
-    private data = new Map<ChangedFileTreeNodeModel, Map<string, ChangedFileTreeNodeModel>>();
+    private data = new Map<FileTreeNode<T>, Map<string, FileTreeNode<T>>>();
 
-    set(node: ChangedFileTreeNodeModel, child: ChangedFileTreeNodeModel) {
+    set(node: FileTreeNode<T>, child: FileTreeNode<T>) {
         return this.getSubIndex(node).set(child.label, child);
     }
 
-    get(node: ChangedFileTreeNodeModel, childLabel: string): ChangedFileTreeNodeModel {
+    get(node: FileTreeNode<T>, childLabel: string): FileTreeNode<T> {
         return this.getSubIndex(node).get(childLabel);
     }
 
-    private getSubIndex(node: ChangedFileTreeNodeModel): Map<string, ChangedFileTreeNodeModel> {
+    private getSubIndex(node: FileTreeNode<T>): Map<string, FileTreeNode<T>> {
         let subIndex = this.data.get(node);
         if (subIndex) {
             return subIndex;
         }
-        subIndex = new Map<string, ChangedFileTreeNodeModel>();
+        subIndex = new Map<string, FileTreeNode<T>>();
         this.data.set(node, subIndex);
         return subIndex;
     }

@@ -1,14 +1,24 @@
-import { RepositoryCommit } from "../model/model";
+import { RepositoryCommit, Repository } from "../model/model";
 import { EventEmitter, Injectable } from "@angular/core";
 
 @Injectable()
 export class SideBarManager {
 
     onContentChanged = new EventEmitter();
-    commit: RepositoryCommit = undefined;
+    currentContent: SideBarContent;
 
-    showCommitDetails(commit: RepositoryCommit) {
-        this.commit = commit;
+    setContent(content: SideBarContent) {
+        this.currentContent = content;
         this.onContentChanged.emit();
     }
+}
+
+export type SideBarContent = SideBarCommitDetails | SideBarRepositoryStatus;
+
+export class SideBarCommitDetails {
+    constructor(public commit: RepositoryCommit) {}
+}
+
+export class SideBarRepositoryStatus {
+    constructor(public repository: Repository) {}
 }

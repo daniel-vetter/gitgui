@@ -12,7 +12,7 @@
              <profile-image [commit]="item.profileImageCommit"></profile-image>
         </div>
 
-        <div class="title">
+        <div class="title" [class.virtual]="item.isVirtual">
             {{ item.title }}
         </div>
 

@@ -9,7 +9,7 @@ import { Config } from "./services/config";
 import { CommitHistoryModule } from "./main/tabs/history/commit-history/commit-history.module";
 import { CurrentRepository } from "./services/current-repository";
 import { ThemeManager } from "./services/theme-manager";
-import { CommitDetailsComponent } from "./main/side-bar/commit-details/commit-details-component";
+import { CommitDetailsComponent } from "./main/side-bar/commit-details/commit-details.component";
 import { GitModule } from "./services/git/git.module";
 import { RepositoryComponent } from "./main/repository.component";
 import { MenuModule } from "./menu/menu.module";
@@ -34,6 +34,7 @@ import { SideBarManager } from "./services/side-bar-manager";
 import { SideBarComponent } from "./main/side-bar/side-bar.component";
 import { TextDiffTabComponent } from "./main/tabs/text-diff/text-diff-tab.component";
 import { TextTabComponent } from "./main/tabs/text/text-tab.component";
+import { RepositoryStatusComponent } from "./main/side-bar/repository-status/repository-status.component";
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { TextTabComponent } from "./main/tabs/text/text-tab.component";
     HistoryTabComponent,
     TextDiffTabComponent,
     TextTabComponent,
-    SideBarComponent
+    SideBarComponent,
+    RepositoryStatusComponent
   ],
   imports: [
     BrowserModule,

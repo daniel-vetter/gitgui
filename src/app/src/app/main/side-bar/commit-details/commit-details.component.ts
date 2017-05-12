@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
 import { RepositoryCommit } from "../../../model/model";
 import { CommitDetailsReader, ChangedFile } from "../../../services/git/commit-details-reader";
-import { ChangedFileTreeNodeModel, FileTreeBuilder } from "./services/file-tree-builder";
-import { ChangedFileTreeNodeModelAdapter } from "./services/changed-file-tree-node-model-adapter";
+import { FileTreeNode, FileTreeBuilder } from "./services/file-tree-builder";
+import { FileTreeNodeToTreeViewAdapter } from "./services/changed-file-tree-node-model-adapter";
 import { Path } from "../../../services/path";
 import { FileIconManager } from "../../../services/file-icon/file-icon";
 import { TabManager } from "../../../services/tab-manager";
@@ -28,8 +28,8 @@ export class CommitDetailsComponent implements OnChanges {
     private lastRequestId = 0;
 
     changedFiles: ChangedFile[];
-    changeFilesTree: ChangedFileTreeNodeModel[];
-    adapter = new ChangedFileTreeNodeModelAdapter();
+    changeFilesTree: FileTreeNode<ChangedFile>[];
+    adapter = new FileTreeNodeToTreeViewAdapter<ChangedFile>();
 
     constructor(private commitDetailsReader: CommitDetailsReader,
         private fileTreeBuilder: FileTreeBuilder,
@@ -77,7 +77,7 @@ export class CommitDetailsComponent implements OnChanges {
         this.updateTree();
     }
 
-    onFileSelected(vm: ChangedFileTreeNodeModel) {
+    onFileSelected(vm: FileTreeNode<ChangedFile>) {
         if (!vm.data)
             return;
 

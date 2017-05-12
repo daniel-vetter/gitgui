@@ -9,20 +9,30 @@ export class Repository {
 export class RepositoryStatus {
     isMerge: boolean;
     isRebase: boolean;
-    unstaged: FileStatus[] = [];
-    staged: FileStatus[] = [];
+    unstaged: ChangedFile[] = [];
+    staged: ChangedFile[] = [];
 }
 
-export class FileStatus {
-    filePath: string;
-    type: FileStatusType;
+export class ChangedFile implements IChangedFile  {
+    path: string;
+    type: FileChangeType;
 }
 
-export enum FileStatusType {
+export interface IChangedFile {
+    path: string;
+    type: FileChangeType;
+}
+
+export enum FileChangeType {
     Added,
+    Copied,
+    Deleted,
     Modified,
-    Moved,
-    Removed
+    Renamed,
+    TypeChange,
+    Unmerged,
+    Unknown,
+    Broken
 }
 
 export class RepositoryCommit {

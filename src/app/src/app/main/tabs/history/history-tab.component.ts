@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { HistoryTab } from "../tabs";
 import { Repository, RepositoryCommit } from "../../../model/model";
-import { SideBarManager } from "../../../services/side-bar-manager";
+import { SideBarManager, SideBarCommitDetails, SideBarRepositoryStatus } from "../../../services/side-bar-manager";
 
 declare var monaco: any;
 declare var global: any;
@@ -28,6 +28,10 @@ export class HistoryTabComponent implements OnChanges {
     }
 
     onSelectedCommitChange() {
-        this.sideBarManager.showCommitDetails(this.selectedCommit);
+        if (this.selectedCommit) {
+            this.sideBarManager.setContent(new SideBarCommitDetails(this.selectedCommit));
+        } else {
+            this.sideBarManager.setContent(new SideBarRepositoryStatus(this.repository));
+        }
     }
 }

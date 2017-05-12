@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { SideBarManager } from "../../services/side-bar-manager";
+import { SideBarManager, SideBarCommitDetails, SideBarRepositoryStatus } from "../../services/side-bar-manager";
 import { Repository, RepositoryCommit } from "../../model/model";
 
 @Component({
@@ -9,7 +9,11 @@ import { Repository, RepositoryCommit } from "../../model/model";
 })
 export class SideBarComponent implements OnInit {
 
+    showCommitDetails: boolean;
+    showRepositoryStatus: boolean;
+
     commit: RepositoryCommit;
+    repository: Repository;
 
     constructor(private sideBarManager: SideBarManager) {
 
@@ -21,6 +25,17 @@ export class SideBarComponent implements OnInit {
     }
 
     update() {
-        this.commit = this.sideBarManager.commit;
+        this.showCommitDetails = false;
+        this.showRepositoryStatus = false;
+
+        if (this.sideBarManager.currentContent instanceof SideBarCommitDetails) {
+            this.showCommitDetails = true;
+            this.commit = this.sideBarManager.currentContent.commit;
+        }
+
+        if (this.sideBarManager.currentContent instanceof SideBarRepositoryStatus) {
+            this.showRepositoryStatus = true;
+            this.repository = this.sideBarManager.currentContent.repository;
+        }
     }
 }
