@@ -28,9 +28,9 @@ export class RepositoryToHistoryRepositoryMapper {
                     repository.status.unstaged[i - repository.status.staged.length].type;
                 if (type === FileChangeType.Added)
                     entry.addedFileCount++;
-                if (type === FileChangeType.Modified || type === FileChangeType.Moved)
+                if (type === FileChangeType.Modified || type === FileChangeType.Renamed)
                     entry.changedFileCount++;
-                if (type === FileChangeType.Removed)
+                if (type === FileChangeType.Deleted)
                     entry.removedFileCount++;
             }
             historyRepository.entries.push(entry);

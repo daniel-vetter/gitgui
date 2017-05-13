@@ -1,9 +1,12 @@
+import { EventEmitter } from "@angular/core";
 export class Repository {
     status: RepositoryStatus;
     commits: RepositoryCommit[] = [];
     refs: RepositoryRef[] = [];
     location: string;
     head: RepositoryCommit;
+
+    onStatusChanged = new EventEmitter();
 }
 
 export class RepositoryStatus {

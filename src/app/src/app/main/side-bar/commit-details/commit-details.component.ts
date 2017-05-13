@@ -1,10 +1,10 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
 import { RepositoryCommit } from "../../../model/model";
 import { CommitDetailsReader, ChangedFile } from "../../../services/git/commit-details-reader";
-import { FileTreeNode, FileTreeBuilder } from "./services/file-tree-builder";
+import { IFileTreeNode, FileTreeBuilder } from "./services/file-tree-builder";
 import { FileTreeNodeToTreeViewAdapter } from "./services/changed-file-tree-node-model-adapter";
 import { Path } from "../../../services/path";
-import { FileIconManager } from "../../../services/file-icon/file-icon";
+import { FileIconManager, IconDefinition } from "../../../services/file-icon/file-icon";
 import { TabManager } from "../../../services/tab-manager";
 import { TextDiffTab, TextTab } from "../../tabs/tabs";
 import { ObjectReader } from "../../../services/git/object-reader";
@@ -28,8 +28,8 @@ export class CommitDetailsComponent implements OnChanges {
     private lastRequestId = 0;
 
     changedFiles: ChangedFile[];
-    changeFilesTree: FileTreeNode<ChangedFile>[];
-    adapter = new FileTreeNodeToTreeViewAdapter<ChangedFile>();
+    changeFilesTree: FileTreeNode[];
+    adapter = new FileTreeNodeToTreeViewAdapter<ChangedFile, FileTreeNode>();
 
     constructor(private commitDetailsReader: CommitDetailsReader,
         private fileTreeBuilder: FileTreeBuilder,
@@ -69,7 +69,7 @@ export class CommitDetailsComponent implements OnChanges {
             let changedFiles = this.changedFiles;
             if (this.filter && this.filter !== "")
                 changedFiles = this.changedFiles.filter(x => Path.getLastPart(x.path).indexOf(this.filter) !== -1);
-            this.changeFilesTree = this.fileTreeBuilder.getTree(changedFiles);
+            this.changeFilesTree = this.fileTreeBuilder.getTree<ChangedFile, any>(changedFiles, () => new FileTreeNode());
         }
     }
 
@@ -77,7 +77,7 @@ export class CommitDetailsComponent implements OnChanges {
         this.updateTree();
     }
 
-    onFileSelected(vm: FileTreeNode<ChangedFile>) {
+    onFileSelected(vm: FileTreeNode) {
         if (!vm.data)
             return;
 
@@ -113,4 +113,15 @@ export class CommitDetailsComponent implements OnChanges {
 
 
     }
+}
+
+class FileTreeNode implements IFileTreeNode<ChangedFile, FileTreeNode> {
+    label: string;
+    iconExpanded: IconDefinition;
+    iconCollapsed: IconDefinition;
+    isFolder: boolean;
+    expanded: boolean;
+    textClass: string;
+    children: FileTreeNode[];
+    data: ChangedFile;
 }
