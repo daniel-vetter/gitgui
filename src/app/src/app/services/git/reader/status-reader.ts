@@ -26,7 +26,7 @@ export class StatusReader {
                     const fileStatus = new ChangedFile();
                     fileStatus.path = path;
                     fileStatus.type = FileChangeType.Modified; // TODO: parse status
-                    if (stageType === " ")
+                    if (stageType === " " || stageType === "?")
                         result.unstaged.push(fileStatus);
                     else
                         result.staged.push(fileStatus);

@@ -85,6 +85,7 @@ export class Process {
                     }
 
                     // Create the end result.
+                    console.log(pathToApp, args, x.code);
                     const result = new ProcessResult();
                     result.exitCode = x.code;
                     result.data = data.join("");

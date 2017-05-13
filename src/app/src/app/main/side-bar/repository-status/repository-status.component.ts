@@ -5,6 +5,8 @@ import { FileTreeNodeToTreeViewAdapter } from "../commit-details/services/change
 import { IconDefinition } from "../../../services/file-icon/file-icon";
 import { Intermediate } from "../../../shared/check-box/check-box.component";
 import { Subscription } from "../../../services/event-aggregator";
+import { Git } from "../../../services/git/git";
+import * as Rx from "rxjs";
 
 @Component({
     selector: "repository-status",
@@ -20,7 +22,7 @@ export class RepositoryStatusComponent implements OnChanges {
 
     onStatusChangeSubscription: Subscription;
 
-    constructor(private fileTreeBuilder: FileTreeBuilder) {}
+    constructor(private fileTreeBuilder: FileTreeBuilder, private git: Git) { }
 
     ngOnChanges(changes: any) {
         if (changes.repository) {
@@ -67,7 +69,17 @@ export class RepositoryStatusComponent implements OnChanges {
     }
 
     onCheckBoxStateChanged(node: FileTreeNode) {
-        console.log(node, node.checked);
+
+        if (node.isFolder)
+            return;
+
+        (node.checked ?
+            this.git.stageFile(this.repository, node.data.path) :
+            this.git.unstageFile(this.repository, node.data.path))
+            .flatMap(() => this.git.updateRepositoryStatus(this.repository))
+            .subscribe(() => {
+                this.update();
+            });
     }
 }
 

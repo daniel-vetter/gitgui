@@ -12,6 +12,7 @@ import { ObjectDiffReader } from "./reader/object-diff-reader";
 import { ObjectReader } from "./reader/object-reader";
 import { CurrentHeadReader } from "./reader/current-head-reader";
 import { Git } from "./git";
+import { Index } from "./actions/index";
 
 @NgModule({
     providers: [
@@ -27,6 +28,7 @@ import { Git } from "./git";
         ObjectDiffReader,
         ObjectReader,
         CurrentHeadReader,
+        Index,
         Git
     ]
 })
