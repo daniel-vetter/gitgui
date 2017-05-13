@@ -1,4 +1,4 @@
-import { Repository } from "../model/model";
+import { Repository } from "../services/git/model";
 import { Injectable } from "@angular/core";
 import { EventAggregator } from "./event-aggregator";
 

@@ -1,4 +1,4 @@
-import { Repository } from "../../model/model";
+import { Repository } from "../../services/git/model";
 import { Tab } from "../../services/tab-manager";
 
 export class HistoryTab extends Tab {

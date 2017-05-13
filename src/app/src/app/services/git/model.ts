@@ -1,4 +1,5 @@
 import { EventEmitter } from "@angular/core";
+
 export class Repository {
     status: RepositoryStatus;
     commits: RepositoryCommit[] = [];
@@ -19,6 +20,15 @@ export class RepositoryStatus {
 export class ChangedFile implements IChangedFile  {
     path: string;
     type: FileChangeType;
+}
+
+export class ChangedCommitFile implements IChangedFile {
+    path: string;
+    type: FileChangeType;
+    sourceMode: string;
+    sourceBlob: string;
+    destinationBlob: string;
+    destinationMode: string;
 }
 
 export interface IChangedFile {

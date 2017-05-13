@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { GitRaw } from "./infrastructure/git-raw";
+import { GitRaw } from "../infrastructure/git-raw";
 import * as Rx from "rxjs";
 
 @Injectable()

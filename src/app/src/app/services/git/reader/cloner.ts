@@ -1,11 +1,11 @@
-import { GitRaw } from "./infrastructure/git-raw";
-import { Platform } from "../platform";
+import { GitRaw } from "../infrastructure/git-raw";
+import { Platform } from "../../platform";
 import * as Rx from "rxjs";
 import { Injectable } from "@angular/core";
-import { FileSystem } from "../file-system";
+import { FileSystem } from "../../file-system";
 
 @Injectable()
-export class Clone {
+export class Cloner {
 
     constructor(private gitRaw: GitRaw,
         private platform: Platform,

@@ -1,15 +1,15 @@
 import * as Rx from "rxjs";
-import { Clone } from "../git/clone";
 import { Platform } from "../platform";
 import { FileSystem } from "../file-system";
 import { Path } from "../path";
 import { Injectable } from "@angular/core";
 import { Status, StatusProcessTracker } from "../status";
+import { Git } from "../git/git";
 
 @Injectable()
 export class PackageLoader {
 
-    constructor(private clone: Clone,
+    constructor(private git: Git,
         private platform: Platform,
         private fileSystem: FileSystem,
         private status: Status) { }
@@ -50,7 +50,7 @@ export class PackageLoader {
                 if (this.fileSystem.exists(repositoryPath)) {
                     gitClone = Rx.Observable.of(true);
                 } else {
-                    gitClone = this.clone.cloneRepositoryFromUrl(url, repositoryPath);
+                    gitClone = this.git.cloneRepositoryFromUrl(url, repositoryPath);
                 }
 
                 gitClone.subscribe(() => {

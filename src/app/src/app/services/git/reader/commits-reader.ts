@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { RepositoryCommit } from "../../model/model";
 import * as Rx from "rxjs";
-import { GitRaw } from "./infrastructure/git-raw";
+import { GitRaw } from "../infrastructure/git-raw";
+import { RepositoryCommit } from "../model";
 
 @Injectable()
 export class CommitsReader {

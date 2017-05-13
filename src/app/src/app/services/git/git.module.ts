@@ -1,16 +1,17 @@
 import { NgModule } from "@angular/core";
-import { CommitDetailsReader } from "./commit-details-reader";
-import { RefsReader } from "./refs-reader";
-import { RepositoryReader } from "./repository-reader";
-import { CommitsReader } from "./commits-reader";
-import { StatusReader } from "./status-reader";
+import { CommitDetailsReader } from "./reader/commit-details-reader";
+import { RefsReader } from "./reader/refs-reader";
+import { RepositoryReader } from "./reader/repository-reader";
+import { CommitsReader } from "./reader/commits-reader";
+import { StatusReader } from "./reader/status-reader";
 import { GitPathProvider } from "./infrastructure/git-executable-provider";
 import { GitRaw } from "./infrastructure/git-raw";
 import { Process } from "./infrastructure/process";
-import { Clone } from "./clone";
-import { ObjectDiffReader } from "./object-diff-reader";
-import { ObjectReader } from "./object-reader";
-import { CurrentHeadReader } from "./current-head-reader";
+import { Cloner } from "./reader/cloner";
+import { ObjectDiffReader } from "./reader/object-diff-reader";
+import { ObjectReader } from "./reader/object-reader";
+import { CurrentHeadReader } from "./reader/current-head-reader";
+import { Git } from "./git";
 
 @NgModule({
     providers: [
@@ -22,10 +23,11 @@ import { CurrentHeadReader } from "./current-head-reader";
         RepositoryReader,
         RefsReader,
         CommitDetailsReader,
-        Clone,
+        Cloner,
         ObjectDiffReader,
         ObjectReader,
-        CurrentHeadReader
+        CurrentHeadReader,
+        Git
     ]
 })
 export class GitModule {

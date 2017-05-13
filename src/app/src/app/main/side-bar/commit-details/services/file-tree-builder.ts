@@ -1,7 +1,7 @@
 import { IconDefinition, FileIconManager } from "../../../../services/file-icon/file-icon";
 import { Injectable } from "@angular/core";
 import { Path } from "../../../../services/path";
-import { FileChangeType, IChangedFile } from "../../../../model/model";
+import { FileChangeType, IChangedFile } from "../../../../services/git/model";
 
 /**
  * Builds a tree of IFileTreeNode objects from a flat list of files.

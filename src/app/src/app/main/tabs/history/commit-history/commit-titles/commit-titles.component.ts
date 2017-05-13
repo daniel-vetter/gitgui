@@ -3,7 +3,7 @@ import { HistoryCommitEntry, HistoryRepository, VisibleRange, HistoryEntryBase, 
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
 import { Metrics } from "../services/metrics";
-import { RepositoryCommit } from "../../../../../model/model";
+import { RepositoryCommit } from "../../../../../services/git/model";
 
 @Component({
     selector: "commit-titles",

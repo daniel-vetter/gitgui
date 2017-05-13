@@ -1,12 +1,11 @@
 import * as Rx from "rxjs";
-import { RepositoryReader } from "./git/repository-reader";
 import { CurrentRepository } from "./current-repository";
 import { Injectable } from "@angular/core";
 import { EventAggregator } from "./event-aggregator";
 import { Status } from "./status";
 import { TabManager } from "./tab-manager";
 import { HistoryTab } from "../main/tabs/tabs";
-import { Path } from "./path";
+import { Git } from "./git/git";
 
 @Injectable()
 export class RepositoryOpener {
@@ -17,7 +16,7 @@ export class RepositoryOpener {
         return this._isOpening;
     }
 
-    constructor(private repositoryReader: RepositoryReader,
+    constructor(private git: Git,
                 private currentRepository: CurrentRepository,
                 private eventAggregator: EventAggregator,
                 private status: Status,
@@ -28,7 +27,7 @@ export class RepositoryOpener {
         this._isOpening = true;
         this.eventAggregator.publish("OpenRepositoryStarted");
         this.currentRepository.set(undefined);
-        this.repositoryReader.readRepository(path).subscribe(x => {
+        this.git.readRepository(path).subscribe(x => {
             this.tabManager.closeAllTabs();
             const tab = new HistoryTab();
             tab.repository = x;

@@ -1,4 +1,4 @@
-import { RepositoryCommit, Repository } from "../model/model";
+import { RepositoryCommit, Repository } from "../services/git/model";
 import { EventEmitter, Injectable } from "@angular/core";
 
 @Injectable()

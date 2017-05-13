@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as Rx from "rxjs";
-import { GitRaw } from "./infrastructure/git-raw";
-import { RepositoryStatus, FileChangeType, ChangedFile } from "../../model/model";
+import { GitRaw } from "./../infrastructure/git-raw";
+import { ChangedFile, FileChangeType, RepositoryStatus } from "../model";
 
 
 @Injectable()
@@ -31,8 +31,6 @@ export class StatusReader {
                     else
                         result.staged.push(fileStatus);
                 }
-
-                console.log(result);
                 return result;
             });
     }

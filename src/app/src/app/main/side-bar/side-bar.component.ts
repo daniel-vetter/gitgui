@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SideBarManager, SideBarCommitDetails, SideBarRepositoryStatus } from "../../services/side-bar-manager";
-import { Repository, RepositoryCommit } from "../../model/model";
+import { Repository, RepositoryCommit } from "../../services/git/model";
 
 @Component({
     selector: "side-bar",

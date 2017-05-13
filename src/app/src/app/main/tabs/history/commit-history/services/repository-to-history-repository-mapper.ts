@@ -1,7 +1,7 @@
 import { HistoryRepository, HistoryCommitEntry, HistoryTag, HistoryBranch, HistoryCurrentChangesEntry } from "../model/model";
-import { Repository, RepositoryCommit, RepositoryTagRef, RepositoryHeadRef, RepositoryRemoteRef, FileChangeType } from "../../../../../model/model";
 import { LaneAssigner } from "./lane-assigner";
 import { Injectable } from "@angular/core";
+import { RepositoryCommit, Repository, FileChangeType, RepositoryTagRef, RepositoryHeadRef, RepositoryRemoteRef } from "../../../../../services/git/model";
 
 @Injectable()
 export class RepositoryToHistoryRepositoryMapper {

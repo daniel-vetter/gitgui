@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { GitRaw } from "./infrastructure/git-raw";
-import { RepositoryCommit, RepositoryRef, RepositoryHeadRef, RepositoryTagRef, RepositoryRemoteRef } from "../../model/model";
+import { GitRaw } from "../infrastructure/git-raw";
+import { RepositoryCommit, RepositoryRef, RepositoryHeadRef, RepositoryTagRef, RepositoryRemoteRef } from "../model";
 import * as Rx from "rxjs";
 
 @Injectable()

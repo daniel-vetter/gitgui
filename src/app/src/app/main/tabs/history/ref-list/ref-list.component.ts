@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { Repository, RepositoryHeadRef, RepositoryTagRef, RepositoryRemoteRef, RepositoryRef } from "../../../../model/model";
+import { Repository, RepositoryHeadRef, RepositoryTagRef, RepositoryRemoteRef, RepositoryRef } from "../../../../services/git/model";
 import { ITreeViewAdapter } from "../../../../shared/tree-view/tree-view.component";
 
 @Component({

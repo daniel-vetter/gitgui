@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { HistoryTab } from "../tabs";
-import { Repository, RepositoryCommit } from "../../../model/model";
+import { Repository, RepositoryCommit } from "../../../services/git/model";
 import { SideBarManager, SideBarCommitDetails, SideBarRepositoryStatus } from "../../../services/side-bar-manager";
 
 declare var monaco: any;

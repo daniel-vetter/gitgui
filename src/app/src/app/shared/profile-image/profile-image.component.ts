@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { RepositoryCommit } from "../../model/model";
+import { RepositoryCommit } from "../../services/git/model";
 import { md5 } from "./md5";
 
 @Component({

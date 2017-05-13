@@ -1,4 +1,4 @@
-import { GitRaw } from "./infrastructure/git-raw";
+import { GitRaw } from "../infrastructure/git-raw";
 import * as Rx from "rxjs";
 import { Injectable } from "@angular/core";
 

@@ -1,6 +1,6 @@
 import { IFileTreeNode } from "./file-tree-builder";
 import { ITreeViewAdapter } from "../../../../shared/tree-view/tree-view.component";
-import { IChangedFile } from "../../../../model/model";
+import { IChangedFile } from "../../../../services/git/model";
 
 export class FileTreeNodeToTreeViewAdapter<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>> implements ITreeViewAdapter<IFileTreeNode<TSource, TTarget>> {
     hasChildren(data: IFileTreeNode<TSource, TTarget>): boolean {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Repository, RepositoryCommit } from "../model/model";
+import { Repository, RepositoryCommit } from "../services/git/model";
 import { CurrentRepository } from "../services/current-repository";
 import { EventAggregator, SubscriptionBag } from "../services/event-aggregator";
 import { RepositoryOpener } from "../services/repository-opener";

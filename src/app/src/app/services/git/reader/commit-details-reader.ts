@@ -1,7 +1,7 @@
-import { GitRaw } from "./infrastructure/git-raw";
+import { GitRaw } from "../infrastructure/git-raw";
 import * as Rx from "rxjs";
 import { Injectable } from "@angular/core";
-import { RepositoryCommit, IChangedFile, FileChangeType } from "../../model/model";
+import { RepositoryCommit, IChangedFile, FileChangeType, ChangedCommitFile } from "../model";
 
 @Injectable()
 export class CommitDetailsReader {
@@ -16,7 +16,7 @@ export class CommitDetailsReader {
             });
     }
 
-    getFileChangesOfCommit(commit: RepositoryCommit): Rx.Observable<ChangedFile[]> {
+    getFileChangesOfCommit(commit: RepositoryCommit): Rx.Observable<ChangedCommitFile[]> {
         const params = ["diff-tree", "--no-commit-id", "-r", "-m", "-z", commit.hash]
         if (commit.parents.length === 0) {
             params.push("4b825dc642cb6eb9a060e54bf8d69288fbee4904");
@@ -24,9 +24,9 @@ export class CommitDetailsReader {
         return this.gitRaw.run(commit.repository.location, params)
             .map(x => {
                 const lines = x.data.split("\0").filter(y => y !== "");
-                const list: ChangedFile[] = [];
+                const list: ChangedCommitFile[] = [];
                 for (let i = 0; i < lines.length; i += 2) {
-                    const item = new ChangedFile();
+                    const item = new ChangedCommitFile();
                     const metainfos = lines[i + 0];
                     const metainfosParts = metainfos.split(" ");
                     if (metainfos[0] !== ":" || metainfosParts.length !== 5)
@@ -59,13 +59,4 @@ export class CommitDetailsReader {
                 return list;
             });
     }
-}
-
-export class ChangedFile implements IChangedFile {
-    path: string;
-    type: FileChangeType;
-    sourceMode: string;
-    sourceBlob: string;
-    destinationBlob: string;
-    destinationMode: string;
 }

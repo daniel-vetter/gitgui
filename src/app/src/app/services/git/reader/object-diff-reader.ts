@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as Rx from "rxjs";
-import { GitRaw } from "./infrastructure/git-raw";
+import { GitRaw } from "../infrastructure/git-raw";
 
 @Injectable()
 export class ObjectDiffReader {

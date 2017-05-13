@@ -1,14 +1,13 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
-import { RepositoryCommit } from "../../../model/model";
-import { CommitDetailsReader, ChangedFile } from "../../../services/git/commit-details-reader";
+import { RepositoryCommit, ChangedCommitFile } from "../../../services/git/model";
 import { IFileTreeNode, FileTreeBuilder } from "./services/file-tree-builder";
 import { FileTreeNodeToTreeViewAdapter } from "./services/changed-file-tree-node-model-adapter";
 import { Path } from "../../../services/path";
 import { FileIconManager, IconDefinition } from "../../../services/file-icon/file-icon";
 import { TabManager } from "../../../services/tab-manager";
 import { TextDiffTab, TextTab } from "../../tabs/tabs";
-import { ObjectReader } from "../../../services/git/object-reader";
 import * as Rx from "rxjs";
+import { Git } from "../../../services/git/git";
 
 @Component({
     selector: "commit-details",
@@ -27,14 +26,13 @@ export class CommitDetailsComponent implements OnChanges {
 
     private lastRequestId = 0;
 
-    changedFiles: ChangedFile[];
+    changedFiles: ChangedCommitFile[];
     changeFilesTree: FileTreeNode[];
-    adapter = new FileTreeNodeToTreeViewAdapter<ChangedFile, FileTreeNode>();
+    adapter = new FileTreeNodeToTreeViewAdapter<ChangedCommitFile, FileTreeNode>();
 
-    constructor(private commitDetailsReader: CommitDetailsReader,
+    constructor(private git: Git,
         private fileTreeBuilder: FileTreeBuilder,
         private fileIconsManager: FileIconManager,
-        private objectReader: ObjectReader,
         private tabManager: TabManager) { }
 
     ngOnChanges() {
@@ -47,11 +45,11 @@ export class CommitDetailsComponent implements OnChanges {
         this.authorName = this.commit.authorName;
         this.authorMail = this.commit.authorMail;
         this.authorDate = this.commit.authorDate.toLocaleDateString() + " " + this.commit.authorDate.toLocaleTimeString();
-        this.commitDetailsReader.getLongCommitMessage(this.commit).subscribe(x => {
+        this.git.getLongCommitMessage(this.commit).subscribe(x => {
             if (localCommit === this.commit)
                 this.commitTitle = x;
         });
-        this.commitDetailsReader.getFileChangesOfCommit(this.commit).subscribe(x => {
+        this.git.getFileChangesOfCommit(this.commit).subscribe(x => {
             this.changedFiles = x;
             this.updateTree();
         });
@@ -69,7 +67,7 @@ export class CommitDetailsComponent implements OnChanges {
             let changedFiles = this.changedFiles;
             if (this.filter && this.filter !== "")
                 changedFiles = this.changedFiles.filter(x => Path.getLastPart(x.path).indexOf(this.filter) !== -1);
-            this.changeFilesTree = this.fileTreeBuilder.getTree<ChangedFile, any>(changedFiles, () => new FileTreeNode());
+            this.changeFilesTree = this.fileTreeBuilder.getTree<ChangedCommitFile, any>(changedFiles, () => new FileTreeNode());
         }
     }
 
@@ -85,7 +83,7 @@ export class CommitDetailsComponent implements OnChanges {
 
         if (!vm.data.sourceBlob || !vm.data.destinationBlob) {
             const objectId = vm.data.sourceBlob ? vm.data.sourceBlob : vm.data.destinationBlob;
-            this.objectReader.getObjectData(this.commit.repository.location, objectId).subscribe(x => {
+            this.git.getObjectData(this.commit.repository, objectId).subscribe(x => {
                 if (curRequestId !== this.lastRequestId)
                     return;
                 const tab = new TextTab();
@@ -96,8 +94,8 @@ export class CommitDetailsComponent implements OnChanges {
             });
         } else {
             Rx.Observable.forkJoin(
-                this.objectReader.getObjectData(this.commit.repository.location, vm.data.sourceBlob),
-                this.objectReader.getObjectData(this.commit.repository.location, vm.data.destinationBlob))
+                this.git.getObjectData(this.commit.repository, vm.data.sourceBlob),
+                this.git.getObjectData(this.commit.repository, vm.data.destinationBlob))
                 .subscribe((x) => {
                     if (curRequestId !== this.lastRequestId)
                         return;
@@ -110,12 +108,10 @@ export class CommitDetailsComponent implements OnChanges {
                     this.tabManager.createNewTab(tab);
                 });
         }
-
-
     }
 }
 
-class FileTreeNode implements IFileTreeNode<ChangedFile, FileTreeNode> {
+class FileTreeNode implements IFileTreeNode<ChangedCommitFile, FileTreeNode> {
     label: string;
     iconExpanded: IconDefinition;
     iconCollapsed: IconDefinition;
@@ -123,5 +119,5 @@ class FileTreeNode implements IFileTreeNode<ChangedFile, FileTreeNode> {
     expanded: boolean;
     textClass: string;
     children: FileTreeNode[];
-    data: ChangedFile;
+    data: ChangedCommitFile;
 }
