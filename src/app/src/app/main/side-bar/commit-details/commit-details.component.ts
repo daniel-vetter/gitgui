@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { RepositoryCommit, ChangedCommitFile } from "../../../services/git/model";
 import { IFileTreeNode, FileTreeBuilder } from "./services/file-tree-builder";
 import { FileTreeNodeToTreeViewAdapter } from "./services/changed-file-tree-node-model-adapter";
@@ -6,7 +6,6 @@ import { Path } from "../../../services/path";
 import { FileIconManager, IconDefinition } from "../../../services/file-icon/file-icon";
 import { TabManager } from "../../../services/tab-manager";
 import { TextDiffTab, TextTab } from "../../tabs/tabs";
-import * as Rx from "rxjs";
 import { Git } from "../../../services/git/git";
 
 @Component({
@@ -45,11 +44,11 @@ export class CommitDetailsComponent implements OnChanges {
         this.authorName = this.commit.authorName;
         this.authorMail = this.commit.authorMail;
         this.authorDate = this.commit.authorDate.toLocaleDateString() + " " + this.commit.authorDate.toLocaleTimeString();
-        this.git.getLongCommitMessage(this.commit).subscribe(x => {
+        this.git.getLongCommitMessage(this.commit).then(x => {
             if (localCommit === this.commit)
                 this.commitTitle = x;
         });
-        this.git.getFileChangesOfCommit(this.commit).subscribe(x => {
+        this.git.getFileChangesOfCommit(this.commit).then(x => {
             this.changedFiles = x;
             this.updateTree();
         });
@@ -75,7 +74,7 @@ export class CommitDetailsComponent implements OnChanges {
         this.updateTree();
     }
 
-    onFileSelected(vm: FileTreeNode) {
+    async onFileSelected(vm: FileTreeNode) {
         if (!vm.data)
             return;
 
@@ -83,30 +82,28 @@ export class CommitDetailsComponent implements OnChanges {
 
         if (!vm.data.sourceBlob || !vm.data.destinationBlob) {
             const objectId = vm.data.sourceBlob ? vm.data.sourceBlob : vm.data.destinationBlob;
-            this.git.getObjectData(this.commit.repository, objectId).subscribe(x => {
-                if (curRequestId !== this.lastRequestId)
-                    return;
-                const tab = new TextTab();
-                tab.content = x;
-                tab.repository = this.commit.repository;
-                tab.path = vm.data.path;
-                this.tabManager.createNewTab(tab);
-            });
+            const x = await this.git.getObjectData(this.commit.repository, objectId);
+            if (curRequestId !== this.lastRequestId)
+                return;
+            const tab = new TextTab();
+            tab.content = x;
+            tab.repository = this.commit.repository;
+            tab.path = vm.data.path;
+            this.tabManager.createNewTab(tab);
         } else {
-            Rx.Observable.forkJoin(
-                this.git.getObjectData(this.commit.repository, vm.data.sourceBlob),
-                this.git.getObjectData(this.commit.repository, vm.data.destinationBlob))
-                .subscribe((x) => {
-                    if (curRequestId !== this.lastRequestId)
-                        return;
-                    const tab = new TextDiffTab();
-                    tab.leftContent = x[0];
-                    tab.rightContent = x[1];
-                    tab.repository = this.commit.repository;
-                    tab.leftPath = vm.data.path;
-                    tab.rightPath = vm.data.path;
-                    this.tabManager.createNewTab(tab);
-                });
+
+            const objectDataLeftPromise = this.git.getObjectData(this.commit.repository, vm.data.sourceBlob);
+            const objectDataRightPromise = this.git.getObjectData(this.commit.repository, vm.data.destinationBlob);
+
+            if (curRequestId !== this.lastRequestId)
+                return;
+            const tab = new TextDiffTab();
+            tab.leftContent = await objectDataLeftPromise;
+            tab.rightContent = await objectDataRightPromise;
+            tab.repository = this.commit.repository;
+            tab.leftPath = vm.data.path;
+            tab.rightPath = vm.data.path;
+            this.tabManager.createNewTab(tab);
         }
     }
 }

@@ -1,4 +1,3 @@
-import * as Rx from "rxjs";
 import { Config } from "../config";
 import { Injectable, EventEmitter } from "@angular/core";
 import { PackageLoader } from "./package-loader";
@@ -30,21 +29,18 @@ export class FileIconManager {
         this.themeManager.onCurrentThemeChanged.subscribe(() => this.loadIcons());
     }
 
-    private loadIcons() {
-        this.packageLoader.load(this.config.get().fileIconPackageUrl).subscribe(manifestPath => {
-            try {
-                if (manifestPath) {
-                    this.iconPackage = this.packageParser.parse(manifestPath, this.themeManager.currentTheme === "light");
-                    this.onFileIconsChanged.emit();
-                } else {
-                    console.warn("no manifest file found in icon package");
-                }
-            } catch (error) {
-                console.warn("error while parsing icon package", error);
+    private async loadIcons() {
+        try {
+            const manifestPath = await this.packageLoader.load(this.config.get().fileIconPackageUrl);
+            if (manifestPath) {
+                this.iconPackage = this.packageParser.parse(manifestPath, this.themeManager.currentTheme === "light");
+                this.onFileIconsChanged.emit();
+            } else {
+                console.warn("no manifest file found in icon package");
             }
-        }, error => {
+        } catch (error) {
             console.warn("error while parsing icon package", error);
-        });
+        }
     }
 
     getFolderIcon(folderName: string): IconBundle {

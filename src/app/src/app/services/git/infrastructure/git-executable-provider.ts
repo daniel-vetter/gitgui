@@ -1,4 +1,3 @@
-import * as Rx from "rxjs";
 import { Process } from "../infrastructure/process";
 import { Injectable } from "@angular/core";
 const process = (<any>window).require("electron").remote.process;
@@ -11,9 +10,9 @@ export class GitPathProvider {
     constructor(private process: Process) {
     }
 
-    getGitPath(): Rx.Observable<string> {
+    async getGitPath(): Promise<string> {
         if (this.gitPath) {
-            return Rx.Observable.of(this.gitPath);
+            return this.gitPath;
         }
 
         let app: string;
@@ -29,13 +28,12 @@ export class GitPathProvider {
             throw new Error("TODO: Add support for other platforms.")
         }
 
-        return this.process.runAndWait(app, args, ".").map(x => {
-            if (x.exitCode !== 0) {
-                throw Error("could not find path to the git executable. " +
-                    "Please ensure git is installed and added to the PATH environment variable.");
-            }
-            this.gitPath = x.data.trim();
-            return this.gitPath;
-        });
+        const processResult = await this.process.runAndWait(app, args, ".")
+        if (processResult.exitCode !== 0) {
+            throw Error("could not find path to the git executable. " +
+                "Please ensure git is installed and added to the PATH environment variable.");
+        }
+        this.gitPath = processResult.data.trim();
+        return this.gitPath;
     }
 }

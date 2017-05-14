@@ -1,14 +1,13 @@
 import { Injectable } from "@angular/core";
 import { GitRaw } from "../infrastructure/git-raw";
 import { RepositoryCommit, RepositoryRef, RepositoryHeadRef, RepositoryTagRef, RepositoryRemoteRef } from "../model";
-import * as Rx from "rxjs";
 
 @Injectable()
 export class RefsReader {
     constructor(private gitRaw: GitRaw) {
     }
 
-    readAllRefs(pathToRepository: string, allCommits: RepositoryCommit[]): Rx.Observable<RepositoryRef[]> {
+    async readAllRefs(pathToRepository: string, allCommits: RepositoryCommit[]): Promise<RepositoryRef[]> {
 
         // Create a index to quickly find commits by there hash
         const commitIndex = new Map<string, RepositoryCommit>();
@@ -17,94 +16,93 @@ export class RefsReader {
         }
 
         // run git-each-ref
-        const columns = ["objectname", "objecttype", "*objectname", "*objecttype" ,"refname", "upstream"];
+        const columns = ["objectname", "objecttype", "*objectname", "*objecttype", "refname", "upstream"];
         const format = "--format=" + columns.map(x => "%(" + x + ")").join("%00");
         const args = ["for-each-ref", format];
-        return this.gitRaw.run(pathToRepository, args).map(x => {
-            const result: RepositoryRef[] = [];
-            const lines = x.data.split("\n")
-                .map(y => y.trim())
-                .filter(y => y.trim() !== "")
-                .map(y => this.parseLine(y));
+        const x = await this.gitRaw.run(pathToRepository, args);
+        const result: RepositoryRef[] = [];
+        const lines = x.data.split("\n")
+            .map(y => y.trim())
+            .filter(y => y.trim() !== "")
+            .map(y => this.parseLine(y));
 
-                console.log(x.data);
+        console.log(x.data);
 
-            // go through each line and create RepositoryRef objects for each
-            for (const line of lines) {
+        // go through each line and create RepositoryRef objects for each
+        for (const line of lines) {
 
-                // /ref/heads/*
-                if (line.ref.type === "heads") {
-                    const ref = new RepositoryHeadRef();
-                    ref.fullName = line.ref.fullName;
-                    ref.shortName = line.ref.shortName;
-                    if (line.objectType !== "commit") {
-                        throw new Error("The ref \"" + line.ref.fullName + "\" is not connected to a commit. " +
-                                        "(connected to: \"" + line.objectType + "\")");
-                    }
+            // /ref/heads/*
+            if (line.ref.type === "heads") {
+                const ref = new RepositoryHeadRef();
+                ref.fullName = line.ref.fullName;
+                ref.shortName = line.ref.shortName;
+                if (line.objectType !== "commit") {
+                    throw new Error("The ref \"" + line.ref.fullName + "\" is not connected to a commit. " +
+                        "(connected to: \"" + line.objectType + "\")");
+                }
+                ref.commit = commitIndex.get(line.objectName);
+                result.push(ref);
+                continue;
+            }
+
+            // /ref/tags/*
+            if (line.ref.type === "tags") {
+                const ref = new RepositoryTagRef();
+                ref.fullName = line.ref.fullName;
+                ref.shortName = line.ref.shortName;
+                if (line.objectType === "commit") { // lightweight tag
                     ref.commit = commitIndex.get(line.objectName);
-                    result.push(ref);
-                    continue;
-                }
-
-                // /ref/tags/*
-                if (line.ref.type === "tags") {
-                    const ref = new RepositoryTagRef();
-                    ref.fullName = line.ref.fullName;
-                    ref.shortName = line.ref.shortName;
-                    if (line.objectType === "commit") { // lightweight tag
-                        ref.commit = commitIndex.get(line.objectName);
-                    } else if (line.objectName === "tag") { // annotated tag
-                        if (line.resolvedObjectType !== "commit") {
-                            throw new Error("Tag \"" + line.objectName + "\" not pointing to a commit.")
-                        }
-                        ref.commit = commitIndex.get(line.resolvedObjectName);
-                        (<RepositoryTagRef>ref).annotationHash = line.objectName;
+                } else if (line.objectName === "tag") { // annotated tag
+                    if (line.resolvedObjectType !== "commit") {
+                        throw new Error("Tag \"" + line.objectName + "\" not pointing to a commit.");
                     }
-                    result.push(ref);
-                    continue;
+                    ref.commit = commitIndex.get(line.resolvedObjectName);
+                    (<RepositoryTagRef>ref).annotationHash = line.objectName;
                 }
-
-                // /ref/remotes/*
-                if (line.ref.type === "remotes") {
-                    const ref = new RepositoryRemoteRef();
-                    ref.fullName = line.ref.fullName;
-                    const splitter = line.ref.shortName.indexOf("/");
-                    if (splitter === -1) {
-                        throw new Error("Remote name could not be extracted from: \"" + line.ref.shortName + "\"");
-                    }
-                    ref.shortName = line.ref.shortName.substr(splitter + 1);
-                    ref.remote = line.ref.shortName.substr(0, splitter);
-                    ref.commit = commitIndex.get(line.objectName);
-                    result.push(ref);
-                    continue;
-                }
-
-                // unknown ref types get skipped
-                console.warn("skipped ref: " + line.ref.fullName);
+                result.push(ref);
+                continue;
             }
 
-            // after all ref object are created, we can connect all local branch refs with its upstream refs.
-            for (const line of lines.filter(y => y.upstream)) {
-                const upstream = <RepositoryRemoteRef>result.find(y => y.fullName === line.upstream.fullName);
-                const localRef = <RepositoryHeadRef>result.find(y => y.fullName === line.ref.fullName);
-                if (!upstream) {
-                    console.warn("upstream \"" + line.upstream.fullName + "\" not found.")
-                    continue;
+            // /ref/remotes/*
+            if (line.ref.type === "remotes") {
+                const ref = new RepositoryRemoteRef();
+                ref.fullName = line.ref.fullName;
+                const splitter = line.ref.shortName.indexOf("/");
+                if (splitter === -1) {
+                    throw new Error("Remote name could not be extracted from: \"" + line.ref.shortName + "\"");
                 }
-
-                localRef.upstream = upstream;
-                upstream.downstreams.push(localRef);
+                ref.shortName = line.ref.shortName.substr(splitter + 1);
+                ref.remote = line.ref.shortName.substr(0, splitter);
+                ref.commit = commitIndex.get(line.objectName);
+                result.push(ref);
+                continue;
             }
 
+            // unknown ref types get skipped
+            console.warn("skipped ref: " + line.ref.fullName);
+        }
 
-            // all refs should also be referenced from the commit
-            for (const ref of result) {
-                if (ref.commit) {
-                    ref.commit.refs.push(ref);
-                }
+        // after all ref object are created, we can connect all local branch refs with its upstream refs.
+        for (const line of lines.filter(y => y.upstream)) {
+            const upstream = <RepositoryRemoteRef>result.find(y => y.fullName === line.upstream.fullName);
+            const localRef = <RepositoryHeadRef>result.find(y => y.fullName === line.ref.fullName);
+            if (!upstream) {
+                console.warn("upstream \"" + line.upstream.fullName + "\" not found.");
+                continue;
             }
-            return result;
-        });
+
+            localRef.upstream = upstream;
+            upstream.downstreams.push(localRef);
+        }
+
+
+        // all refs should also be referenced from the commit
+        for (const ref of result) {
+            if (ref.commit) {
+                ref.commit.refs.push(ref);
+            }
+        }
+        return result;
     }
 
     private parseLine(line: string): OutputLine {

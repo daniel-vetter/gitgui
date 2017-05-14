@@ -26,7 +26,7 @@ export class Process {
         });
     }
 
-    run(command: string, args: string[], workDirectory: string): Observable<ProcessStatus> {
+    run(command: string, args: string[], workDirectory: string): Rx.Observable<ProcessStatus> {
 
         const id = ++this.lastId;
 
@@ -68,9 +68,9 @@ export class Process {
         }
     }
 
-    runAndWait(pathToApp: string, args: string[], workDirectory: string): Rx.Observable<ProcessResult> {
+    runAndWait(pathToApp: string, args: string[], workDirectory: string): Promise<ProcessResult> {
         const data: string[] = [];
-        return Rx.Observable.create(subscriber => {
+        return new Promise((resolve) => {
 
             return this.run(pathToApp, args, workDirectory).subscribe(x => {
 
@@ -89,8 +89,7 @@ export class Process {
                     const result = new ProcessResult();
                     result.exitCode = x.code;
                     result.data = data.join("");
-                    subscriber.next(result);
-                    subscriber.complete();
+                    resolve(result);
                 } else {
                     throw new Error("invalid type");
                 }

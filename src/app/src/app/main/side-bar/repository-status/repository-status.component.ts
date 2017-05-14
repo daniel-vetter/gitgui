@@ -1,12 +1,11 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { Repository, ChangedFile, ChangedCommitFile } from "../../../services/git/model";
+import { Repository, ChangedFile } from "../../../services/git/model";
 import { FileTreeBuilder, IFileTreeNode } from "../commit-details/services/file-tree-builder";
 import { FileTreeNodeToTreeViewAdapter } from "../commit-details/services/changed-file-tree-node-model-adapter";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
 import { Intermediate } from "../../../shared/check-box/check-box.component";
 import { Subscription } from "../../../services/event-aggregator";
 import { Git } from "../../../services/git/git";
-import * as Rx from "rxjs";
 import { Path } from "../../../services/path";
 
 @Component({
@@ -86,20 +85,18 @@ export class RepositoryStatusComponent implements OnChanges {
         else
             await this.git.unstageFile(this.repository, path);
 
-        this.git.updateRepositoryStatus(this.repository)
-            .subscribe(() => {
-                this.update();
-            });
+        await this.git.updateRepositoryStatus(this.repository);
+        this.update();
     }
 
     private getAllFileChangesFromFolderNode(node: FileTreeNode): ChangedFile[] {
         const result: ChangedFile[] = [];
-        const traverseChildren = (node: FileTreeNode) => {
-            if (node.isFolder) {
-                for (const child of node.children)
+        const traverseChildren = (n: FileTreeNode) => {
+            if (n.isFolder) {
+                for (const child of n.children)
                     traverseChildren(child);
             } else {
-                result.push(node.data);
+                result.push(n.data);
             }
         };
         traverseChildren(node);
@@ -113,7 +110,7 @@ export class RepositoryStatusComponent implements OnChanges {
                 if (list[i - 1] !== list[i])
                     return false;
             return true;
-        }
+        };
 
         const allParts = paths.map(x => Path.getAllParts(x));
         let matchingIndex = 0;

@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { CommitsReader } from "./commits-reader";
-import * as Rx from "rxjs";
 import { StatusReader } from "./status-reader";
 import { RefsReader } from "./refs-reader";
 import { CurrentHeadReader } from "./current-head-reader";
@@ -15,36 +14,27 @@ export class RepositoryReader {
 
     }
 
-    readRepository(repositoryPath: string): Rx.Observable<Repository> {
+    async readRepository(repositoryPath: string): Promise<Repository> {
         const repository = new Repository();
         repository.location = repositoryPath;
 
-        return Rx.Observable.forkJoin(
-            this.commitsReader.readAllCommits(repositoryPath),
-            this.statusReader.readStatus(repositoryPath),
-            this.currentHeadReader.readCurrentHeadHash(repositoryPath)
-        )
-        .flatMap((result) => {
-            repository.commits = result[0];
-            repository.commits.forEach(x => x.repository = repository);
-            repository.status = result[1];
-            repository.head = repository.commits.find(x => x.hash === result[2]);
-            return this.refsReader.readAllRefs(repositoryPath, repository.commits);
-        })
-        .map((result) => {
-            repository.refs = result;
-            return repository;
-        });
+        const commitsPromise = this.commitsReader.readAllCommits(repositoryPath);
+        const statusPromise = this.statusReader.readStatus(repositoryPath);
+        const currentHeadHashPromise = this.currentHeadReader.readCurrentHeadHash(repositoryPath);
+
+        repository.commits = await commitsPromise;
+        repository.commits.forEach(x => x.repository = repository);
+        repository.status = await statusPromise;
+        const currentHeadHash = await currentHeadHashPromise;
+        repository.head = repository.commits.find(x => x.hash === currentHeadHash);
+        repository.refs = await this.refsReader.readAllRefs(repositoryPath, repository.commits);
+        return repository;
     }
 
-    updateStatus(repository: Repository): Rx.Observable<Repository> {
-        return new Rx.Observable((subscriber: Rx.Subscriber<Repository>) => {
-            this.statusReader.readStatus(repository.location).subscribe(x => {
-                repository.status = x;
-                repository.onStatusChanged.emit();
-                subscriber.next(repository);
-                subscriber.complete();
-            });
-        });
+    async updateStatus(repository: Repository): Promise<Repository> {
+        const x = await this.statusReader.readStatus(repository.location);
+        repository.status = x;
+        repository.onStatusChanged.emit();
+        return repository;
     }
 }

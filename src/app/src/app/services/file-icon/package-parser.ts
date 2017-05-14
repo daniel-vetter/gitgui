@@ -1,4 +1,3 @@
-import * as Rx from "rxjs";
 import { FileSystem } from "../file-system";
 import { Path } from "../path";
 import { Injectable } from "@angular/core";

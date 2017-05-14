@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import * as Rx from "rxjs";
 import { ConfigData } from "../model/config";
 import { Platform } from "./platform";
 import { Path } from "./path";
@@ -31,7 +30,7 @@ export class Config {
         if (sync) {
             this.fileSystem.saveJson(this.configFilePath, this.config);
         } else {
-            this.fileSystem.saveJsonAsync(this.configFilePath, this.config).subscribe(() => {});
+            this.fileSystem.saveJsonAsync(this.configFilePath, this.config);
         }
     }
 

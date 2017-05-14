@@ -1,5 +1,4 @@
 import { Cloner } from "./reader/cloner";
-import * as Rx from "rxjs";
 import { RepositoryReader } from "./reader/repository-reader";
 import { CommitDetailsReader } from "./reader/commit-details-reader";
 import { RepositoryCommit, Repository, ChangedCommitFile } from "./model";
@@ -18,22 +17,22 @@ export class Git {
                 private index: Index,
                 private commiter: Commiter) {}
 
-    cloneRepositoryFromUrl(url: string, targetPath: string): Rx.Observable<boolean> {
+    cloneRepositoryFromUrl(url: string, targetPath: string): Promise<boolean> {
         return this.cloner.cloneRepositoryFromUrl(url, targetPath);
     }
-    readRepository(repositoryPath: string): Rx.Observable<Repository> {
+    readRepository(repositoryPath: string): Promise<Repository> {
         return this.repositoryReader.readRepository(repositoryPath);
     }
-    updateRepositoryStatus(repository: Repository): Rx.Observable<Repository> {
+    updateRepositoryStatus(repository: Repository): Promise<Repository> {
         return this.repositoryReader.updateStatus(repository);
     }
-    getLongCommitMessage(commit: RepositoryCommit): Rx.Observable<string> {
+    getLongCommitMessage(commit: RepositoryCommit): Promise<string> {
         return this.commitDetailsReader.getLongCommitMessage(commit);
     }
-    getFileChangesOfCommit(commit: RepositoryCommit): Rx.Observable<ChangedCommitFile[]> {
+    getFileChangesOfCommit(commit: RepositoryCommit): Promise<ChangedCommitFile[]> {
         return this.commitDetailsReader.getFileChangesOfCommit(commit);
     }
-    getObjectData(repository: Repository, objectId: string): Rx.Observable<string> {
+    getObjectData(repository: Repository, objectId: string): Promise<string> {
         return this.objectReader.getObjectData(repository.location, objectId);
     }
     stageFile(repository: Repository, filePath: string): Promise<boolean> {

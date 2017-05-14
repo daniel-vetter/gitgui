@@ -1,6 +1,5 @@
 const remote = (<any>window).require("electron").remote;
 const fs = remote.require("fs");
-import * as Rx from "rxjs";
 import { Path } from "./path";
 
 export class FileSystem {
@@ -28,13 +27,13 @@ export class FileSystem {
         fs.writeFileSync(path, data, { encoding: "utf8" });
     }
 
-    saveJsonAsync(path: string, data: any): Rx.Observable<boolean> {
+    saveJsonAsync(path: string, data: any): Promise<boolean> {
         const dataStr = JSON.stringify(data, undefined, 2);
-        return Rx.Observable.fromPromise(new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             fs.writeFile(path, dataStr, { encoding: "utf8" }, () => {
                 resolve();
             });
-        }));
+        });
     }
 
     findFiles(path: string, fileFilter: (x: string) => boolean, directoryFilter: (x: string) => boolean = undefined): string[] {
@@ -53,6 +52,4 @@ export class FileSystem {
         });
         return results;
     }
-
-
 }
