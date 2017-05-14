@@ -48,6 +48,10 @@ export class Path {
         return path.substr(index + 1);
     }
 
+    static getAllParts(path: string): string[] {
+        return path.split(/\/|\\/);
+    }
+
     static getExtension(path: string): string {
         const fileName = this.getLastPart(path);
         const index = fileName.lastIndexOf(".");
