@@ -75,18 +75,18 @@ export class RepositoryStatusComponent implements OnChanges {
 
     }
 
-    onCheckBoxStateChanged(node: FileTreeNode) {
+    async onCheckBoxStateChanged(node: FileTreeNode) {
 
         const path = node.isFolder ?
             this.findLongestMatchingPath(this.getAllFileChangesFromFolderNode(node).map(x => x.path)) :
             node.data.path;
 
-        (node.checked ?
-            this.git.stageFile(this.repository, path) :
-            this.git.unstageFile(this.repository, path))
-            .flatMap(() => {
-                return this.git.updateRepositoryStatus(this.repository)
-            })
+        if (node.checked)
+            await this.git.stageFile(this.repository, path);
+        else
+            await this.git.unstageFile(this.repository, path);
+
+        this.git.updateRepositoryStatus(this.repository)
             .subscribe(() => {
                 this.update();
             });
@@ -130,12 +130,10 @@ export class RepositoryStatusComponent implements OnChanges {
         return Path.combine(...allParts[0].filter((v, i) => i < matchingIndex));
     }
 
-    onCommitClicked() {
-        this.git.commit(this.repository, this.commitMessage, false).subscribe(() => {
-            this.git.updateRepositoryStatus(this.repository).subscribe(() => {
-                this.update();
-            });
-        });
+    async onCommitClicked() {
+        await this.git.commit(this.repository, this.commitMessage, false);
+        await this.git.updateRepositoryStatus(this.repository);
+        this.update();
     }
 }
 

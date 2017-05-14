@@ -36,13 +36,13 @@ export class Git {
     getObjectData(repository: Repository, objectId: string): Rx.Observable<string> {
         return this.objectReader.getObjectData(repository.location, objectId);
     }
-    stageFile(repository: Repository, filePath: string): Rx.Observable<boolean> {
+    stageFile(repository: Repository, filePath: string): Promise<boolean> {
         return this.index.stageFile(repository, filePath);
     }
-    unstageFile(repository: Repository, filePath: string): Rx.Observable<boolean> {
+    unstageFile(repository: Repository, filePath: string): Promise<boolean> {
         return this.index.unstageFile(repository, filePath);
     }
-    commit(repository: Repository, message: string, amend: boolean) {
+    commit(repository: Repository, message: string, amend: boolean): Promise<boolean> {
         return this.commiter.commit(repository, message, amend);
     }
 }

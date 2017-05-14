@@ -10,13 +10,13 @@ export class Commiter {
 
     }
 
-    commit(repository: Repository, message: string, amend: boolean): Rx.Observable<boolean> {
+    commit(repository: Repository, message: string, amend: boolean): Promise<boolean> {
 
         const args = ["commit", "-m", message];
         if (amend) {
             args.push("--amend");
         }
 
-        return this.gitRaw.run(repository.location, args).map(x => x.exitCode === 0);
+        return this.gitRaw.run(repository.location, args).map(x => x.exitCode === 0).toPromise();
     }
 }
