@@ -20,6 +20,7 @@ export class RepositoryStatusComponent implements OnChanges {
     files: ChangedFile[] = [];
     filesTree: FileTreeNode[] = [];
     adapter = new FileTreeNodeToTreeViewAdapter();
+    commitMessage: string = "";
 
     onStatusChangeSubscription: Subscription;
 
@@ -127,6 +128,14 @@ export class RepositoryStatusComponent implements OnChanges {
         if (matchingIndex === 0)
             return ".";
         return Path.combine(...allParts[0].filter((v, i) => i < matchingIndex));
+    }
+
+    onCommitClicked() {
+        this.git.commit(this.repository, this.commitMessage, false).subscribe(() => {
+            this.git.updateRepositoryStatus(this.repository).subscribe(() => {
+                this.update();
+            });
+        });
     }
 }
 

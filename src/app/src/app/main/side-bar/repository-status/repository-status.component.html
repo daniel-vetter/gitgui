@@ -27,11 +27,11 @@
 
     <div class="content">
         <div>Commit message:</div>
-        <input type="text" style="width: 100%">
+        <input type="text" style="width: 100%" [(ngModel)]="commitMessage">
     </div>
 
     <div>
-        <button style="width: 100%; padding: 0.5em;">Commit</button>
+        <button style="width: 100%; padding: 0.5em;" (click)="onCommitClicked()">Commit</button>
     </div>
 
 </div>

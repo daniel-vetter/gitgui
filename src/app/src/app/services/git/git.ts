@@ -6,6 +6,7 @@ import { RepositoryCommit, Repository, ChangedCommitFile } from "./model";
 import { ObjectReader } from "./reader/object-reader";
 import { Injectable } from "@angular/core";
 import { Index } from "./actions/index";
+import { Commiter } from "./actions/commiter";
 
 @Injectable()
 export class Git {
@@ -14,7 +15,8 @@ export class Git {
                 private repositoryReader: RepositoryReader,
                 private commitDetailsReader: CommitDetailsReader,
                 private objectReader: ObjectReader,
-                private index: Index) {}
+                private index: Index,
+                private commiter: Commiter) {}
 
     cloneRepositoryFromUrl(url: string, targetPath: string): Rx.Observable<boolean> {
         return this.cloner.cloneRepositoryFromUrl(url, targetPath);
@@ -39,5 +41,8 @@ export class Git {
     }
     unstageFile(repository: Repository, filePath: string): Rx.Observable<boolean> {
         return this.index.unstageFile(repository, filePath);
+    }
+    commit(repository: Repository, message: string, amend: boolean) {
+        return this.commiter.commit(repository, message, amend);
     }
 }

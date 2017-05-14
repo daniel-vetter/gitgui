@@ -13,6 +13,7 @@ import { ObjectReader } from "./reader/object-reader";
 import { CurrentHeadReader } from "./reader/current-head-reader";
 import { Git } from "./git";
 import { Index } from "./actions/index";
+import { Commiter } from "./actions/commiter";
 
 @NgModule({
     providers: [
@@ -29,6 +30,7 @@ import { Index } from "./actions/index";
         ObjectReader,
         CurrentHeadReader,
         Index,
+        Commiter,
         Git
     ]
 })
