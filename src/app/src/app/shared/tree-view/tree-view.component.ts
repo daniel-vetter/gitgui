@@ -55,6 +55,8 @@ export class TreeViewComponent implements OnChanges {
         if (event.keyCode === 38) move = -1;
         if (event.keyCode === 33) move = -Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.lineHeight);
         if (event.keyCode === 34) move = Math.floor(this.scrollWrapper.nativeElement.clientHeight / this.lineHeight);
+        if (move === 0)
+            return undefined;
 
         const curIndex = this.treeLineList.items.findIndex(x => x.data === this.selectedItem);
         const newIndex = Math.min(Math.max(0, curIndex + move), this.treeLineList.items.length - 1);

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { Repository, ChangedFile, IndexFile, IndexFileChangeType } from "../../../services/git/model";
+import { Repository, IndexFile, IndexFileChangeType } from "../../../services/git/model";
 import { FileTreeBuilder, IFileTreeNode } from "../commit-details/services/file-tree-builder";
 import { FileTreeNodeToTreeViewAdapter } from "../commit-details/services/changed-file-tree-node-model-adapter";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
