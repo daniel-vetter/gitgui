@@ -66,7 +66,7 @@ export class CommitDetailsComponent implements OnChanges {
             let changedFiles = this.changedFiles;
             if (this.filter && this.filter !== "")
                 changedFiles = this.changedFiles.filter(x => Path.getLastPart(x.path).indexOf(this.filter) !== -1);
-            this.changeFilesTree = this.fileTreeBuilder.getTree<ChangedCommitFile, any>(changedFiles, () => new FileTreeNode());
+            this.changeFilesTree = this.fileTreeBuilder.getTree<ChangedCommitFile, any>(changedFiles, x => x.path, () => new FileTreeNode());
         }
     }
 

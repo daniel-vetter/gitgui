@@ -13,27 +13,37 @@ export class Repository {
 export class RepositoryStatus {
     isMerge: boolean;
     isRebase: boolean;
-    unstaged: ChangedFile[] = [];
-    staged: ChangedFile[] = [];
+    indexFiles: IndexFile[] = [];
 }
 
-export class ChangedFile implements IChangedFile  {
+export class IndexFile {
+    path: string;
+    indexChangeType: IndexFileChangeType;
+    workTreeChangeType: IndexFileChangeType;
+}
+
+export enum IndexFileChangeType {
+    Unmodified,
+    Modified,
+    Added,
+    Deleted,
+    Renamed,
+    Copied,
+    UpdatedButUnmerged
+}
+
+export class ChangedFile  {
     path: string;
     type: FileChangeType;
 }
 
-export class ChangedCommitFile implements IChangedFile {
+export class ChangedCommitFile {
     path: string;
     type: FileChangeType;
     sourceMode: string;
     sourceBlob: string;
     destinationBlob: string;
     destinationMode: string;
-}
-
-export interface IChangedFile {
-    path: string;
-    type: FileChangeType;
 }
 
 export enum FileChangeType {

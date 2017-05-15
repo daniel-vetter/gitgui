@@ -1,7 +1,6 @@
 import { IconDefinition, FileIconManager } from "../../../../services/file-icon/file-icon";
 import { Injectable } from "@angular/core";
 import { Path } from "../../../../services/path";
-import { FileChangeType, IChangedFile } from "../../../../services/git/model";
 
 /**
  * Builds a tree of IFileTreeNode objects from a flat list of files.
@@ -11,17 +10,17 @@ export class FileTreeBuilder {
 
     constructor(private fileIconManager: FileIconManager) { }
 
-    getTree<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>>
-            (changedFiles: TSource[], targetFactory: () => TTarget): TTarget[] {
-        const root = this.createBaseTree<TSource, TTarget>(changedFiles, targetFactory);
+    getTree<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
+            (changedFiles: TSource[], getPath: (x: TSource) => string, targetFactory: () => TTarget): TTarget[] {
+        const root = this.createBaseTree<TSource, TTarget>(changedFiles, getPath, targetFactory);
         this.combineFolderWithOneParent(root);
         this.orderChildren(root);
         this.addMetadata(root);
         return root.children;
     }
 
-    private createBaseTree<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>>
-                          (changedFiles: TSource[], targetFactory: () => TTarget): TTarget {
+    private createBaseTree<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
+                          (changedFiles: TSource[], getPath: (x: TSource) => string, targetFactory: () => TTarget): TTarget {
         const targetFactoryEx = () => {
             const newObj = targetFactory();
             newObj.label = "";
@@ -31,7 +30,7 @@ export class FileTreeBuilder {
         const index = new ChildIndex();
         const root = targetFactoryEx();
         for (const change of changedFiles) {
-            const parts = change.path.split("/");
+            const parts = getPath(change).split("/");
             let curNode = root;
             for (let i = 0; i < parts.length; i++) {
                 const part = parts[i];
@@ -41,9 +40,6 @@ export class FileTreeBuilder {
                     childNode.label = part;
                     childNode.expanded = true;
                     if (i === parts.length - 1) {
-                        if (change.type === FileChangeType.Added) childNode.textClass = "entryAdd";
-                        else if (change.type === FileChangeType.Deleted) childNode.textClass = "entryRemove";
-                        else childNode.textClass = "entryChange";
                         childNode.data = change;
                     }
                     curNode.children.push(<TTarget>childNode);
@@ -55,7 +51,7 @@ export class FileTreeBuilder {
         return root;
     }
 
-    private orderChildren<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>>
+    private orderChildren<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
                          (node: IFileTreeNode<TSource, TTarget>) {
         this.forEachNode(node, x => {
             x.children.sort((a, b) => {
@@ -73,7 +69,7 @@ export class FileTreeBuilder {
         });
     }
 
-    private combineFolderWithOneParent<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>>
+    private combineFolderWithOneParent<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
                                       (root: IFileTreeNode<TSource, TTarget>) {
         for (const child of root.children) {
             this.forEachNode(child, x => {
@@ -85,7 +81,7 @@ export class FileTreeBuilder {
         }
     }
 
-    private addMetadata<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>>
+    private addMetadata<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
                        (node: IFileTreeNode<TSource, TTarget>) {
         this.forEachNode(node, x => {
             x.isFolder = x.children.length > 0;
@@ -101,7 +97,8 @@ export class FileTreeBuilder {
         });
     }
 
-    private forEachNode<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>>
+
+    private forEachNode<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
                        (node: IFileTreeNode<TSource, TTarget>, action: (node: IFileTreeNode<TSource, TTarget>) => void) {
         action(node);
         for (const child of node.children) {
@@ -110,7 +107,7 @@ export class FileTreeBuilder {
     }
 }
 
-export interface IFileTreeNode<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>> {
+export interface IFileTreeNode<TSource, TTarget extends IFileTreeNode<TSource, TTarget>> {
     label: string;
     iconExpanded: IconDefinition;
     iconCollapsed: IconDefinition;
@@ -121,7 +118,7 @@ export interface IFileTreeNode<TSource extends IChangedFile, TTarget extends IFi
     data: TSource;
 }
 
-class ChildIndex<TSource extends IChangedFile, TTarget extends IFileTreeNode<TSource, TTarget>> {
+class ChildIndex<TSource, TTarget extends IFileTreeNode<TSource, TTarget>> {
 
     private data = new Map<IFileTreeNode<TSource, TTarget>, Map<string, IFileTreeNode<TSource, TTarget>>>();
 

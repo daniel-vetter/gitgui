@@ -19,21 +19,9 @@ export class RepositoryToHistoryRepositoryMapper {
             return historyRepository;
 
         // add "Current changes" entry
-        if (repository.status.staged.length > 0 ||
-            repository.status.unstaged.length > 0) {
+        if (repository.status.indexFiles.length > 0) {
             const entry = new HistoryCurrentChangesEntry();
             entry.index = 0;
-            for (let i = 0; i < repository.status.staged.length + repository.status.unstaged.length; i++) {
-                const type = i < repository.status.staged.length
-                    ? repository.status.staged[i].type :
-                    repository.status.unstaged[i - repository.status.staged.length].type;
-                if (type === FileChangeType.Added)
-                    entry.addedFileCount++;
-                if (type === FileChangeType.Modified || type === FileChangeType.Renamed)
-                    entry.changedFileCount++;
-                if (type === FileChangeType.Deleted)
-                    entry.removedFileCount++;
-            }
             historyRepository.entries.push(entry);
         }
 
