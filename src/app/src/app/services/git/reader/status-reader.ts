@@ -9,7 +9,7 @@ export class StatusReader {
     constructor(private gitRaw: GitRaw) { }
 
     async readStatus(repositoryPath: string): Promise<RepositoryStatus> {
-        const gitResult = await this.gitRaw.run(repositoryPath, ["status", "-u", "-z", "--porcelain=1"]);
+        const gitResult = await this.gitRaw.run(repositoryPath, ["status", "-u", "-z", "--porcelain"]);
 
         const result = new RepositoryStatus();
         result.isMerge = false;
