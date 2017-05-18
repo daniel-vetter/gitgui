@@ -1,0 +1,7 @@
+<div class="root">
+    <div style="flex: 1;"></div>
+    <div *ngFor="let n of notifications" [@flyInOut]>
+        <notification-box [notification]="n" (onCloseRequested)="onNotificationCloseRequested(n)"></notification-box>
+    </div>
+    <div style="height: 30px"></div>
+</div>

@@ -35,6 +35,11 @@ import { SideBarComponent } from "./main/side-bar/side-bar.component";
 import { TextDiffTabComponent } from "./main/tabs/text-diff/text-diff-tab.component";
 import { TextTabComponent } from "./main/tabs/text/text-tab.component";
 import { RepositoryStatusComponent } from "./main/side-bar/repository-status/repository-status.component";
+import { NotificationsComponent } from "./main/notifications/notifications.component";
+import { NotificationStore } from "./main/notifications/notificationStore";
+import { Notifications } from "./main/notifications/notifications";
+import { NotificationBoxComponent } from "./main/notifications/notification-box.component";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -51,9 +56,12 @@ import { RepositoryStatusComponent } from "./main/side-bar/repository-status/rep
     TextDiffTabComponent,
     TextTabComponent,
     SideBarComponent,
-    RepositoryStatusComponent
+    RepositoryStatusComponent, 
+    NotificationsComponent,
+    NotificationBoxComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
     HttpModule,
@@ -61,7 +69,7 @@ import { RepositoryStatusComponent } from "./main/side-bar/repository-status/rep
     CommitHistoryModule,
     GitModule,
     MenuModule,
-    SharedModule
+    SharedModule,
   ],
   providers: [
       EventAggregator,
@@ -77,7 +85,9 @@ import { RepositoryStatusComponent } from "./main/side-bar/repository-status/rep
       PackageLoader,
       PackageParser,
       TabManager,
-      SideBarManager
+      SideBarManager,
+      Notifications,
+      NotificationStore
   ],
   bootstrap: [AppComponent]
 })

@@ -6,6 +6,7 @@ import { RepositoryOpener } from "./services/repository-opener";
 import { FileIconManager } from "./services/file-icon/file-icon";
 import { TabManager } from "./services/tab-manager";
 import { HistoryTab } from "./main/tabs/tabs";
+import { Notification, Notifications } from "./main/notifications/notifications";
 
 @Component({
     selector: "app-root",
@@ -19,13 +20,16 @@ export class AppComponent implements OnInit {
         private config: Config,
         private repositoryOpener: RepositoryOpener,
         private fileIconManager: FileIconManager,
-        private tabManager: TabManager) { }
+        private tabManager: TabManager,
+        private notifications: Notifications) { }
 
     ngOnInit() {
         this.menuManager.init();
         this.themeManager.init();
         this.fileIconManager.init();
         this.loadLastRepository();
+
+        this.notifications.show("Hallo Welt");
     }
 
     private loadLastRepository() {
