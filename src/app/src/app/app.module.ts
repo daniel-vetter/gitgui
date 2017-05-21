@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { NgModule, ErrorHandler } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppRoutingModule } from "./app-routing.module";
@@ -40,6 +40,7 @@ import { NotificationStore } from "./main/notifications/notificationStore";
 import { Notifications } from "./main/notifications/notifications";
 import { NotificationBoxComponent } from "./main/notifications/notification-box.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GlobalErrorHandler } from "./global-error-handler";
 
 @NgModule({
   declarations: [
@@ -56,7 +57,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     TextDiffTabComponent,
     TextTabComponent,
     SideBarComponent,
-    RepositoryStatusComponent, 
+    RepositoryStatusComponent,
     NotificationsComponent,
     NotificationBoxComponent
   ],
@@ -72,6 +73,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SharedModule,
   ],
   providers: [
+      {provide: ErrorHandler, useClass: GlobalErrorHandler},
       EventAggregator,
       Platform,
       Config,

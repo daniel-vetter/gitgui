@@ -31,31 +31,21 @@ import {
 })
 export class NotificationsComponent implements OnInit {
 
-    notifications: NotificationViewModel[] = [];
+    notifications: Notification[] = [];
 
     constructor(private notificationStore: NotificationStore) { }
 
     ngOnInit() {
-        this.notifications = this.notificationStore.allNotifications.map(x => this.mapToViewModel(x));
+        this.notifications = Array.from(this.notificationStore.allNotifications);
         this.notificationStore.onNewNotification.subscribe(x => {
-            this.notifications.splice(0, 0, this.mapToViewModel(x))
+            this.notifications.splice(0, 0, x)
         });
-    }
-
-    private mapToViewModel(notification: Notification): NotificationViewModel {
-        const vm = new NotificationViewModel();
-        vm.text = notification.text;
-        return vm;
     }
 
     onNotificationCloseRequested(n: Notification) {
         const index = this.notifications.indexOf(n);
-        if (index != -1) {
+        if (index !== -1) {
             this.notifications.splice(index, 1);
         }
     }
-}
-
-class NotificationViewModel {
-    text: string;
 }

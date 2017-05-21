@@ -1,5 +1,4 @@
 .root {
-    background: #202020;
     color: white;
     margin-bottom: 5px;
     pointer-events: all;
@@ -9,10 +8,25 @@
 }
 
 .button {
-    background: darkcyan; 
     padding: 8px;
+}
 
-    &:hover {
-        background: cyan;
+.theme-info {
+    background: #202020;
+    .button {
+        background: #1E90FF;
+        &:hover {
+            background: #75BAFD;
+        }
+    }
+}
+
+.theme-error {
+    background: #FF120C;
+    .button {
+        background: #FF403B;
+        &:hover {
+            background: #FF6F6B;
+        }
     }
 }

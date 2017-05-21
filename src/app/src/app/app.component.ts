@@ -1,12 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ErrorHandler  } from "@angular/core";
 import { ThemeManager } from "./services/theme-manager";
 import { MenuManager } from "./menu/menu-manager";
 import { Config } from "./services/config";
 import { RepositoryOpener } from "./services/repository-opener";
 import { FileIconManager } from "./services/file-icon/file-icon";
 import { TabManager } from "./services/tab-manager";
-import { HistoryTab } from "./main/tabs/tabs";
-import { Notification, Notifications } from "./main/notifications/notifications";
+import { Notifications } from "./main/notifications/notifications";
 
 @Component({
     selector: "app-root",
@@ -29,15 +28,16 @@ export class AppComponent implements OnInit {
         this.fileIconManager.init();
         this.loadLastRepository();
 
-        this.notifications.show("Hallo Welt");
+        this.notifications.showInfo("Hallo Welt");
     }
 
-    private loadLastRepository() {
+    private async loadLastRepository() {
         const recentRepositories = this.config.get().recentRepositories;
         if (recentRepositories !== undefined && recentRepositories.length > 0) {
             this.repositoryOpener.open(recentRepositories[recentRepositories.length - 1]);
         }
     }
 }
+
 
 

@@ -16,6 +16,7 @@ export class ToolBarComponent {
     }
 
     onPushClicked() {
-        this.notifications.show(new Date().toTimeString());
+        throw "Test";
+        //this.notifications.show(new Date().toTimeString());
     }
 }

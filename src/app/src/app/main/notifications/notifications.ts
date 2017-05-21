@@ -8,13 +8,26 @@ export class Notifications {
 
     }
 
-    show(text: string) {
+    showInfo(text: string) {
         const n = new Notification();
         n.text = text;
+        this.notificationStore.store(n);
+    }
+
+    showError(text: string) {
+        const n = new Notification();
+        n.text = text;
+        n.type = NotificationType.Error;
         this.notificationStore.store(n);
     }
 }
 
 export class Notification {
-    text: string;
+    text: string = "";
+    type: NotificationType = NotificationType.Info;
+}
+
+export enum NotificationType {
+    Info,
+    Error
 }
