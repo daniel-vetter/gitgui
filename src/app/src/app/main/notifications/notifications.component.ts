@@ -7,23 +7,23 @@ import {
     style,
     animate,
     transition
-} from '@angular/animations';
+} from "@angular/animations";
 
 @Component({
     selector: "notifications",
     templateUrl: "./notifications.component.html",
     styleUrls: ["./notifications.component.scss"],
     animations: [
-        trigger('flyInOut', [
+        trigger("flyInOut", [
             state("*", style({
-                transform: 'scale(1)',
+                transform: "scale(1)",
                 opacity: 1
             })),
             state("void", style({
-                transform: 'scale(0.9)',
+                transform: "scale(0.9)",
                 opacity: 0
             })),
-            transition('void <=> *', [
+            transition("void <=> *", [
                 animate("100ms linear")
             ])
         ])
