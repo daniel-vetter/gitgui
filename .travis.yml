@@ -2,4 +2,4 @@ language: node_js
 node_js:
   - "iojs"
   - "6.10.3"
- script: ./build.sh
+script: ./build.sh
