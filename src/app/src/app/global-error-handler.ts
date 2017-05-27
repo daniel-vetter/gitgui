@@ -7,6 +7,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     constructor(private notifications: Notifications) {}
 
     handleError(error) {
+        console.error(error);
         this.notifications.showError(error);
     }
 }
