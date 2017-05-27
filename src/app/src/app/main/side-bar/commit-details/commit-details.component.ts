@@ -5,7 +5,7 @@ import { FileTreeNodeToTreeViewAdapter } from "./services/changed-file-tree-node
 import { Path } from "../../../services/path";
 import { FileIconManager, IconDefinition } from "../../../services/file-icon/file-icon";
 import { TabManager } from "../../../services/tab-manager";
-import { TextDiffTab, TextTab } from "../../tabs/tabs";
+import { FileContentDiffTab, FileContentTab } from "../../tabs/tabs";
 import { Git } from "../../../services/git/git";
 
 @Component({
@@ -85,7 +85,7 @@ export class CommitDetailsComponent implements OnChanges {
             const x = await this.git.getObjectData(this.commit.repository, objectId);
             if (curRequestId !== this.lastRequestId)
                 return;
-            const tab = new TextTab();
+            const tab = new FileContentTab();
             tab.content = x;
             tab.repository = this.commit.repository;
             tab.path = vm.data.path;
@@ -97,7 +97,7 @@ export class CommitDetailsComponent implements OnChanges {
 
             if (curRequestId !== this.lastRequestId)
                 return;
-            const tab = new TextDiffTab();
+            const tab = new FileContentDiffTab();
             tab.leftContent = await objectDataLeftPromise;
             tab.rightContent = await objectDataRightPromise;
             tab.repository = this.commit.repository;

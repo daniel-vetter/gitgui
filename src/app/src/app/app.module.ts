@@ -32,8 +32,6 @@ import { TabContentComponent } from "./main/tab-content/tab-content.component";
 import { HistoryTabComponent } from "./main/tabs/history/history-tab.component";
 import { SideBarManager } from "./services/side-bar-manager";
 import { SideBarComponent } from "./main/side-bar/side-bar.component";
-import { TextDiffTabComponent } from "./main/tabs/text-diff/text-diff-tab.component";
-import { TextTabComponent } from "./main/tabs/text/text-tab.component";
 import { RepositoryStatusComponent } from "./main/side-bar/repository-status/repository-status.component";
 import { NotificationsComponent } from "./main/notifications/notifications.component";
 import { NotificationStore } from "./main/notifications/notificationStore";
@@ -41,6 +39,8 @@ import { Notifications } from "./main/notifications/notifications";
 import { NotificationBoxComponent } from "./main/notifications/notification-box.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GlobalErrorHandler } from "./global-error-handler";
+import { FileContentDiffTabComponent } from "./main/tabs/file-content-tabs/file-content-diff-tab/file-content-diff-tab.component";
+import { FileContentTabComponent } from "./main/tabs/file-content-tabs/file-content-tab/file-content-tab.component";
 
 @NgModule({
   declarations: [
@@ -54,8 +54,8 @@ import { GlobalErrorHandler } from "./global-error-handler";
     TabHeaderComponent,
     TabContentComponent,
     HistoryTabComponent,
-    TextDiffTabComponent,
-    TextTabComponent,
+    FileContentDiffTabComponent,
+    FileContentTabComponent,
     SideBarComponent,
     RepositoryStatusComponent,
     NotificationsComponent,

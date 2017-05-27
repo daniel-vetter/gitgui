@@ -1,14 +1,14 @@
 import { Component, Input, OnChanges, ViewChild, AfterViewInit } from "@angular/core";
-import { TextDiffTab } from "../tabs";
-import { Path } from "../../../services/path";
+import { FileContentDiffTab } from "../../tabs";
+import { Path } from "../../../../services/path";
 
 @Component({
-    selector: "text-diff-tab",
-    templateUrl: "./text-diff-tab.component.html",
-    styleUrls: ["./text-diff-tab.component.scss"]
+    selector: "file-content-diff-tab",
+    templateUrl: "./file-content-diff-tab.component.html",
+    styleUrls: ["./file-content-diff-tab.component.scss"]
 })
-export class TextDiffTabComponent implements OnChanges, AfterViewInit {
-    @Input() tab: TextDiffTab = undefined;
+export class FileContentDiffTabComponent implements OnChanges, AfterViewInit {
+    @Input() tab: FileContentDiffTab = undefined;
 
     @ViewChild("container") container;
 

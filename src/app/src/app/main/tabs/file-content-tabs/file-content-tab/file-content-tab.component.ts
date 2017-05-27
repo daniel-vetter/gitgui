@@ -1,14 +1,14 @@
 import { Component, Input, OnChanges, AfterViewInit, ViewChild } from "@angular/core";
-import { TextTab } from "../tabs";
-import { Path } from "../../../services/path";
+import { FileContentTab } from "../../tabs";
+import { Path } from "../../../../services/path";
 
 @Component({
-    selector: "text-tab",
-    templateUrl: "text-tab.component.html",
-    styleUrls: ["./text-tab.component.scss"]
+    selector: "file-content-tab",
+    templateUrl: "file-content-tab.component.html",
+    styleUrls: ["./file-content-tab.component.scss"]
 })
-export class TextTabComponent implements OnChanges, AfterViewInit {
-    @Input() tab: TextTab = undefined;
+export class FileContentTabComponent implements OnChanges, AfterViewInit {
+    @Input() tab: FileContentTab = undefined;
     @ViewChild("container") container;
 
     fileName: string = "";
