@@ -33,17 +33,28 @@ export enum IndexFileChangeType {
 }
 
 export class ChangedFile  {
-    path: string;
     type: FileChangeType;
+    oldFile: FileRef;
+    newFile: FileRef;
 }
 
-export class ChangedCommitFile {
-    path: string;
-    type: FileChangeType;
-    sourceMode: string;
-    sourceBlob: string;
-    destinationBlob: string;
-    destinationMode: string;
+export abstract class FileRef {
+    constructor(public path: string) {}
+    public static fromDisk(path: string) { return new DiskFileRef(path); }
+    public static fromIndex(path: string) { return new IndexFileRef(path); }
+    public static fromBlob(blob: string, path: string) { return new BlobFileRef(blob, path); }
+}
+
+export class DiskFileRef extends FileRef {
+}
+
+export class IndexFileRef extends FileRef {
+}
+
+export class BlobFileRef extends FileRef {
+    constructor(public blob: string, public path: string) {
+        super(path);
+    }
 }
 
 export enum FileChangeType {

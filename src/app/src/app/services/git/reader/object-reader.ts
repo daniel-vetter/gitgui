@@ -1,12 +1,17 @@
 import { Injectable } from "@angular/core";
 import { GitRaw } from "../infrastructure/git-raw";
+import { FileRef, BlobFileRef } from "../model";
 
 @Injectable()
 export class ObjectReader {
     constructor(private gitRaw: GitRaw) {
     }
 
-    async getObjectData(gitRepositoryPath: string, objectId: string): Promise<string> {
-        return (await this.gitRaw.run(gitRepositoryPath, ["show", objectId])).data;
+    async getFileContent(gitRepositoryPath: string, fileRef: FileRef): Promise<string> {
+        if (fileRef instanceof BlobFileRef) {
+            return (await this.gitRaw.run(gitRepositoryPath, ["show", fileRef.blob])).data;
+        } else {
+            throw Error("unsported FileRef Type");
+        }
     }
 }

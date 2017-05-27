@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { RepositoryCommit, ChangedCommitFile } from "../../../services/git/model";
+import { RepositoryCommit, ChangedFile, FileRef } from "../../../services/git/model";
 import { IFileTreeNode, FileTreeBuilder } from "./services/file-tree-builder";
 import { FileTreeNodeToTreeViewAdapter } from "./services/changed-file-tree-node-model-adapter";
 import { Path } from "../../../services/path";
@@ -23,11 +23,9 @@ export class CommitDetailsComponent implements OnChanges {
     authorDate: string = "";
     filter: string = "";
 
-    private lastRequestId = 0;
-
-    changedFiles: ChangedCommitFile[];
+    changedFiles: ChangedFile[];
     changeFilesTree: FileTreeNode[];
-    adapter = new FileTreeNodeToTreeViewAdapter<ChangedCommitFile, FileTreeNode>();
+    adapter = new FileTreeNodeToTreeViewAdapter<ChangedFile, FileTreeNode>();
 
     constructor(private git: Git,
         private fileTreeBuilder: FileTreeBuilder,
@@ -65,9 +63,15 @@ export class CommitDetailsComponent implements OnChanges {
         } else {
             let changedFiles = this.changedFiles;
             if (this.filter && this.filter !== "")
-                changedFiles = this.changedFiles.filter(x => Path.getLastPart(x.path).indexOf(this.filter) !== -1);
-            this.changeFilesTree = this.fileTreeBuilder.getTree<ChangedCommitFile, any>(changedFiles, x => x.path, () => new FileTreeNode());
+                changedFiles = this.changedFiles.filter(x => Path.getLastPart(this.getPathFromChangedFile(x)).indexOf(this.filter) !== -1);
+            this.changeFilesTree = this.fileTreeBuilder.getTree<ChangedFile, any>(changedFiles, x => this.getPathFromChangedFile(x), () => new FileTreeNode());
         }
+    }
+
+    private getPathFromChangedFile(changedFile: ChangedFile) {
+        if (changedFile.newFile)
+            return changedFile.newFile.path;
+        return changedFile.oldFile.path;
     }
 
     onFilterChange() {
@@ -78,37 +82,23 @@ export class CommitDetailsComponent implements OnChanges {
         if (!vm.data)
             return;
 
-        const curRequestId = ++this.lastRequestId;
-
-        if (!vm.data.sourceBlob || !vm.data.destinationBlob) {
-            const objectId = vm.data.sourceBlob ? vm.data.sourceBlob : vm.data.destinationBlob;
-            const x = await this.git.getObjectData(this.commit.repository, objectId);
-            if (curRequestId !== this.lastRequestId)
-                return;
+        if (!vm.data.oldFile || !vm.data.newFile) {
+            const file = vm.data.oldFile ? vm.data.oldFile : vm.data.newFile;
             const tab = new FileContentTab();
-            tab.content = x;
             tab.repository = this.commit.repository;
-            tab.path = vm.data.path;
+            tab.file = file;
             this.tabManager.createNewTab(tab);
         } else {
-
-            const objectDataLeftPromise = this.git.getObjectData(this.commit.repository, vm.data.sourceBlob);
-            const objectDataRightPromise = this.git.getObjectData(this.commit.repository, vm.data.destinationBlob);
-
-            if (curRequestId !== this.lastRequestId)
-                return;
             const tab = new FileContentDiffTab();
-            tab.leftContent = await objectDataLeftPromise;
-            tab.rightContent = await objectDataRightPromise;
             tab.repository = this.commit.repository;
-            tab.leftPath = vm.data.path;
-            tab.rightPath = vm.data.path;
+            tab.leftFile = vm.data.oldFile;
+            tab.rightFile = vm.data.newFile;
             this.tabManager.createNewTab(tab);
         }
     }
 }
 
-class FileTreeNode implements IFileTreeNode<ChangedCommitFile, FileTreeNode> {
+class FileTreeNode implements IFileTreeNode<ChangedFile, FileTreeNode> {
     label: string;
     iconExpanded: IconDefinition;
     iconCollapsed: IconDefinition;
@@ -116,5 +106,5 @@ class FileTreeNode implements IFileTreeNode<ChangedCommitFile, FileTreeNode> {
     expanded: boolean;
     textClass: string;
     children: FileTreeNode[];
-    data: ChangedCommitFile;
+    data: ChangedFile;
 }

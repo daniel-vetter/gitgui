@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, ViewChild, AfterViewInit } from "@angular/core";
 import { FileContentDiffTab } from "../../tabs";
 import { Path } from "../../../../services/path";
+import { Git } from "../../../../services/git/git";
 
 @Component({
     selector: "file-content-diff-tab",
@@ -20,21 +21,23 @@ export class FileContentDiffTabComponent implements OnChanges, AfterViewInit {
 
     private editor: monaco.editor.IDiffEditor;
 
+    constructor(private git: Git) {}
+
     ngAfterViewInit() {
         this.createEditors();
     }
 
-    ngOnChanges() {
+    async ngOnChanges() {
         if (this.tab) {
-            this.leftFileName = Path.getLastPart(this.tab.leftPath);
-            this.rightFileName = Path.getLastPart(this.tab.rightPath);
+            this.leftFileName = Path.getLastPart(this.tab.leftFile.path);
+            this.rightFileName = Path.getLastPart(this.tab.rightFile.path);
             if (this.leftFileName.toLowerCase() === this.rightFileName.toLowerCase()) {
                 this.tab.ui.title = this.leftFileName;
             } else {
                 this.tab.ui.title = this.leftFileName + " - " + this.rightFileName;
             }
-            this.leftContent = this.tab.leftContent;
-            this.rightContent = this.tab.rightContent;
+            this.leftContent = await this.git.getFileContent(this.tab.repository, this.tab.leftFile);
+            this.rightContent = await this.git.getFileContent(this.tab.repository, this.tab.rightFile)
         } else {
             this.leftContent = "";
             this.rightContent = "";

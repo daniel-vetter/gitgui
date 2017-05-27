@@ -1,4 +1,4 @@
-import { Repository, RepositoryCommit } from "../../services/git/model";
+import { Repository, RepositoryCommit, FileRef } from "../../services/git/model";
 import { Tab } from "../../services/tab-manager";
 
 export class HistoryTab extends Tab {
@@ -9,15 +9,12 @@ export class HistoryTab extends Tab {
 export class FileContentDiffTab extends Tab {
     key = "FileContentDiffTab";
     repository: Repository;
-    leftContent: string;
-    leftPath: string;
-    rightContent: string;
-    rightPath: string;
+    leftFile: FileRef;
+    rightFile: FileRef;
 }
 
 export class FileContentTab extends Tab {
     key = "FileContentTab";
     repository: Repository;
-    content: string;
-    path: string;
+    file: FileRef;
 }

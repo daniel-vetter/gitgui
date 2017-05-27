@@ -1,6 +1,6 @@
 import { GitRaw } from "../infrastructure/git-raw";
 import { Injectable } from "@angular/core";
-import { RepositoryCommit, FileChangeType, ChangedCommitFile } from "../model";
+import { RepositoryCommit, FileChangeType, ChangedFile, FileRef } from "../model";
 
 @Injectable()
 export class CommitDetailsReader {
@@ -14,33 +14,33 @@ export class CommitDetailsReader {
         return result.data.substr(result.data.indexOf("\n") + 1).trim();
     }
 
-    async getFileChangesOfCommit(commit: RepositoryCommit): Promise<ChangedCommitFile[]> {
+    async getFileChangesOfCommit(commit: RepositoryCommit): Promise<ChangedFile[]> {
         const params = ["diff-tree", "--no-commit-id", "-r", "-m", "-z", commit.hash];
         if (commit.parents.length === 0) {
             params.push("4b825dc642cb6eb9a060e54bf8d69288fbee4904");
         }
         const x = await this.gitRaw.run(commit.repository.location, params);
         const lines = x.data.split("\0").filter(y => y !== "");
-        const list: ChangedCommitFile[] = [];
+        const list: ChangedFile[] = [];
         for (let i = 0; i < lines.length; i += 2) {
-            const item = new ChangedCommitFile();
+            const item = new ChangedFile();
             const metainfos = lines[i + 0];
             const metainfosParts = metainfos.split(" ");
             if (metainfos[0] !== ":" || metainfosParts.length !== 5)
                 throw Error("Invalid data returned from diff-tree.");
-            item.sourceMode = metainfosParts[0];
-            if (item.sourceMode === "000000")
-                item.sourceMode = undefined;
-            item.destinationMode = metainfosParts[1];
-            if (item.destinationMode === "000000")
-                item.destinationMode = undefined;
-            item.sourceBlob = metainfosParts[2];
-            if (item.sourceBlob === "0000000000000000000000000000000000000000")
-                item.sourceBlob = undefined;
-            item.destinationBlob = metainfosParts[3];
-            if (item.destinationBlob === "0000000000000000000000000000000000000000")
-                item.destinationBlob = undefined;
+
+            const sourceMode = metainfosParts[0];
+            const destinationMode = metainfosParts[1];
+            const sourceBlob = metainfosParts[2];
+            const destinationBlob = metainfosParts[3];
             const type = metainfosParts[4];
+            const path = lines[i + 1];
+
+            if (sourceMode !== "000000" && sourceBlob !== "0000000000000000000000000000000000000000")
+                item.oldFile = FileRef.fromBlob(sourceBlob, path);
+            if (destinationMode !== "000000" && destinationBlob !== "0000000000000000000000000000000000000000")
+                item.newFile = FileRef.fromBlob(destinationBlob, path)
+            
             if (type === "A") item.type = FileChangeType.Added;
             if (type === "C") item.type = FileChangeType.Copied;
             if (type === "D") item.type = FileChangeType.Deleted;
@@ -50,7 +50,7 @@ export class CommitDetailsReader {
             if (type === "U") item.type = FileChangeType.Unmerged;
             if (type === "X") item.type = FileChangeType.Unknown;
             if (type === "B") item.type = FileChangeType.Broken;
-            item.path = lines[i + 1];
+
             list.push(item);
         }
         return list;

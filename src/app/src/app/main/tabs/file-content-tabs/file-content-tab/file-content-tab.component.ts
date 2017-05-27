@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, AfterViewInit, ViewChild } from "@angular/core";
 import { FileContentTab } from "../../tabs";
 import { Path } from "../../../../services/path";
+import { Git } from "../../../../services/git/git";
 
 @Component({
     selector: "file-content-tab",
@@ -16,14 +17,16 @@ export class FileContentTabComponent implements OnChanges, AfterViewInit {
 
     private editor: monaco.editor.IStandaloneCodeEditor;
 
+    constructor(private git: Git) {}
+
     ngAfterViewInit() {
         this.createEditors();
     }
 
-    ngOnChanges() {
+    async ngOnChanges() {
         if (this.tab) {
-            this.tab.ui.title = Path.getLastPart(this.tab.path);
-            this.content = this.tab.content;
+            this.tab.ui.title = Path.getLastPart(this.tab.file.path);
+            this.content = await this.git.getFileContent(this.tab.repository, this.tab.file);
         } else {
             this.content = "";
         }

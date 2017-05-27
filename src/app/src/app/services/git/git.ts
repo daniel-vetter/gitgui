@@ -1,7 +1,7 @@
 import { Cloner } from "./reader/cloner";
 import { RepositoryReader } from "./reader/repository-reader";
 import { CommitDetailsReader } from "./reader/commit-details-reader";
-import { RepositoryCommit, Repository, ChangedCommitFile } from "./model";
+import { RepositoryCommit, Repository, ChangedFile, FileRef } from "./model";
 import { ObjectReader } from "./reader/object-reader";
 import { Injectable } from "@angular/core";
 import { Index } from "./actions/index";
@@ -29,11 +29,11 @@ export class Git {
     getLongCommitMessage(commit: RepositoryCommit): Promise<string> {
         return this.commitDetailsReader.getLongCommitMessage(commit);
     }
-    getFileChangesOfCommit(commit: RepositoryCommit): Promise<ChangedCommitFile[]> {
+    getFileChangesOfCommit(commit: RepositoryCommit): Promise<ChangedFile[]> {
         return this.commitDetailsReader.getFileChangesOfCommit(commit);
     }
-    getObjectData(repository: Repository, objectId: string): Promise<string> {
-        return this.objectReader.getObjectData(repository.location, objectId);
+    getFileContent(repository: Repository, fileRef: FileRef): Promise<string> {
+        return this.objectReader.getFileContent(repository.location, fileRef);
     }
     stageFile(repository: Repository, filePath: string): Promise<boolean> {
         return this.index.stageFile(repository, filePath);
