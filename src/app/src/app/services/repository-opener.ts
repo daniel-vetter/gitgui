@@ -5,6 +5,7 @@ import { Status } from "./status";
 import { TabManager } from "./tab-manager";
 import { HistoryTab } from "../main/tabs/tabs";
 import { Git } from "./git/git";
+import { Path } from "./path";
 
 @Injectable()
 export class RepositoryOpener {
@@ -30,7 +31,7 @@ export class RepositoryOpener {
         this.tabManager.closeAllTabs();
         const tab = new HistoryTab();
         tab.repository = x;
-        tab.ui.title = "History";
+        tab.ui.title = Path.getLastPart(path);
         tab.ui.isCloseable = false;
         tab.ui.isPersistent = true;
         this.tabManager.createNewTab(tab);
