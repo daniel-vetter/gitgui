@@ -19,16 +19,13 @@ export class AppComponent implements OnInit {
         private config: Config,
         private repositoryOpener: RepositoryOpener,
         private fileIconManager: FileIconManager,
-        private tabManager: TabManager,
-        private notifications: Notifications) { }
+        private tabManager: TabManager) { }
 
     ngOnInit() {
         this.menuManager.init();
         this.themeManager.init();
         this.fileIconManager.init();
         this.loadLastRepository();
-
-        this.notifications.showInfo("Hallo Welt");
     }
 
     private async loadLastRepository() {
