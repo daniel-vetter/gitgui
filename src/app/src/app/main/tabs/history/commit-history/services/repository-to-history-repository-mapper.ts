@@ -19,7 +19,8 @@ export class RepositoryToHistoryRepositoryMapper {
             return historyRepository;
 
         // add "Current changes" entry
-        if (repository.status.indexFiles.length > 0) {
+        if (repository.status.indexChanges.length > 0 ||
+            repository.status.workTreeChanges.length > 0) {
             const entry = new HistoryCurrentChangesEntry();
             entry.index = 0;
             historyRepository.entries.push(entry);

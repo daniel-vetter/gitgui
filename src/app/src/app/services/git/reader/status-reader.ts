@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GitRaw } from "./../infrastructure/git-raw";
-import { ChangedFile, FileChangeType, RepositoryStatus, IndexFileChangeType, IndexFile } from "../model";
+import { ChangedFile, FileChangeType, RepositoryStatus, FileRef } from "../model";
 
 
 @Injectable()
@@ -20,34 +20,51 @@ export class StatusReader {
             if (line.startsWith("warning: "))
                 continue;
             console.log(line);
+            const path = line.substr(3);
 
             if ((line[0] === "!" && line[1] === "!") ||
                 (line[0] === "?" && line[1] === "?")) {
-                const indexFile = new IndexFile();
-                indexFile.path = line.substr(3);
-                indexFile.indexChangeType = IndexFileChangeType.Unmodified;
-                indexFile.workTreeChangeType = IndexFileChangeType.Added;
-                result.indexFiles.push(indexFile);
+                const indexFile = new ChangedFile();
+                indexFile.newFile = FileRef.fromDisk(path);
+                indexFile.oldFile = undefined;
+                indexFile.type = FileChangeType.Added;
+                result.indexChanges.push(indexFile);
             } else {
-                const indexFile = new IndexFile();
-                indexFile.path = line.substr(3);
-                indexFile.indexChangeType = this.parseChangeType(line[0]);
-                indexFile.workTreeChangeType = this.parseChangeType(line[1]);
-                result.indexFiles.push(indexFile);
+                const indexChangeType = this.parseChangeType(line[0]);
+                const workTreeChangeType = this.parseChangeType(line[1]);
+
+                if (indexChangeType) {
+                    const indexFile = new ChangedFile();
+                    if (indexChangeType !== FileChangeType.Added)
+                        indexFile.oldFile = FileRef.fromHead(path);
+                    if (indexChangeType !== FileChangeType.Deleted)
+                        indexFile.newFile = FileRef.fromIndex(path);
+                    indexFile.type = indexChangeType;
+                    result.indexChanges.push(indexFile);
+                }
+                if (workTreeChangeType) {
+                    const workTreeFile = new ChangedFile();
+                    if (workTreeChangeType !== FileChangeType.Added)
+                        workTreeFile.oldFile = FileRef.fromIndex(path);
+                    if (workTreeChangeType !== FileChangeType.Deleted)
+                        workTreeFile.newFile = FileRef.fromDisk(path);
+                    workTreeFile.type = workTreeChangeType;
+                    result.workTreeChanges.push(workTreeFile);
+                }
             }
         }
         return result;
 
     }
 
-    private parseChangeType(char: string): IndexFileChangeType {
-        if (char === " ") return IndexFileChangeType.Unmodified;
-        else if (char === "M") return IndexFileChangeType.Modified;
-        else if (char === "A") return IndexFileChangeType.Added;
-        else if (char === "D") return IndexFileChangeType.Deleted;
-        else if (char === "R") return IndexFileChangeType.Renamed;
-        else if (char === "C") return IndexFileChangeType.Copied;
-        else if (char === "U") return IndexFileChangeType.UpdatedButUnmerged;
+    private parseChangeType(char: string): FileChangeType {
+        if (char === " ") return undefined;
+        else if (char === "M") return FileChangeType.Modified;
+        else if (char === "A") return FileChangeType.Added;
+        else if (char === "D") return FileChangeType.Deleted;
+        else if (char === "R") return FileChangeType.Renamed;
+        else if (char === "C") return FileChangeType.Copied;
+        else if (char === "U") return FileChangeType.Unmerged;
         else throw Error("invalid index change type: " + char);
     }
 }

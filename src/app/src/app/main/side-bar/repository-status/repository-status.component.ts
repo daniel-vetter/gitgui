@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { Repository, IndexFile, IndexFileChangeType } from "../../../services/git/model";
+import { Repository, ChangedFile, FileChangeType } from "../../../services/git/model";
 import { FileTreeBuilder, IFileTreeNode } from "../commit-details/services/file-tree-builder";
 import { FileTreeNodeToTreeViewAdapter } from "../commit-details/services/changed-file-tree-node-model-adapter";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
@@ -16,7 +16,7 @@ import { Path } from "../../../services/path";
 export class RepositoryStatusComponent implements OnChanges {
     @Input() repository: Repository;
 
-    files: IndexFile[] = [];
+    files: ChangedFile[] = [];
     filesTree: FileTreeNode[] = [];
     adapter = new FileTreeNodeToTreeViewAdapter();
     commitMessage: string = "";
@@ -44,9 +44,9 @@ export class RepositoryStatusComponent implements OnChanges {
             this.files = [];
             return;
         }
-
-        const files = this.repository.status.indexFiles;
-        this.filesTree = this.fileTreeBuilder.getTree<IndexFile, FileTreeNode>(files, x => x.path, () => new FileTreeNode());
+        /*
+        const files = this.repository.status.indexChanges;
+        this.filesTree = this.fileTreeBuilder.getTree<ChangedFile, FileTreeNode>(files, x => x.path, () => new FileTreeNode());
 
         const updateState = (node: FileTreeNode) => {
             node.children.forEach(y => updateState(y));
@@ -55,15 +55,17 @@ export class RepositoryStatusComponent implements OnChanges {
                 node.checked = node.children.filter(x => x.checked === false).length === 0;
             } else {
                 node.checked = false;
-                if (node.data.indexChangeType !== IndexFileChangeType.Unmodified &&
-                    node.data.workTreeChangeType === IndexFileChangeType.Unmodified)
+                if (node.data. !== FileChangeType.Unmodified &&
+                    node.data.workTreeChangeType === FileChangeType.Unmodified)
                     node.checked = true;
-                if (node.data.indexChangeType !== IndexFileChangeType.Unmodified &&
-                    node.data.workTreeChangeType !== IndexFileChangeType.Unmodified)
+                if (node.data.indexChangeType !== FileChangeType.Unmodified &&
+                    node.data.workTreeChangeType !== FileChangeType.Unmodified)
                     node.checked = "Intermediate";
             }
         };
         this.filesTree.forEach(x => updateState(x));
+        */
+        // TODO
     }
 
     onFileSelected() {
@@ -71,7 +73,7 @@ export class RepositoryStatusComponent implements OnChanges {
     }
 
     async onCheckBoxStateChanged(node: FileTreeNode) {
-
+        /*
         const path = node.isFolder ?
             this.findLongestMatchingPath(this.getAllFileChangesFromFolderNode(node).map(x => x.path)) :
             node.data.path;
@@ -83,10 +85,11 @@ export class RepositoryStatusComponent implements OnChanges {
 
         await this.git.updateRepositoryStatus(this.repository);
         this.update();
+        */
     }
 
-    private getAllFileChangesFromFolderNode(node: FileTreeNode): IndexFile[] {
-        const result: IndexFile[] = [];
+    private getAllFileChangesFromFolderNode(node: FileTreeNode): ChangedFile[] {
+        const result: ChangedFile[] = [];
         const traverseChildren = (n: FileTreeNode) => {
             if (n.isFolder) {
                 for (const child of n.children)
@@ -130,7 +133,7 @@ export class RepositoryStatusComponent implements OnChanges {
     }
 }
 
-class FileTreeNode implements IFileTreeNode<IndexFile, FileTreeNode> {
+class FileTreeNode implements IFileTreeNode<ChangedFile, FileTreeNode> {
     label: string;
     iconExpanded: IconDefinition;
     iconCollapsed: IconDefinition;
@@ -138,6 +141,6 @@ class FileTreeNode implements IFileTreeNode<IndexFile, FileTreeNode> {
     expanded: boolean;
     textClass: string;
     children: FileTreeNode[];
-    data: IndexFile;
+    data: ChangedFile;
     checked: boolean | Intermediate;
 }

@@ -13,23 +13,8 @@ export class Repository {
 export class RepositoryStatus {
     isMerge: boolean;
     isRebase: boolean;
-    indexFiles: IndexFile[] = [];
-}
-
-export class IndexFile {
-    path: string;
-    indexChangeType: IndexFileChangeType;
-    workTreeChangeType: IndexFileChangeType;
-}
-
-export enum IndexFileChangeType {
-    Unmodified,
-    Modified,
-    Added,
-    Deleted,
-    Renamed,
-    Copied,
-    UpdatedButUnmerged
+    indexChanges: ChangedFile[] = [];
+    workTreeChanges: ChangedFile[] = [];
 }
 
 export class ChangedFile  {
@@ -38,10 +23,21 @@ export class ChangedFile  {
     newFile: FileRef;
 }
 
+export enum FileChangeType {
+    Added = 1,
+    Copied = 2,
+    Deleted = 3,
+    Modified = 4,
+    Renamed = 5,
+    TypeChange = 6,
+    Unmerged = 7
+}
+
 export abstract class FileRef {
     constructor(public path: string) {}
     public static fromDisk(path: string) { return new DiskFileRef(path); }
     public static fromIndex(path: string) { return new IndexFileRef(path); }
+    public static fromHead(path: string) { return new HeadFileRef(path); }
     public static fromBlob(blob: string, path: string) { return new BlobFileRef(blob, path); }
 }
 
@@ -51,23 +47,16 @@ export class DiskFileRef extends FileRef {
 export class IndexFileRef extends FileRef {
 }
 
+export class HeadFileRef extends FileRef {
+}
+
 export class BlobFileRef extends FileRef {
     constructor(public blob: string, public path: string) {
         super(path);
     }
 }
 
-export enum FileChangeType {
-    Added,
-    Copied,
-    Deleted,
-    Modified,
-    Renamed,
-    TypeChange,
-    Unmerged,
-    Unknown,
-    Broken
-}
+
 
 export class RepositoryCommit {
     hash: string;

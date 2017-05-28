@@ -48,8 +48,8 @@ export class CommitDetailsReader {
             if (type === "R") item.type = FileChangeType.Renamed;
             if (type === "T") item.type = FileChangeType.TypeChange;
             if (type === "U") item.type = FileChangeType.Unmerged;
-            if (type === "X") item.type = FileChangeType.Unknown;
-            if (type === "B") item.type = FileChangeType.Broken;
+            if (type === "X") throw Error("Unsupported file change: Unknown");
+            if (type === "B") throw Error("Unsupported file change: Broken");
 
             list.push(item);
         }
