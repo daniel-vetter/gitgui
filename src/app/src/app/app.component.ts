@@ -5,7 +5,6 @@ import { Config } from "./services/config";
 import { RepositoryOpener } from "./services/repository-opener";
 import { FileIconManager } from "./services/file-icon/file-icon";
 import { TabManager } from "./services/tab-manager";
-import { Notifications } from "./main/notifications/notifications";
 
 @Component({
     selector: "app-root",

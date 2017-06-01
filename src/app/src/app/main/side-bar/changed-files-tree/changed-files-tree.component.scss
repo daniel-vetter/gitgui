@@ -1,0 +1,11 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+}
+
+.treeView {
+    flex: 1;
+    background: var(--theme-workspace-background);
+    border: 1px solid var(--theme-workspace-border);
+}

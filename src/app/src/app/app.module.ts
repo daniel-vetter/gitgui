@@ -16,7 +16,6 @@ import { MenuModule } from "./menu/menu.module";
 import { RepositoryOpener } from "./services/repository-opener";
 import { SharedModule } from "./shared/shared.module";
 import { StatusBarComponent } from "./main/status-bar/status-bar.component";
-import { FileTreeBuilder } from "./main/side-bar/commit-details/services/file-tree-builder";
 import { Status } from "./services/status";
 import { Platform } from "./services/platform";
 import { FileSystem } from "./services/file-system";
@@ -37,16 +36,19 @@ import { NotificationsComponent } from "./main/notifications/notifications.compo
 import { NotificationStore } from "./main/notifications/notificationStore";
 import { Notifications } from "./main/notifications/notifications";
 import { NotificationBoxComponent } from "./main/notifications/notification-box.component";
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { GlobalErrorHandler } from "./global-error-handler";
 import { FileContentDiffTabComponent } from "./main/tabs/file-content-tabs/file-content-diff-tab/file-content-diff-tab.component";
 import { FileContentTabComponent } from "./main/tabs/file-content-tabs/file-content-tab/file-content-tab.component";
+import { ChangedFilesTreeComponent } from "./main/side-bar/changed-files-tree/changed-files-tree.component";
+import { FileTreeBuilder } from "./main/side-bar/changed-files-tree/file-tree-builder";
 
 @NgModule({
   declarations: [
     AppComponent,
     RepositoryComponent,
     CommitDetailsComponent,
+    ChangedFilesTreeComponent,
     FileIconComponent,
     StatusBarComponent,
     RefListComponent,

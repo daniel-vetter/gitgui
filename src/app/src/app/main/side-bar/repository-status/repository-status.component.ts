@@ -1,12 +1,13 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { Repository, ChangedFile, FileChangeType } from "../../../services/git/model";
-import { FileTreeBuilder, IFileTreeNode } from "../commit-details/services/file-tree-builder";
-import { FileTreeNodeToTreeViewAdapter } from "../commit-details/services/changed-file-tree-node-model-adapter";
+import { Repository, ChangedFile } from "../../../services/git/model";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
 import { Intermediate } from "../../../shared/check-box/check-box.component";
 import { Subscription } from "../../../services/event-aggregator";
 import { Git } from "../../../services/git/git";
 import { Path } from "../../../services/path";
+import { FileTreeBuilder } from "../changed-files-tree/file-tree-builder";
+import { FileContentTab, FileContentDiffTab } from "../../tabs/tabs";
+import { TabManager } from "../../../services/tab-manager";
 
 @Component({
     selector: "repository-status",
@@ -16,60 +17,47 @@ import { Path } from "../../../services/path";
 export class RepositoryStatusComponent implements OnChanges {
     @Input() repository: Repository;
 
-    files: ChangedFile[] = [];
-    filesTree: FileTreeNode[] = [];
-    adapter = new FileTreeNodeToTreeViewAdapter();
+    workTreeChanges: ChangedFile[] = [];
+    indexChanges: ChangedFile[] = [];
     commitMessage: string = "";
-
     onStatusChangeSubscription: Subscription;
 
-    constructor(private fileTreeBuilder: FileTreeBuilder, private git: Git) { }
+    constructor(private fileTreeBuilder: FileTreeBuilder, private git: Git, private tabManager: TabManager) { }
 
     ngOnChanges(changes: any) {
         if (changes.repository) {
             if (this.onStatusChangeSubscription)
                 this.onStatusChangeSubscription.unsubscribe();
-            this.onStatusChangeSubscription = this.repository.onStatusChanged.subscribe(() => this.onRepositoryStatusChange());
+            this.onStatusChangeSubscription = this.repository.onStatusChanged.subscribe(() => this.updateTree());
         }
 
-        this.update();
+        this.updateTree();
     }
 
-    private onRepositoryStatusChange() {
-        this.update();
-    }
-
-    private update() {
+    private updateTree() {
         if (!this.repository) {
-            this.files = [];
+            this.workTreeChanges = [];
+            this.indexChanges = [];
             return;
         }
-        /*
-        const files = this.repository.status.indexChanges;
-        this.filesTree = this.fileTreeBuilder.getTree<ChangedFile, FileTreeNode>(files, x => x.path, () => new FileTreeNode());
 
-        const updateState = (node: FileTreeNode) => {
-            node.children.forEach(y => updateState(y));
-
-            if (node.isFolder) {
-                node.checked = node.children.filter(x => x.checked === false).length === 0;
-            } else {
-                node.checked = false;
-                if (node.data. !== FileChangeType.Unmodified &&
-                    node.data.workTreeChangeType === FileChangeType.Unmodified)
-                    node.checked = true;
-                if (node.data.indexChangeType !== FileChangeType.Unmodified &&
-                    node.data.workTreeChangeType !== FileChangeType.Unmodified)
-                    node.checked = "Intermediate";
-            }
-        };
-        this.filesTree.forEach(x => updateState(x));
-        */
-        // TODO
+        this.workTreeChanges = this.repository.status.workTreeChanges;
+        this.indexChanges = this.repository.status.indexChanges;
     }
 
-    onFileSelected() {
-
+    onFileSelected(changedFile: ChangedFile) {
+        if (!changedFile.oldFile || !changedFile.newFile) {
+            const file = changedFile.oldFile ? changedFile.oldFile : changedFile.newFile;
+            const tab = new FileContentTab();
+            tab.file = file;
+            this.tabManager.createNewTab(tab);
+        } else {
+            const tab = new FileContentDiffTab();
+            tab.repository = this.repository;
+            tab.leftFile = changedFile.oldFile;
+            tab.rightFile = changedFile.newFile;
+            this.tabManager.createNewTab(tab);
+        }
     }
 
     async onCheckBoxStateChanged(node: FileTreeNode) {
@@ -129,11 +117,11 @@ export class RepositoryStatusComponent implements OnChanges {
     async onCommitClicked() {
         await this.git.commit(this.repository, this.commitMessage, false);
         await this.git.updateRepositoryStatus(this.repository);
-        this.update();
+        this.updateTree();
     }
 }
 
-class FileTreeNode implements IFileTreeNode<ChangedFile, FileTreeNode> {
+class FileTreeNode {
     label: string;
     iconExpanded: IconDefinition;
     iconCollapsed: IconDefinition;

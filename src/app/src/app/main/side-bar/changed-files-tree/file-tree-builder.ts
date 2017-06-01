@@ -1,28 +1,24 @@
-import { IconDefinition, FileIconManager } from "../../../../services/file-icon/file-icon";
 import { Injectable } from "@angular/core";
-import { Path } from "../../../../services/path";
+import { FileIconManager, IconDefinition } from "../../../services/file-icon/file-icon";
+import { Path } from "../../../services/path";
+import { ChangedFile } from "../../../services/git/model";
 
-/**
- * Builds a tree of IFileTreeNode objects from a flat list of files.
- */
 @Injectable()
 export class FileTreeBuilder {
 
     constructor(private fileIconManager: FileIconManager) { }
 
-    getTree<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
-            (changedFiles: TSource[], getPath: (x: TSource) => string, targetFactory: () => TTarget): TTarget[] {
-        const root = this.createBaseTree<TSource, TTarget>(changedFiles, getPath, targetFactory);
+    getTree(changedFiles: ChangedFile[]): FileTreeNode[] {
+        const root = this.createBaseTree(changedFiles);
         this.combineFolderWithOneParent(root);
         this.orderChildren(root);
         this.addMetadata(root);
         return root.children;
     }
 
-    private createBaseTree<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
-                          (changedFiles: TSource[], getPath: (x: TSource) => string, targetFactory: () => TTarget): TTarget {
+    private createBaseTree(changedFiles: ChangedFile[]): FileTreeNode {
         const targetFactoryEx = () => {
-            const newObj = targetFactory();
+            const newObj = new FileTreeNode();
             newObj.label = "";
             newObj.children = [];
             return newObj;
@@ -30,7 +26,7 @@ export class FileTreeBuilder {
         const index = new ChildIndex();
         const root = targetFactoryEx();
         for (const change of changedFiles) {
-            const parts = getPath(change).split("/");
+            const parts = this.getPathFromChangedFile(change).split("/");
             let curNode = root;
             for (let i = 0; i < parts.length; i++) {
                 const part = parts[i];
@@ -42,17 +38,22 @@ export class FileTreeBuilder {
                     if (i === parts.length - 1) {
                         childNode.data = change;
                     }
-                    curNode.children.push(<TTarget>childNode);
+                    curNode.children.push(childNode);
                     index.set(curNode, childNode);
                 }
-                curNode = <TTarget>childNode;
+                curNode = childNode;
             }
         }
         return root;
     }
 
-    private orderChildren<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
-                         (node: IFileTreeNode<TSource, TTarget>) {
+    private getPathFromChangedFile(changedFile: ChangedFile): string {
+        if (changedFile.newFile)
+            return changedFile.newFile.path;
+        return changedFile.oldFile.path;
+    }
+
+    private orderChildren(node: FileTreeNode) {
         this.forEachNode(node, x => {
             x.children.sort((a, b) => {
                 if (a.children.length > 0 && b.children.length === 0)
@@ -69,8 +70,7 @@ export class FileTreeBuilder {
         });
     }
 
-    private combineFolderWithOneParent<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
-                                      (root: IFileTreeNode<TSource, TTarget>) {
+    private combineFolderWithOneParent(root: FileTreeNode) {
         for (const child of root.children) {
             this.forEachNode(child, x => {
                 while (x.children.length === 1 && x.children[0].children.length !== 0) {
@@ -81,8 +81,7 @@ export class FileTreeBuilder {
         }
     }
 
-    private addMetadata<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
-                       (node: IFileTreeNode<TSource, TTarget>) {
+    private addMetadata(node: FileTreeNode) {
         this.forEachNode(node, x => {
             x.isFolder = x.children.length > 0;
             if (x.isFolder) {
@@ -98,8 +97,7 @@ export class FileTreeBuilder {
     }
 
 
-    private forEachNode<TSource, TTarget extends IFileTreeNode<TSource, TTarget>>
-                       (node: IFileTreeNode<TSource, TTarget>, action: (node: IFileTreeNode<TSource, TTarget>) => void) {
+    private forEachNode(node: FileTreeNode, action: (node: FileTreeNode) => void) {
         action(node);
         for (const child of node.children) {
             this.forEachNode(child, action);
@@ -107,35 +105,37 @@ export class FileTreeBuilder {
     }
 }
 
-export interface IFileTreeNode<TSource, TTarget extends IFileTreeNode<TSource, TTarget>> {
+export class FileTreeNode {
     label: string;
     iconExpanded: IconDefinition;
     iconCollapsed: IconDefinition;
     isFolder: boolean;
     expanded: boolean;
     textClass: string;
-    children: TTarget[];
-    data: TSource;
+    children: FileTreeNode[];
+    data: ChangedFile;
 }
 
-class ChildIndex<TSource, TTarget extends IFileTreeNode<TSource, TTarget>> {
 
-    private data = new Map<IFileTreeNode<TSource, TTarget>, Map<string, IFileTreeNode<TSource, TTarget>>>();
 
-    set(node: IFileTreeNode<TSource, TTarget>, child: IFileTreeNode<TSource, TTarget>) {
+class ChildIndex {
+
+    private data = new Map<FileTreeNode, Map<string, FileTreeNode>>();
+
+    set(node: FileTreeNode, child: FileTreeNode) {
         return this.getSubIndex(node).set(child.label, child);
     }
 
-    get(node: IFileTreeNode<TSource, TTarget>, childLabel: string): IFileTreeNode<TSource, TTarget> {
+    get(node: FileTreeNode, childLabel: string): FileTreeNode {
         return this.getSubIndex(node).get(childLabel);
     }
 
-    private getSubIndex(node: IFileTreeNode<TSource, TTarget>): Map<string, IFileTreeNode<TSource, TTarget>> {
+    private getSubIndex(node: FileTreeNode): Map<string, FileTreeNode> {
         let subIndex = this.data.get(node);
         if (subIndex) {
             return subIndex;
         }
-        subIndex = new Map<string, IFileTreeNode<TSource, TTarget>>();
+        subIndex = new Map<string, FileTreeNode>();
         this.data.set(node, subIndex);
         return subIndex;
     }
