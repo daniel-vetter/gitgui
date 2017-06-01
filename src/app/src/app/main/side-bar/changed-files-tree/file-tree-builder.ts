@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { FileIconManager, IconDefinition } from "../../../services/file-icon/file-icon";
 import { Path } from "../../../services/path";
-import { ChangedFile } from "../../../services/git/model";
+import { ChangedFile, IndexChangedFile } from "../../../services/git/model";
 
 @Injectable()
 export class FileTreeBuilder {
@@ -37,6 +37,13 @@ export class FileTreeBuilder {
                     childNode.expanded = true;
                     if (i === parts.length - 1) {
                         childNode.data = change;
+                    }
+                    if (change instanceof IndexChangedFile) {
+                        childNode.showStageButton = !change.isStaged;
+                        childNode.showUnstageButton = change.isStaged;
+                    } else {
+                        childNode.showStageButton = false;
+                        childNode.showUnstageButton = false;
                     }
                     curNode.children.push(childNode);
                     index.set(curNode, childNode);
@@ -114,6 +121,8 @@ export class FileTreeNode {
     textClass: string;
     children: FileTreeNode[];
     data: ChangedFile;
+    showStageButton: boolean;
+    showUnstageButton: boolean;
 }
 
 

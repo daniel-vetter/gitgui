@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GitRaw } from "./../infrastructure/git-raw";
-import { ChangedFile, FileChangeType, RepositoryStatus, FileRef } from "../model";
+import { FileChangeType, RepositoryStatus, FileRef, IndexChangedFile } from "../model";
 
 
 @Injectable()
@@ -24,31 +24,34 @@ export class StatusReader {
 
             if ((line[0] === "!" && line[1] === "!") ||
                 (line[0] === "?" && line[1] === "?")) {
-                const indexFile = new ChangedFile();
+                const indexFile = new IndexChangedFile();
                 indexFile.newFile = FileRef.fromDisk(path);
                 indexFile.oldFile = undefined;
                 indexFile.type = FileChangeType.Added;
+                indexFile.isStaged = false;
                 result.indexChanges.push(indexFile);
             } else {
                 const indexChangeType = this.parseChangeType(line[0]);
                 const workTreeChangeType = this.parseChangeType(line[1]);
 
                 if (indexChangeType) {
-                    const indexFile = new ChangedFile();
+                    const indexFile = new IndexChangedFile();
                     if (indexChangeType !== FileChangeType.Added)
                         indexFile.oldFile = FileRef.fromHead(path);
                     if (indexChangeType !== FileChangeType.Deleted)
                         indexFile.newFile = FileRef.fromIndex(path);
                     indexFile.type = indexChangeType;
+                    indexFile.isStaged = true;
                     result.indexChanges.push(indexFile);
                 }
                 if (workTreeChangeType) {
-                    const workTreeFile = new ChangedFile();
+                    const workTreeFile = new IndexChangedFile();
                     if (workTreeChangeType !== FileChangeType.Added)
                         workTreeFile.oldFile = FileRef.fromIndex(path);
                     if (workTreeChangeType !== FileChangeType.Deleted)
                         workTreeFile.newFile = FileRef.fromDisk(path);
                     workTreeFile.type = workTreeChangeType;
+                    workTreeFile.isStaged = false;
                     result.workTreeChanges.push(workTreeFile);
                 }
             }

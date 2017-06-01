@@ -13,14 +13,18 @@ export class Repository {
 export class RepositoryStatus {
     isMerge: boolean;
     isRebase: boolean;
-    indexChanges: ChangedFile[] = [];
-    workTreeChanges: ChangedFile[] = [];
+    indexChanges: IndexChangedFile[] = [];
+    workTreeChanges: IndexChangedFile[] = [];
 }
 
 export class ChangedFile  {
     type: FileChangeType;
     oldFile: FileRef;
     newFile: FileRef;
+}
+
+export class IndexChangedFile extends ChangedFile {
+    isStaged: boolean;
 }
 
 export enum FileChangeType {
