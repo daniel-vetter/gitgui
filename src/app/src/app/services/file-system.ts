@@ -27,6 +27,18 @@ export class FileSystem {
         fs.writeFileSync(path, data, { encoding: "utf8" });
     }
 
+    async readText(path: string): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            fs.readFile(path, "utf8", (error, data) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(data);
+                }
+            });
+        });
+    }
+
     saveJsonAsync(path: string, data: any): Promise<boolean> {
         const dataStr = JSON.stringify(data, undefined, 2);
         return new Promise((resolve, reject) => {

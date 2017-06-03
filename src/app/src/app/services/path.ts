@@ -1,44 +1,17 @@
 const remote = (<any>window).require("electron").remote;
 const process = remote.process;
+const pathLib = remote.require("path");
 
 export class Path {
 
     static combine(...paths: string[]): string {
-        let sum = "";
-        let separator = undefined;
-        let altSeparator = undefined;
+        return pathLib.join(...paths);
+    }
 
-         if (process.platform === "win32") {
-             separator = "\\";
-             altSeparator = "/";
-         } else if (process.platform === "linux") {
-             separator = "/";
-             altSeparator = "\\";
-         } else {
-             throw Error("TODO: Add platform support.")
-         }
-
-        for (let path of paths) {
-            path = path.replace(altSeparator, separator);
-            if (sum.endsWith(separator) && !path.startsWith(separator))
-                sum += path;
-            if (!sum.endsWith(separator) && path.startsWith(separator))
-                sum += path;
-            if (!sum.endsWith(separator) && !path.startsWith(separator)) {
-                if (sum === "")
-                    sum = path;
-                else
-                    sum += separator + path;
-            }
-            if (sum.endsWith(separator) && path.startsWith(separator)) {
-                let shorten = path;
-                while (shorten.startsWith(separator)) {
-                    shorten = shorten.substr(separator.length);
-                }
-                sum += shorten;
-            }
-        }
-        return sum;
+    static makeAbsolute(path: string, workingDirectory: string = undefined): string {
+        if (workingDirectory)
+            return pathLib.resolve(workingDirectory, path);
+        return pathLib.resolve(path)
     }
 
     static getLastPart(path: string): string {
