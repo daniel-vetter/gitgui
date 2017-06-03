@@ -17,8 +17,7 @@ import { TabManager } from "../../../services/tab-manager";
 export class RepositoryStatusComponent implements OnChanges {
     @Input() repository: Repository;
 
-    workTreeChanges: ChangedFile[] = [];
-    indexChanges: ChangedFile[] = [];
+    changedFiles: ChangedFile[] = [];
     commitMessage: string = "";
     onStatusChangeSubscription: Subscription;
 
@@ -35,14 +34,15 @@ export class RepositoryStatusComponent implements OnChanges {
     }
 
     private updateTree() {
+        this.changedFiles = [];
         if (!this.repository) {
-            this.workTreeChanges = [];
-            this.indexChanges = [];
             return;
         }
 
-        this.workTreeChanges = this.repository.status.workTreeChanges;
-        this.indexChanges = this.repository.status.indexChanges;
+        for (const file of this.repository.status.workTreeChanges)
+            this.changedFiles.push(file);
+        for (const file of this.repository.status.indexChanges)
+            this.changedFiles.push(file);
     }
 
     onFileSelected(changedFile: ChangedFile) {
@@ -60,58 +60,28 @@ export class RepositoryStatusComponent implements OnChanges {
         }
     }
 
-    async onCheckBoxStateChanged(node: FileTreeNode) {
-        /*
-        const path = node.isFolder ?
-            this.findLongestMatchingPath(this.getAllFileChangesFromFolderNode(node).map(x => x.path)) :
-            node.data.path;
-
-        if (node.checked)
-            await this.git.stageFile(this.repository, path);
-        else
-            await this.git.unstageFile(this.repository, path);
-
+    async onFileStageClicked(changeFile: ChangedFile) {
+        await this.git.stageFile(this.repository, changeFile);
         await this.git.updateRepositoryStatus(this.repository);
-        this.update();
-        */
+        this.updateTree();
     }
 
-    private getAllFileChangesFromFolderNode(node: FileTreeNode): ChangedFile[] {
-        const result: ChangedFile[] = [];
-        const traverseChildren = (n: FileTreeNode) => {
-            if (n.isFolder) {
-                for (const child of n.children)
-                    traverseChildren(child);
-            } else {
-                result.push(n.data);
-            }
-        };
-        traverseChildren(node);
-        return result;
+    async onFolderStageClicked(path: string) {
+        await this.git.stageFolder(this.repository, path);
+        await this.git.updateRepositoryStatus(this.repository);
+        this.updateTree();
     }
 
-    private findLongestMatchingPath(paths: string[]): string {
+    async onFileUnstageClicked(changedFile: ChangedFile) {
+        await this.git.unstageFile(this.repository, changedFile);
+        await this.git.updateRepositoryStatus(this.repository);
+        this.updateTree();
+    }
 
-        const allStringsAreTheSame = (list: string[]): boolean => {
-            for (let i = 1; i < list.length; i++)
-                if (list[i - 1] !== list[i])
-                    return false;
-            return true;
-        };
-
-        const allParts = paths.map(x => Path.getAllParts(x));
-        let matchingIndex = 0;
-        while (true) {
-            const slice = allParts.map(x => x[matchingIndex]);
-            if (!allStringsAreTheSame(slice))
-                break;
-            if (slice[0] === undefined)
-                break;
-            matchingIndex++;
-        }
-        if (matchingIndex === 0)
-            return ".";
-        return Path.combine(...allParts[0].filter((v, i) => i < matchingIndex));
+    async onFolderUnstageClicked(path: string) {
+        await this.git.unstageFolder(this.repository, path);
+        await this.git.updateRepositoryStatus(this.repository);
+        this.updateTree();
     }
 
     async onCommitClicked() {

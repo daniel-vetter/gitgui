@@ -3,7 +3,14 @@
     <div class="content" style="display: flex; flex-direction: column; flex: 1; ">
         <div>Changed files:</div>
         <div class="fill">
-            <changed-files-tree [changedFiles]="workTreeChanges" (onFileSelected)="onFileSelected($event)"></changed-files-tree>
+            <changed-files-tree [changedFiles]="changedFiles" 
+                                (onFileSelected)="onFileSelected($event)"
+                                (onFileStageClicked)="onFileStageClicked($event)"
+                                (onFolderStageClicked)="onFolderStageClicked($event)"
+                                (onFileUnstageClicked)="onFileUnstageClicked($event)"
+                                (onFolderUnstageClicked)="onFolderUnstageClicked($event)">
+
+            </changed-files-tree>
         </div>
     </div>
 

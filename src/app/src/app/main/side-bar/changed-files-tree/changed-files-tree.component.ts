@@ -17,6 +17,10 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
     @Input() showStageButtons: boolean = false;
 
     @Output() onFileSelected = new EventEmitter<ChangedFile>();
+    @Output() onFileStageClicked = new EventEmitter<ChangedFile>();
+    @Output() onFileUnstageClicked = new EventEmitter<ChangedFile>();
+    @Output() onFolderStageClicked = new EventEmitter<string>();
+    @Output() onFolderUnstageClicked = new EventEmitter<string>();
 
     filter: string = "";
     fileIconsChangeSubscription: Rx.Subscription;
@@ -25,7 +29,7 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
     adapter = new FileTreeNodeToTreeViewAdapter();
 
     constructor(private fileTreeBuilder: FileTreeBuilder,
-                private fileIconsManager: FileIconManager) {}
+        private fileIconsManager: FileIconManager) { }
 
 
     ngOnInit() {
@@ -62,6 +66,23 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     onSelectedItemChange(treeNode: FileTreeNode) {
-        this.onFileSelected.emit(treeNode.data);
+        if (!treeNode.isFolder)
+            this.onFileSelected.emit(treeNode.data);
+    }
+
+    onStageButtonClicked(treeNode: FileTreeNode) {
+        if (treeNode.isFolder) {
+            this.onFolderStageClicked.emit(treeNode.path);
+        } else {
+            this.onFileStageClicked.emit(treeNode.data);
+        }
+    }
+
+    onUnstageButtonClicked(treeNode: FileTreeNode) {
+        if (treeNode.isFolder) {
+            this.onFolderUnstageClicked.emit(treeNode.path);
+        } else {
+            this.onFileUnstageClicked.emit(treeNode.data);
+        }
     }
 }

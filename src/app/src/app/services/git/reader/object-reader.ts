@@ -11,7 +11,7 @@ export class ObjectReader {
         if (fileRef instanceof BlobFileRef) {
             return (await this.gitRaw.run(gitRepositoryPath, ["show", fileRef.blob])).data;
         } else {
-            throw Error("unsported FileRef Type");
+            return "unsported FileRef Type";
         }
     }
 }

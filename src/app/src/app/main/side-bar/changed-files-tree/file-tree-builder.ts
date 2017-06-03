@@ -28,13 +28,16 @@ export class FileTreeBuilder {
         for (const change of changedFiles) {
             const parts = this.getPathFromChangedFile(change).split("/");
             let curNode = root;
+            let curPath = "";
             for (let i = 0; i < parts.length; i++) {
                 const part = parts[i];
+                curPath = Path.combine(curPath, part);
                 let childNode = index.get(curNode, part);
                 if (!childNode) {
                     childNode = targetFactoryEx();
                     childNode.label = part;
                     childNode.expanded = true;
+                    childNode.path = curPath;
                     if (i === parts.length - 1) {
                         childNode.data = change;
                     }
@@ -117,6 +120,7 @@ export class FileTreeNode {
     iconExpanded: IconDefinition;
     iconCollapsed: IconDefinition;
     isFolder: boolean;
+    path: string;
     expanded: boolean;
     textClass: string;
     children: FileTreeNode[];

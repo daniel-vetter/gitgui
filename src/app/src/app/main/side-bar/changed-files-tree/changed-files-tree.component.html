@@ -16,8 +16,8 @@
                         <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap" [class]="data.textClass">{{ data.label }}</span>
                     </div>
                     <div>
-                        <div *ngIf="data.showStageButton">Stage</div>
-                        <div *ngIf="data.showUnstageButton">Unstage</div>
+                        <div *ngIf="data.showStageButton" (click)="onStageButtonClicked(data)">Stage</div>
+                        <div *ngIf="data.showUnstageButton" (click)="onUnstageButtonClicked(data)">Unstage</div>
                     </div>
                 </div>
             </ng-template>
