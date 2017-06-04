@@ -7,7 +7,14 @@ export class Repository {
     location: string;
     head: RepositoryCommit;
 
-    onStatusChanged = new EventEmitter();
+    onUpdate = new EventEmitter<UpdateState>();
+}
+
+export class UpdateState {
+    constructor(public commits: boolean,
+                public refs: boolean,
+                public status: boolean,
+                public head: boolean) {}
 }
 
 export class RepositoryStatus {
@@ -72,7 +79,6 @@ export class RepositoryCommit {
     authorMail: string;
     authorDate: Date;
     parents: RepositoryCommit[] = [];
-    children: RepositoryCommit[] = [];
     refs: RepositoryRef[] = [];
     repository: Repository;
 }

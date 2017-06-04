@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { Repository, ChangedFile } from "../../../services/git/model";
+import { Repository, ChangedFile, UpdateState } from "../../../services/git/model";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
 import { Intermediate } from "../../../shared/check-box/check-box.component";
 import { Subscription } from "../../../services/event-aggregator";
@@ -31,7 +31,10 @@ export class RepositoryStatusComponent implements OnChanges {
         if (changes.repository) {
             if (this.onStatusChangeSubscription)
                 this.onStatusChangeSubscription.unsubscribe();
-            this.onStatusChangeSubscription = this.repository.onStatusChanged.subscribe(() => this.updateTree());
+            this.onStatusChangeSubscription = this.repository.onUpdate.subscribe((x: UpdateState) => {
+                if (x.status)
+                    this.updateTree()
+            });
         }
 
         this.updateTree();
@@ -83,7 +86,7 @@ export class RepositoryStatusComponent implements OnChanges {
     async onCommitClicked() {
         this.status.startProcess("Committing", async () => {
             await this.git.commit(this.repository, this.commitMessage, false);
-            await this.git.updateRepositoryStatus(this.repository);
+            await this.git.updateRepository(this.repository);
             this.updateTree();
             this.commitMessage = "";
         });

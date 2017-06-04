@@ -26,6 +26,9 @@ export class Git {
     updateRepositoryStatus(repository: Repository): Promise<Repository> {
         return this.repositoryReader.updateStatus(repository);
     }
+    updateRepository(repository: Repository): Promise<Repository> {
+        return this.repositoryReader.updateRepository(repository);
+    }
     getLongCommitMessage(commit: RepositoryCommit): Promise<string> {
         return this.commitDetailsReader.getLongCommitMessage(commit);
     }

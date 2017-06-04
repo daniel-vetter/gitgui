@@ -19,7 +19,6 @@ export class CommitsReader {
         for (let i = 0; i < parts.length - 1; i += prettyParts.length + 1) {
             const commit = new RepositoryCommit();
             commit.parents = [];
-            commit.children = [];
             commit.hash = parts[i + 0];
             if (!commit.hash.startsWith("commit ")) {
                 throw new Error("not a commit: " + commit.hash);
@@ -35,7 +34,7 @@ export class CommitsReader {
             commitIndex.set(commit.hash, commit);
         }
 
-        // Parents/Children
+        // Parents
         parents.forEach((parentHashes, currentCommitHash) => {
             for (const parentHash of parentHashes) {
                 const parentCommit = commitIndex.get(parentHash);
@@ -43,9 +42,6 @@ export class CommitsReader {
                     continue;
                 }
                 commitIndex.get(currentCommitHash).parents.push(commitIndex.get(parentHash));
-                if (commitIndex.get(parentHash)) {
-                    commitIndex.get(parentHash).children.push(commitIndex.get(currentCommitHash));
-                }
             }
         });
         return allCommits;
