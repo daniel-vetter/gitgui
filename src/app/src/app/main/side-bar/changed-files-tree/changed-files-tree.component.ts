@@ -55,9 +55,9 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
             let changedFiles = this.changedFiles;
             if (this.filter && this.filter !== "")
                 changedFiles = this.changedFiles.filter(x => {
-                    if (x.newFile && Path.getAllParts(x.newFile.path).indexOf(this.filter) !== -1)
+                    if (x.newFile && Path.getLastPart(x.newFile.path).indexOf(this.filter) !== -1)
                         return true;
-                    if (x.oldFile && Path.getAllParts(x.oldFile.path).indexOf(this.filter) !== -1)
+                    if (x.oldFile && Path.getLastPart(x.oldFile.path).indexOf(this.filter) !== -1)
                         return true;
                     return false;
                 });
