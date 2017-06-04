@@ -35,17 +35,11 @@ export class Git {
     getFileContent(repository: Repository, fileRef: FileRef): Promise<string> {
         return this.objectReader.getFileContent(repository.location, fileRef);
     }
-    stageFolder(repository: Repository, folder: string): Promise<boolean> {
-        return this.index.stageFolder(repository, folder);
+    stage(repository: Repository, file: ChangedFile | string): Promise<boolean> {
+        return this.index.stage(repository, file);
     }
-    unstageFolder(repository: Repository, folder: string): Promise<boolean> {
-        return this.index.unstageFolder(repository, folder);
-    }
-    stageFile(repository: Repository, file: ChangedFile): Promise<boolean> {
-        return this.index.stageFile(repository, file);
-    }
-    unstageFile(repository: Repository, file: ChangedFile): Promise<boolean> {
-        return this.index.unstageFile(repository, file);
+    unstage(repository: Repository, file: ChangedFile | string): Promise<boolean> {
+        return this.index.unstage(repository, file);
     }
     commit(repository: Repository, message: string, amend: boolean): Promise<boolean> {
         return this.commiter.commit(repository, message, amend);

@@ -5,10 +5,10 @@
         <div class="fill">
             <changed-files-tree [changedFiles]="changedFiles" 
                                 (onFileSelected)="onFileSelected($event)"
-                                (onFileStageClicked)="onFileStageClicked($event)"
-                                (onFolderStageClicked)="onFolderStageClicked($event)"
-                                (onFileUnstageClicked)="onFileUnstageClicked($event)"
-                                (onFolderUnstageClicked)="onFolderUnstageClicked($event)">
+                                (onFileStageClicked)="onStageClicked($event)"
+                                (onFolderStageClicked)="onStageClicked($event)"
+                                (onFileUnstageClicked)="onUnstageClicked($event)"
+                                (onFolderUnstageClicked)="onUnstageClicked($event)">
 
             </changed-files-tree>
         </div>

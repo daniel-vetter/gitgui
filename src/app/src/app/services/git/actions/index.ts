@@ -7,33 +7,23 @@ export class Index {
 
     constructor(private gitRaw: GitRaw) {}
 
-    async stageFile(repository: Repository, changedFile: ChangedFile) {
-        return this.stageFolder(repository, this.getNewestFileRef(changedFile).path);
+    async stage(repository: Repository, changedFile: ChangedFile | string) {
+        if (changedFile instanceof ChangedFile) {
+            changedFile = this.getNewestFileRef(changedFile).path;
+        }
+        return (await this.gitRaw.run(repository.location, ["add", changedFile])).exitCode === 0;
     }
 
-    async unstageFile(repository: Repository, changedFile: ChangedFile) {
-        return this.unstageFolder(repository, this.getNewestFileRef(changedFile).path);
-    }
-
-    async stageFolder(repository: Repository, folder: string): Promise<boolean> {
-        return this.stagePath(repository, folder);
-    }
-
-    async unstageFolder(repository: Repository, folder: string): Promise<boolean> {
-        return this.unstagePath(repository, folder);
+    async unstage(repository: Repository, changedFile: ChangedFile | string) {
+        if (changedFile instanceof ChangedFile) {
+            changedFile = this.getNewestFileRef(changedFile).path;
+        }
+        return (await this.gitRaw.run(repository.location, ["reset", changedFile])).exitCode === 0;
     }
 
     private getNewestFileRef(changedFile: ChangedFile) {
         if (changedFile.newFile)
             return changedFile.newFile;
         return changedFile.oldFile;
-    }
-
-    private async stagePath(repository: Repository, path: string) {
-        return (await this.gitRaw.run(repository.location, ["add", path])).exitCode === 0;
-    }
-
-    private async unstagePath(repository: Repository, path: string) {
-        return (await this.gitRaw.run(repository.location, ["reset", path])).exitCode === 0;
     }
 }
