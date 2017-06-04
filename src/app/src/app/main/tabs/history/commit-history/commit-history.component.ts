@@ -108,7 +108,11 @@ export class CommitHistoryComponent implements OnChanges {
         const startY = Math.floor(this.scrollWrapper.nativeElement.scrollTop / this.metrics.commitHeight);
         const endY = Math.floor(startY + this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight) + 1;
         const overdraw = 10;
-        this.visibleRange = new VisibleRange(startY - overdraw, endY + overdraw);
+        const newVisibleRange = new VisibleRange(startY - overdraw, endY + overdraw);
+        if (this.visibleRange === undefined ||
+            this.visibleRange.start !== newVisibleRange.start ||
+            this.visibleRange.end !== newVisibleRange.end)
+            this.visibleRange = newVisibleRange;
     }
 
     onLaneGridScroll(event: UIEvent) {
