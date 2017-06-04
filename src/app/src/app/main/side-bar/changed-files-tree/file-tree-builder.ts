@@ -8,42 +8,12 @@ export class FileTreeBuilder {
 
     constructor(private fileIconManager: FileIconManager) { }
 
-    getSplitTree(changedFiles: ChangedFile[]): FileTreeNode[] {
-        const stagedFiles: ChangedFile[] = [];
-        const unstagedFiles: ChangedFile[] = [];
-
-        for (const file of changedFiles) {
-            if (file instanceof IndexChangedFile && file.isStaged)
-                stagedFiles.push(file);
-            else
-                unstagedFiles.push(file);
-        }
-
-        const result: FileTreeNode[] = [];
-        if (stagedFiles.length > 0) {
-            const rootNode = new FileTreeNode();
-            rootNode.label = "Staged files";
-            rootNode.children = this.getTree(stagedFiles);
-            rootNode.expanded = true;
-            rootNode.isHeaderNode = true;
-            result.push(rootNode);
-        }
-        if (unstagedFiles.length > 0) {
-            const rootNode = new FileTreeNode();
-            rootNode.label = "Unstaged files";
-            rootNode.children = this.getTree(unstagedFiles);
-            rootNode.expanded = true;
-            rootNode.isHeaderNode = true;
-            result.push(rootNode);
-        }
-        return result;
-    }
-
     getTree(changedFiles: ChangedFile[]): FileTreeNode[] {
         const root = this.createBaseTree(changedFiles);
         this.combineFolderWithOneParent(root);
         this.orderChildren(root);
         this.addMetadata(root);
+        this.assignParents(root);
         return root.children;
     }
 
@@ -145,6 +115,10 @@ export class FileTreeBuilder {
         });
     }
 
+    private assignParents(node: FileTreeNode, parent: FileTreeNode = undefined) {
+        node.parent = parent;
+        node.children.forEach(x => this.assignParents(x, node));
+    }
 
     private forEachNode(node: FileTreeNode, action: (node: FileTreeNode) => void) {
         action(node);
@@ -169,6 +143,7 @@ export class FileTreeNode {
     isHeaderNode: boolean;
     markRemoved: boolean;
     hintText: string;
+    parent: FileTreeNode;
 }
 
 class ChildIndex {

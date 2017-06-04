@@ -4,7 +4,7 @@ export class Status {
     private _runningProcesses: StatusProcessTracker[] = [];
     onRunningProcessesChange = new EventEmitter();
 
-    startProcess(description: string, workToDo: () => void = undefined): StatusProcessTracker {
+    startProcess(description: string, workToDo: () => any = undefined): StatusProcessTracker {
         const tracker = new StatusProcessTracker(description, x => {
             const index = this._runningProcesses.indexOf(x);
             if (index !== -1) {
@@ -17,11 +17,16 @@ export class Status {
         this.onRunningProcessesChange.emit();
 
         if (workToDo) {
+            let result: any;
             try {
-                workToDo();
+                result = workToDo();
+                if (result instanceof Promise) {
+                    result.then(() => tracker.completed(), (e) => { tracker.completed(); throw e });
+                }
             }
             finally {
-                tracker.completed();
+                if (!(result instanceof Promise))
+                    tracker.completed();
             }
         }
 

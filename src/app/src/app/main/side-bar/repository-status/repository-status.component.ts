@@ -85,6 +85,7 @@ export class RepositoryStatusComponent implements OnChanges {
             await this.git.commit(this.repository, this.commitMessage, false);
             await this.git.updateRepositoryStatus(this.repository);
             this.updateTree();
+            this.commitMessage = "";
         });
     }
 }

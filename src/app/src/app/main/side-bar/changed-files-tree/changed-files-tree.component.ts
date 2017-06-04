@@ -15,7 +15,6 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() changedFiles: ChangedFile[] = [];
     @Input() showStageButtons: boolean = false;
-    @Input() splitStagedAndUnstaged: boolean = false;
 
     @Output() onFileSelected = new EventEmitter<ChangedFile>();
     @Output() onFileStageClicked = new EventEmitter<ChangedFile>();
@@ -63,10 +62,7 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
                     return false;
                 });
 
-            if (this.splitStagedAndUnstaged)
-                this.changeFilesTree = this.fileTreeBuilder.getSplitTree(changedFiles);
-            else
-                this.changeFilesTree = this.fileTreeBuilder.getTree(changedFiles);
+            this.changeFilesTree = this.fileTreeBuilder.getTree(changedFiles);
         }
     }
 
@@ -80,9 +76,25 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
         } else {
             if (treeNode.isFolder) {
                 this.onFolderUnstageClicked.emit(treeNode.path);
+                
             } else {
                 this.onFileUnstageClicked.emit(treeNode.data);
             }
+        }
+        this.previewStagedState(treeNode, state);
+    }
+
+    previewStagedState(treeNode: FileTreeNode, newStagedState: boolean) {
+        const forEachNode = (treeNode: FileTreeNode, action: (x: FileTreeNode) => void) => {
+            action(treeNode);
+            treeNode.children.forEach(y => forEachNode(y, action));
+        };
+
+        forEachNode(treeNode, x => x.isStaged = newStagedState);
+        let parent = treeNode.parent;
+        while (parent) {
+            parent.isStaged = parent.children.filter(x => x.isStaged === false).length === 0;
+            parent = parent.parent;
         }
     }
 
