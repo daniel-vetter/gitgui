@@ -11,7 +11,6 @@ export class RepositoryToHistoryRepositoryMapper {
     }
 
     map(repository: Repository): HistoryRepository {
-        console.profile("map");
         const historyRepository = new HistoryRepository();
         historyRepository.entries = [];
         const hashToHistoryCommitMap = new Map<string, HistoryCommitEntry>();
@@ -69,7 +68,6 @@ export class RepositoryToHistoryRepositoryMapper {
         }
 
         this.laneAssigner.assignLanes(historyRepository);
-        console.profileEnd();
         return historyRepository;
     }
 
