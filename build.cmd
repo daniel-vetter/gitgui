@@ -11,7 +11,7 @@ cd ..\..
 node src\app\node_modules\electron-packager\cli.js ^
      build\app GitGui ^
      --platform=win32 ^
-     --electron-version=1.4.15 ^
+     --electron-version=1.7.2 ^
      --out=build\dist ^
      --icon=src\app\icon.ico ^
      --app-copyright="Daniel Vetter 2017" ^

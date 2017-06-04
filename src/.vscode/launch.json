@@ -9,6 +9,7 @@
             "stopOnEntry": false,
             "args": [],
             "cwd": "${workspaceRoot}/../build/app",
+            "protocol": "inspector",
             
             "runtimeArgs": [
                 ".",
