@@ -8,6 +8,7 @@ import { Path } from "../../../services/path";
 import { FileTreeBuilder } from "../changed-files-tree/file-tree-builder";
 import { FileContentTab, FileContentDiffTab } from "../../tabs/tabs";
 import { TabManager } from "../../../services/tab-manager";
+import { Status } from "../../../services/status";
 
 @Component({
     selector: "repository-status",
@@ -21,7 +22,10 @@ export class RepositoryStatusComponent implements OnChanges {
     commitMessage: string = "";
     onStatusChangeSubscription: Subscription;
 
-    constructor(private fileTreeBuilder: FileTreeBuilder, private git: Git, private tabManager: TabManager) { }
+    constructor(private fileTreeBuilder: FileTreeBuilder, 
+    private git: Git, 
+    private tabManager: TabManager,
+    private status: Status) { }
 
     ngOnChanges(changes: any) {
         if (changes.repository) {
@@ -61,33 +65,43 @@ export class RepositoryStatusComponent implements OnChanges {
     }
 
     async onFileStageClicked(changeFile: ChangedFile) {
+        const status = this.status.startProcess("Staging file");
         await this.git.stageFile(this.repository, changeFile);
         await this.git.updateRepositoryStatus(this.repository);
         this.updateTree();
+        status.completed();
     }
 
     async onFolderStageClicked(path: string) {
+        const status = this.status.startProcess("Staging folder");
         await this.git.stageFolder(this.repository, path);
         await this.git.updateRepositoryStatus(this.repository);
         this.updateTree();
+        status.completed();
     }
 
     async onFileUnstageClicked(changedFile: ChangedFile) {
+        const status = this.status.startProcess("Unstaging file");
         await this.git.unstageFile(this.repository, changedFile);
         await this.git.updateRepositoryStatus(this.repository);
         this.updateTree();
+        status.completed();
     }
 
     async onFolderUnstageClicked(path: string) {
+        const status = this.status.startProcess("Unstage folder");
         await this.git.unstageFolder(this.repository, path);
         await this.git.updateRepositoryStatus(this.repository);
         this.updateTree();
+        status.completed();
     }
 
     async onCommitClicked() {
+        const status = this.status.startProcess("Committing");
         await this.git.commit(this.repository, this.commitMessage, false);
         await this.git.updateRepositoryStatus(this.repository);
         this.updateTree();
+        status.completed();
     }
 }
 

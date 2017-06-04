@@ -74,11 +74,11 @@ export class FileTreeBuilder {
                         childNode.data = change;
                     }
                     if (change instanceof IndexChangedFile) {
-                        childNode.showStageButton = !change.isStaged;
-                        childNode.showUnstageButton = change.isStaged;
+                        childNode.showStagingCheckbox = true;
+                        childNode.isStaged = change.isStaged;
                     } else {
-                        childNode.showStageButton = false;
-                        childNode.showUnstageButton = false;
+                        childNode.showStagingCheckbox = false;
+                        childNode.isStaged = false;
                     }
                     switch(change.type) {
                         case FileChangeType.Added: childNode.hintText = "[added]"; break;
@@ -164,8 +164,8 @@ export class FileTreeNode {
     textClass: string;
     children: FileTreeNode[];
     data: ChangedFile;
-    showStageButton: boolean;
-    showUnstageButton: boolean;
+    showStagingCheckbox: boolean;
+    isStaged: boolean;
     isHeaderNode: boolean;
     markRemoved: boolean;
     hintText: string;

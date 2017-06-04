@@ -65,37 +65,29 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
 
             if (this.splitStagedAndUnstaged)
                 this.changeFilesTree = this.fileTreeBuilder.getSplitTree(changedFiles);
-            else 
+            else
                 this.changeFilesTree = this.fileTreeBuilder.getTree(changedFiles);
         }
     }
 
-    onStagedStateChanged(node: FileTreeNode, state: boolean) {
+    onStagedStateChanged(treeNode: FileTreeNode, state: boolean) {
         if (state) {
-            this.onStageButtonClicked(node);
+            if (treeNode.isFolder) {
+                this.onFolderStageClicked.emit(treeNode.path);
+            } else {
+                this.onFileStageClicked.emit(treeNode.data);
+            }
         } else {
-            this.onUnstageButtonClicked(node);
+            if (treeNode.isFolder) {
+                this.onFolderUnstageClicked.emit(treeNode.path);
+            } else {
+                this.onFileUnstageClicked.emit(treeNode.data);
+            }
         }
     }
 
     onSelectedItemChange(treeNode: FileTreeNode) {
         if (!treeNode.isFolder)
             this.onFileSelected.emit(treeNode.data);
-    }
-
-    onStageButtonClicked(treeNode: FileTreeNode) {
-        if (treeNode.isFolder) {
-            this.onFolderStageClicked.emit(treeNode.path);
-        } else {
-            this.onFileStageClicked.emit(treeNode.data);
-        }
-    }
-
-    onUnstageButtonClicked(treeNode: FileTreeNode) {
-        if (treeNode.isFolder) {
-            this.onFolderUnstageClicked.emit(treeNode.path);
-        } else {
-            this.onFileUnstageClicked.emit(treeNode.data);
-        }
     }
 }

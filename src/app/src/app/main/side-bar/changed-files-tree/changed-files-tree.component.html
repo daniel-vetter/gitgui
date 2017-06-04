@@ -10,7 +10,7 @@
                 </div>
                 <div *ngIf="!data.isHeaderNode" style="display: flex;" class="fileOrFolderLine">
                     <div style="padding-right: 4px;">
-                        <check-box [checked]="data.showUnstageButton" (checkedChange)="onStagedStateChanged(data, $event)"></check-box>
+                        <check-box  *ngIf="data.showStagingCheckbox" [checked]="data.isStaged" (checkedChange)="onStagedStateChanged(data, $event)"></check-box>
                     </div>
                     <div style="padding-right: 4px">
                         <file-icon [icon]="data.expanded ? data.iconExpanded : data.iconCollapsed"></file-icon>
