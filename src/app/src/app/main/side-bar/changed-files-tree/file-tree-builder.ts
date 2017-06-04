@@ -135,7 +135,6 @@ export class FileTreeNode {
     isFolder: boolean;
     path: string;
     expanded: boolean;
-    textClass: string;
     children: FileTreeNode[];
     data: ChangedFile;
     showStagingCheckbox: boolean;
