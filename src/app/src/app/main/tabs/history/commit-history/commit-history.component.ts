@@ -59,8 +59,10 @@ export class CommitHistoryComponent implements OnChanges {
             if (this.onStatusChangeSubscription)
                 this.onStatusChangeSubscription.unsubscribe();
             this.onStatusChangeSubscription = this.repository.onUpdate.subscribe((x: UpdateState) => {
-                if (x.status)
-                    this.displayRepository()
+                this.displayRepository();
+                this.updateVisibleRange();
+                this.updateShadowVisibility();
+                this.changeDetectorRef.detectChanges();
             });
         }
         this.updateVisibleRange();
@@ -69,13 +71,16 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     private displayRepository() {
+        console.time("displayRepository")
         this.historyRepository = this.repositoryToHistoryRepositoryMapper.map(this.repository);
+        console.timeEnd("displayRepository")
         this.totalLaneGridWidth = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
         this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, this.metrics.getBubbleRight(10));
         this.maxScrollHeight = this.historyRepository.entries.length * this.metrics.commitHeight;
         this.entryClicked = undefined;
         this.entryHighlighted = undefined;
         this.entrySelected = undefined;
+        
     }
 
     onScroll(event) {

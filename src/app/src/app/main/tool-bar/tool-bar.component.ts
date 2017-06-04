@@ -1,6 +1,9 @@
 import { Component } from "@angular/core";
 import { FileOpenRepository } from "../../menu/handler/file-open-repository";
 import { Notifications } from "../notifications/notifications";
+import { Git } from "../../services/git/git";
+import { TabManager } from "../../services/tab-manager";
+import { Repository } from "../../services/git/model";
 @Component({
     templateUrl: "./tool-bar.component.html",
     styleUrls: ["./tool-bar.component.scss"],
@@ -9,7 +12,8 @@ import { Notifications } from "../notifications/notifications";
 export class ToolBarComponent {
 
     constructor(private fileOpenRepository: FileOpenRepository,
-                private notifications: Notifications) {}
+                private git: Git,
+                private tabManager: TabManager) {}
 
     onOpenClicked() {
         this.fileOpenRepository.onClick();
@@ -17,6 +21,19 @@ export class ToolBarComponent {
 
     onPushClicked() {
         throw "Test";
-        //this.notifications.show(new Date().toTimeString());
+    }
+
+    onRefreshClicked() {
+        const allOpenRepositories: Repository[] = [];
+        for (const tab of this.tabManager.allTabs) {
+            const repository = tab["repository"];
+            if (repository && allOpenRepositories.indexOf(repository) === -1) {
+                allOpenRepositories.push(repository);
+            }
+        }
+        for (const rep of allOpenRepositories) {
+            this.git.updateRepository(rep);
+        }
+        
     }
 }
