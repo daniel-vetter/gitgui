@@ -9,3 +9,21 @@
     background: var(--theme-workspace-background);
     border: 1px solid var(--theme-workspace-border);
 }
+
+.indicator {
+    background: green; 
+    color: white;  
+    font-weight: bold;
+    padding-right: 3px;
+    padding-left: 3px;
+    border-radius: 25%;
+}
+
+.fileOrFolderLine {
+    padding: 3px; 
+    &:hover .stageButton {
+        display: block;     
+    }
+}
+
+

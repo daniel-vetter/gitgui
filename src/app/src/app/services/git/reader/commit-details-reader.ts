@@ -15,10 +15,11 @@ export class CommitDetailsReader {
     }
 
     async getFileChangesOfCommit(commit: RepositoryCommit): Promise<ChangedFile[]> {
-        const params = ["diff-tree", "--no-commit-id", "-r", "-m", "-z", commit.hash];
-        if (commit.parents.length === 0) {
+        const params = ["diff-tree", "--no-commit-id", "-r", "-m", "-z"];
+        if (commit.parents.length === 0) 
             params.push("4b825dc642cb6eb9a060e54bf8d69288fbee4904");
-        }
+        params.push(commit.hash);
+
         const x = await this.gitRaw.run(commit.repository.location, params);
         const lines = x.data.split("\0").filter(y => y !== "");
         const list: ChangedFile[] = [];

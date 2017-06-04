@@ -109,4 +109,5 @@ export interface ITreeViewAdapter<TModel> {
     getChildren(data: TModel): TModel[];
     getExpandedState(data: TModel): boolean;
     setExpandedState(data: TModel, expanded: boolean): void;
+    indentChildren(data: TModel): boolean;
 }

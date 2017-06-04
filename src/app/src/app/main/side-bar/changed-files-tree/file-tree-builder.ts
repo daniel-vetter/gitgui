@@ -1,12 +1,43 @@
 import { Injectable } from "@angular/core";
 import { FileIconManager, IconDefinition } from "../../../services/file-icon/file-icon";
 import { Path } from "../../../services/path";
-import { ChangedFile, IndexChangedFile } from "../../../services/git/model";
+import { ChangedFile, IndexChangedFile, FileChangeType } from "../../../services/git/model";
 
 @Injectable()
 export class FileTreeBuilder {
 
     constructor(private fileIconManager: FileIconManager) { }
+
+    getSplitTree(changedFiles: ChangedFile[]): FileTreeNode[] {
+        const stagedFiles: ChangedFile[] = [];
+        const unstagedFiles: ChangedFile[] = [];
+
+        for (const file of changedFiles) {
+            if (file instanceof IndexChangedFile && file.isStaged)
+                stagedFiles.push(file);
+            else
+                unstagedFiles.push(file);
+        }
+
+        const result: FileTreeNode[] = [];
+        if (stagedFiles.length > 0) {
+            const rootNode = new FileTreeNode();
+            rootNode.label = "Staged files";
+            rootNode.children = this.getTree(stagedFiles);
+            rootNode.expanded = true;
+            rootNode.isHeaderNode = true;
+            result.push(rootNode);
+        }
+        if (unstagedFiles.length > 0) {
+            const rootNode = new FileTreeNode();
+            rootNode.label = "Unstaged files";
+            rootNode.children = this.getTree(unstagedFiles);
+            rootNode.expanded = true;
+            rootNode.isHeaderNode = true;
+            result.push(rootNode);
+        }
+        return result;
+    }
 
     getTree(changedFiles: ChangedFile[]): FileTreeNode[] {
         const root = this.createBaseTree(changedFiles);
@@ -21,6 +52,7 @@ export class FileTreeBuilder {
             const newObj = new FileTreeNode();
             newObj.label = "";
             newObj.children = [];
+            newObj.isHeaderNode = false;
             return newObj;
         };
         const index = new ChildIndex();
@@ -48,6 +80,13 @@ export class FileTreeBuilder {
                         childNode.showStageButton = false;
                         childNode.showUnstageButton = false;
                     }
+                    switch(change.type) {
+                        case FileChangeType.Added: childNode.hintText = "[added]"; break;
+                        case FileChangeType.Copied: childNode.hintText = "[copied]"; break;
+                        case FileChangeType.Deleted: childNode.markRemoved = true; break;
+                        case FileChangeType.Renamed: childNode.hintText = "[renamed]"; break;
+                    }
+
                     curNode.children.push(childNode);
                     index.set(curNode, childNode);
                 }
@@ -127,9 +166,10 @@ export class FileTreeNode {
     data: ChangedFile;
     showStageButton: boolean;
     showUnstageButton: boolean;
+    isHeaderNode: boolean;
+    markRemoved: boolean;
+    hintText: string;
 }
-
-
 
 class ChildIndex {
 

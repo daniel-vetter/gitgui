@@ -55,9 +55,10 @@ export class TreeLineList {
         const line = new TreeLine();
         line.data = data;
         line.hasChildren = this.adapter.hasChildren(data);
+        line.indentChildren = this.adapter.indentChildren(data);
         line.depth = 0;
         if (parent) {
-            line.depth = parent.depth + 1;
+            line.depth = parent.depth + (parent.indentChildren ? 1 : 0);
         }
         return line;
     }
@@ -73,6 +74,7 @@ export class TreeLine {
     data: any;
     hasChildren: boolean;
     depth: number;
+    indentChildren: boolean;
     index: number;
     isExpanded: boolean;
 }

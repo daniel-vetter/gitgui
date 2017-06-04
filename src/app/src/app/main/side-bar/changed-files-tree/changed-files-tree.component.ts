@@ -1,5 +1,5 @@
 import { Input, Component, OnChanges, EventEmitter, Output, OnInit, OnDestroy } from "@angular/core";
-import { ChangedFile } from "../../../services/git/model";
+import { ChangedFile, IndexChangedFile } from "../../../services/git/model";
 import { IconDefinition, FileIconManager } from "../../../services/file-icon/file-icon";
 import { Path } from "../../../services/path";
 import * as Rx from "rxjs";
@@ -15,6 +15,7 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() changedFiles: ChangedFile[] = [];
     @Input() showStageButtons: boolean = false;
+    @Input() splitStagedAndUnstaged: boolean = false;
 
     @Output() onFileSelected = new EventEmitter<ChangedFile>();
     @Output() onFileStageClicked = new EventEmitter<ChangedFile>();
@@ -61,7 +62,19 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
                         return true;
                     return false;
                 });
-            this.changeFilesTree = this.fileTreeBuilder.getTree(changedFiles);
+
+            if (this.splitStagedAndUnstaged)
+                this.changeFilesTree = this.fileTreeBuilder.getSplitTree(changedFiles);
+            else 
+                this.changeFilesTree = this.fileTreeBuilder.getTree(changedFiles);
+        }
+    }
+
+    onStagedStateChanged(node: FileTreeNode, state: boolean) {
+        if (state) {
+            this.onStageButtonClicked(node);
+        } else {
+            this.onUnstageButtonClicked(node);
         }
     }
 

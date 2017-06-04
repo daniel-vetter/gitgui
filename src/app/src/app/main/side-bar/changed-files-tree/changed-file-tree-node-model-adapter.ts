@@ -14,4 +14,7 @@ export class FileTreeNodeToTreeViewAdapter implements ITreeViewAdapter<FileTreeN
     setExpandedState(data: FileTreeNode, expanded: boolean): void {
         data.expanded = expanded;
     }
+    indentChildren(data: FileTreeNode): boolean {
+        return !data.isHeaderNode;
+    }
 }
