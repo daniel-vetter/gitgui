@@ -21,6 +21,8 @@
     border-top-width: 1px;
     border-bottom-width: 1px;
     z-index: 10;
+    position: relative; 
+    background: var(--theme-workspace-background)
 }
 
 .refBoxInner {

@@ -8,8 +8,7 @@
          (mouseleave)="onMouseLeave(annotationBundle)">
         <div class="line" [style.top.px]="metrics.commitHeight / 2" [style.borderColor]="annotationBundle.color"></div>
         <div [style.width.px]="annotationBundle.totalWidth" [style.height.px]="metrics.commitHeight" style="position: absolute"></div>
-        <div *ngFor="let annotation of annotationBundle.annotations"
-              style="position: relative; background: var(--theme-workspace-background)"
+        <div *ngFor="let annotation of annotationBundle.annotations;"
               class="refBox"
               [style.borderColor]="annotationBundle.color"
               [style.width.px]="annotation.width"
