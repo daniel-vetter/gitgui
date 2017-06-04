@@ -1,6 +1,7 @@
 export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 
     public viewModels: TViewModel[] = [];
+    private debugTitle: string = undefined;
 
     constructor(private viewModelFactory: () => TViewModel) {}
 
@@ -44,6 +45,10 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
         this.makeAllInvisible();
         const remaining: TModel[] = [];
 
+        let remapCount = 0;
+        let reuseCount = 0;
+        let recreated = 0;
+
         if (startIndex < 0) startIndex = 0;
         if (endIndex > models.length) endIndex = models.length;
 
@@ -52,12 +57,13 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
             const model = models[i];
             const viewModel = this.viewModels.find(x => x.data === model);
             if (viewModel) {
-
                 viewModel.clear();
+                viewModel.data = model;
                 if (map(model, viewModel))
                     viewModel.visible = true;
                 else
                     viewModel.visible = false;
+                remapCount++;
             } else {
                 remaining.push(model);
             }
@@ -69,11 +75,12 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
             const viewModel = this.viewModels.find(x => x.visible === false);
             if (viewModel) {
                 viewModel.clear();
+                viewModel.data = model;
                 if (map(model, viewModel))
                     viewModel.visible = true;
                 else
                     viewModel.visible = false;
-                viewModel.data = model;
+                reuseCount++;
             } else {
                 stillRemaining.push(model);
             }
@@ -90,7 +97,15 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
             } else {
                 viewModel.visible = false;
             }
+            recreated++;
         }
+
+        if (this.debugTitle !== undefined)
+            console.log("ReusePool " + this.debugTitle + " Remapping " + startIndex + "-"+ endIndex +" (Remap: "+ remapCount +", Reuse: "+reuseCount+", " + recreated + ")");
+    }
+
+    enableDebugging(title: string) {
+        this.debugTitle = name;
     }
 }
 
