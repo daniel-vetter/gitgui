@@ -101,11 +101,11 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
         }
 
         if (this.debugTitle !== undefined)
-            console.log("ReusePool " + this.debugTitle + " Remapping " + startIndex + "-"+ endIndex +" (Remap: "+ remapCount +", Reuse: "+reuseCount+", " + recreated + ")");
+            console.log("ReusePool " + this.debugTitle + " Remapping " + startIndex + "-"+ endIndex +" (Total: " + this.viewModels.length + ", Remap: "+ remapCount +", Reuse: "+reuseCount+", " + recreated + ")");
     }
 
-    enableDebugging(title: string) {
-        this.debugTitle = name;
+    enableLogging(title: string) {
+        this.debugTitle = title;
     }
 }
 
