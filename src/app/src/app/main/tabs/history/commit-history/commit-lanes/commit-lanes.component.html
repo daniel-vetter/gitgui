@@ -17,14 +17,12 @@
     </div>
 
 
-    <div *ngFor="let item of visibleBubbles.viewModels">
-        <div *ngIf="item.showAnnotationLine"
-             [hidden]="!item.visible"
+    <ng-container *ngFor="let item of visibleBubbles.viewModels">
+        <div [hidden]="!item.visible || !item.showAnnotationLine"
              style="border-style: solid; border-top-width: 1px; position: absolute; left: 0px; border-top-width: 1px; border-width: 0px; border-top-width: 1px;"
              [style.top.px]="item.positionTop + metrics.bubbleHeight / 2"
              [style.borderColor]="item.color"
-             [style.width.px]="item.lineWidth">
-        </div>
+             [style.width.px]="item.lineWidth"></div>
 
         <div style="position: absolute; display: flex;"
              [style.width.px]="metrics.bubbleWidth"
@@ -38,7 +36,6 @@
                 </div>
             </div>
         </div>
-
-    </div>
+    </ng-container>
 
 </div>
