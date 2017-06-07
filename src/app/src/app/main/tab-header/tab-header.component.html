@@ -1,4 +1,4 @@
-<div class="root">
+<div class="root" *ngIf="tabs.length > 0">
     <div style="overflow-x: auto; overflow-y: hidden; display: flex">
         <div *ngFor="let tab of tabs" class="tab" style="display: flex;" [class.active]="tab.isSelected">
             <div class="title" [class.temp]="!tab.isPersistent" style="flex: 1"  (mousedown)="onTabClicked(tab, $event)">{{ tab.title }}</div>
