@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { SideBarManager, SideBarCommitDetails, SideBarRepositoryStatus } from "../../services/side-bar-manager";
 import { Repository, RepositoryCommit } from "../../services/git/model";
 
@@ -9,8 +9,10 @@ import { Repository, RepositoryCommit } from "../../services/git/model";
 })
 export class SideBarComponent implements OnInit {
 
+    @Input() width: number;
     showCommitDetails: boolean;
     showRepositoryStatus: boolean;
+    contentAvailable: boolean;
 
     commit: RepositoryCommit;
     repository: Repository;
@@ -37,5 +39,7 @@ export class SideBarComponent implements OnInit {
             this.showRepositoryStatus = true;
             this.repository = this.sideBarManager.currentContent.repository;
         }
+
+        this.contentAvailable = this.showCommitDetails || this.showRepositoryStatus;
     }
 }

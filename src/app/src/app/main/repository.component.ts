@@ -14,6 +14,7 @@ export class RepositoryComponent implements OnInit, OnDestroy {
     repository: Repository;
     selectedCommit: RepositoryCommit;
     repositoryIsOpening: boolean;
+    showSideBar: boolean;
     private subscriptions = new SubscriptionBag(this.eventAggregator);
 
     constructor(private currentRepository: CurrentRepository,
