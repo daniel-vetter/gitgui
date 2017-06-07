@@ -5,34 +5,6 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 
     constructor(private viewModelFactory: () => TViewModel) {}
 
-    giveViewModelFor(model: TModel) {
-        if (!model)
-            throw Error("no model provided");
-
-        for (let i = 0; i < this.viewModels.length; i++) {
-            if (this.viewModels[i].data === model) {
-                this.viewModels[i].visible = true;
-                this.viewModels[i].clear();
-                return this.viewModels[i];
-            }
-        }
-
-        for (let i = 0; i < this.viewModels.length; i++) {
-            if (this.viewModels[i].visible === false) {
-                this.viewModels[i].data = model;
-                this.viewModels[i].visible = true;
-                this.viewModels[i].clear();
-                return this.viewModels[i];
-            }
-        }
-
-        const viewModel = this.viewModelFactory();
-        viewModel.data = model;
-        viewModel.visible = true;
-        this.viewModels.push(viewModel);
-        return viewModel;
-    }
-
     makeAllInvisible() {
         this.viewModels.forEach(x => x.visible = false);
     }
