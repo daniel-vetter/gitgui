@@ -1,4 +1,11 @@
-<div *ngIf="imageUrl"
-     style="height: 100%; width: 100%; background-size: contain;"
-     [style.backgroundImage]="'url(' + imageUrl + ')'">
+<div style="position: relative" class="fill">
+    <div style="position: absolute" class="fill">
+        <div style="background: rgb(240, 240, 240); color: rgb(64, 64, 64); height: 100%; width: 100%; display: flex; align-items: center; justify-content: center;">
+            {{ shortName }}
+        </div>
+    </div>
+    <div style="position: absolute" class="fill">
+        <div style="height: 100%; width: 100%; background-size: contain;" [style.backgroundImage]="imageUrl ? 'url(' + imageUrl + ')': ''">
+        </div>
+    </div>
 </div>
