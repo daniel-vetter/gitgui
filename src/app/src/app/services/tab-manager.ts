@@ -63,9 +63,11 @@ export class TabManager {
             return;
         if (this._allTabs.indexOf(tab) === -1 && tab !== undefined)
             throw new Error("The given tab can not be selected because its not part of the tab list.");
-        if (!tab.ui.isPersistent)
-            this.closeTemporaryTab();
+
+        const oldSelectedTab = this._selectedTab;
         this._selectedTab = tab;
+        if (oldSelectedTab && !oldSelectedTab.ui.isPersistent)
+            this.closeTemporaryTab();
         this.onSelectedTabChanged.emit(this.selectedTab);
     }
 }
