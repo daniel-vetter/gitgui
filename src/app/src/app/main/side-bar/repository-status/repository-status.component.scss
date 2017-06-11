@@ -24,14 +24,20 @@
     }
 }
 
+.commitMessage {
+    max-height: 40%;
+
+    textarea {
+        width: 100%;
+        resize: none;
+        font-family: Consolas;
+    }
+}
+
 .treeView {
     background: var(--theme-workspace-background);
     border: 1px solid var(--theme-workspace-border);
     overflow: hidden;
 }
 
-.commitMessage {
-    width: 100%;
-    resize: none;
-    font-family: Consolas;
-}
+
