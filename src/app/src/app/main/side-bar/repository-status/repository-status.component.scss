@@ -29,3 +29,9 @@
     border: 1px solid var(--theme-workspace-border);
     overflow: hidden;
 }
+
+.commitMessage {
+    width: 100%;
+    resize: none;
+    font-family: Consolas;
+}

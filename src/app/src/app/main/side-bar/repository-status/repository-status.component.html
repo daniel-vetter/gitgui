@@ -3,7 +3,7 @@
     <div class="content" style="display: flex; flex-direction: column; flex: 1; ">
         <div>Changed files:</div>
         <div class="fill">
-            <changed-files-tree [changedFiles]="changedFiles" 
+            <changed-files-tree [changedFiles]="changedFiles"
                                 (onFileSelected)="onFileSelected($event)"
                                 (onFileStageClicked)="onStageClicked($event)"
                                 (onFolderStageClicked)="onStageClicked($event)"
@@ -16,7 +16,7 @@
 
     <div class="content">
         <div>Commit message:</div>
-        <input type="text" style="width: 100%" [(ngModel)]="commitMessage">
+        <textarea type="text" class="commitMessage" [(ngModel)]="commitMessage" rows="1" #commitMessageTextArea></textarea>
     </div>
 
     <div>

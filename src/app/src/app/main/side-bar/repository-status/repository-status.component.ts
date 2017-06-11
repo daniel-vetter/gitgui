@@ -1,14 +1,14 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, Input, OnChanges, ViewChild } from "@angular/core";
 import { Repository, ChangedFile, UpdateState } from "../../../services/git/model";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
 import { Intermediate } from "../../../shared/check-box/check-box.component";
 import { Subscription } from "../../../services/event-aggregator";
 import { Git } from "../../../services/git/git";
-import { Path } from "../../../services/path";
 import { FileTreeBuilder } from "../changed-files-tree/file-tree-builder";
 import { FileContentTab, FileContentDiffTab } from "../../tabs/tabs";
 import { TabManager } from "../../../services/tab-manager";
 import { Status } from "../../../services/status";
+import * as autosize from "autosize";
 
 @Component({
     selector: "repository-status",
@@ -17,6 +17,7 @@ import { Status } from "../../../services/status";
 })
 export class RepositoryStatusComponent implements OnChanges {
     @Input() repository: Repository;
+    @ViewChild("commitMessageTextArea") commitMessageTextArea;
 
     changedFiles: ChangedFile[] = [];
     commitMessage: string = "";
@@ -27,7 +28,16 @@ export class RepositoryStatusComponent implements OnChanges {
         private tabManager: TabManager,
         private status: Status) { }
 
+    ngOnInit() {
+        autosize(this.commitMessageTextArea.nativeElement);
+    }
+
+    ngOnDestroy() {
+        autosize.destroy(this.commitMessageTextArea.nativeElement);
+    }
+
     ngOnChanges(changes: any) {
+        console.log(autosize);
         if (changes.repository) {
             if (this.onStatusChangeSubscription)
                 this.onStatusChangeSubscription.unsubscribe();
@@ -36,7 +46,6 @@ export class RepositoryStatusComponent implements OnChanges {
                     this.updateTree()
             });
         }
-
         this.updateTree();
     }
 

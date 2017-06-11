@@ -11,7 +11,7 @@ html, body {
     cursor: default;
 }
 
-input {
+input, textarea {
     padding: 3px;
     font: small-caption;
     color: var(--theme-font-color);
