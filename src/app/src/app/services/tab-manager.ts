@@ -11,20 +11,22 @@ export class TabManager {
     onTabChanged = new EventEmitter<Tab>();
 
     createNewTab(tab: Tab) {
-
-        let tempTab;
-        while ((tempTab = this._allTabs.find(x => !x.ui.isPersistent)) !== undefined) {
-            this.closeTab(tempTab);
-        }
-
+        this.closeTemporaryTab();
         tab.ui.onDetailsChange = (x) => { this.onTabChanged.emit(x); };
         this._allTabs.push(tab);
         this.onTabListChanged.emit(this.allTabs);
         this.selectedTab = tab;
     }
 
+    closeTemporaryTab() {
+        if (this._selectedTab && !this._selectedTab.ui.isPersistent) {
+            this.closeTab(this._selectedTab);
+        }
+    }
+
     closeAllTabs() {
         this.selectedTab = undefined;
+        this.allTabs.forEach(x => x.ui.onDetailsChange = undefined);
         this._allTabs = [];
         this.onTabListChanged.emit(this.allTabs);
     }
@@ -41,6 +43,7 @@ export class TabManager {
                 newIndex--;
             this.selectedTab = this._allTabs[newIndex];
         }
+        tab.ui.onDetailsChange = undefined;
         this._allTabs.splice(index, 1);
         this.onTabListChanged.emit(this.allTabs);
     }
@@ -56,8 +59,12 @@ export class TabManager {
     }
 
     set selectedTab(tab: Tab) {
+        if (this._selectedTab === tab)
+            return;
         if (this._allTabs.indexOf(tab) === -1 && tab !== undefined)
             throw new Error("The given tab can not be selected because its not part of the tab list.");
+        if (!tab.ui.isPersistent)
+            this.closeTemporaryTab();
         this._selectedTab = tab;
         this.onSelectedTabChanged.emit(this.selectedTab);
     }

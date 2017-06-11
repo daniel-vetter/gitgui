@@ -5,7 +5,7 @@ import { Intermediate } from "../../../shared/check-box/check-box.component";
 import { Subscription } from "../../../services/event-aggregator";
 import { Git } from "../../../services/git/git";
 import { FileTreeBuilder } from "../changed-files-tree/file-tree-builder";
-import { FileContentTab, FileContentDiffTab } from "../../tabs/tabs";
+import { FileContentTab, FileContentDiffTab, HistoryTab } from "../../tabs/tabs";
 import { TabManager } from "../../../services/tab-manager";
 import { Status } from "../../../services/status";
 import * as autosize from "autosize";
@@ -94,6 +94,11 @@ export class RepositoryStatusComponent implements OnChanges {
 
     async onCommitClicked() {
         this.status.startProcess("Committing", async () => {
+
+            const historyTabs = this.tabManager.allTabs.filter(x => x instanceof HistoryTab && x.repository === this.repository);
+            if (historyTabs.length === 1)
+                this.tabManager.selectedTab = historyTabs[0];
+
             await this.git.commit(this.repository, this.commitMessage, false);
             await this.git.updateRepository(this.repository);
             this.updateTree();
