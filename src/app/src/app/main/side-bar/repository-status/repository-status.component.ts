@@ -100,6 +100,12 @@ export class RepositoryStatusComponent implements OnChanges {
             this.commitMessage = "";
         });
     }
+
+    onCommitMessageKeyDown(event: KeyboardEvent) {
+        if (event.ctrlKey && event.keyCode === 13) {
+            this.onCommitClicked();
+        }
+    }
 }
 
 class FileTreeNode {
