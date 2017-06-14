@@ -42,6 +42,12 @@ export class FileTreeBuilder {
                     childNode.path = curPath;
                     if (i === parts.length - 1) {
                         childNode.data = change;
+                        switch (change.type) {
+                            case FileChangeType.Added: childNode.hintText = "[added]"; break;
+                            case FileChangeType.Copied: childNode.hintText = "[copied]"; break;
+                            case FileChangeType.Deleted: childNode.markRemoved = true; break;
+                            case FileChangeType.Renamed: childNode.hintText = "[renamed]"; break;
+                        }
                     }
                     if (change instanceof IndexChangedFile) {
                         childNode.showStagingCheckbox = true;
@@ -50,13 +56,6 @@ export class FileTreeBuilder {
                         childNode.showStagingCheckbox = false;
                         childNode.isStaged = false;
                     }
-                    switch(change.type) {
-                        case FileChangeType.Added: childNode.hintText = "[added]"; break;
-                        case FileChangeType.Copied: childNode.hintText = "[copied]"; break;
-                        case FileChangeType.Deleted: childNode.markRemoved = true; break;
-                        case FileChangeType.Renamed: childNode.hintText = "[renamed]"; break;
-                    }
-
                     curNode.children.push(childNode);
                     index.set(curNode, childNode);
                 }

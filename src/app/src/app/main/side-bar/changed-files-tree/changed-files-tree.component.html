@@ -15,8 +15,10 @@
                     <div style="padding-right: 4px">
                         <file-icon [icon]="data.expanded ? data.iconExpanded : data.iconCollapsed"></file-icon>
                     </div>
-                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1" [class.removedFile]="data.markRemoved">{{ data.label }}</div>
-                    <div *ngIf="data.hintText !== undefined" style="opacity: 0.5">&nbsp;{{ data.hintText }}</div>
+                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" [class.removedFile]="data.markRemoved">
+                        {{ data.label }}
+                    </div>
+                    <span *ngIf="data.hintText !== undefined" style="opacity: 0.5">&nbsp;{{ data.hintText }}</span>
                 </div>
             </ng-template>
         </tree-view>
