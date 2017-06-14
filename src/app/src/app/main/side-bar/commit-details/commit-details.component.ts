@@ -49,12 +49,14 @@ export class CommitDetailsComponent implements OnChanges {
             const tab = new FileContentTab();
             tab.repository = this.commit.repository;
             tab.file = file;
+            tab.ui.isPersistent = false;
             this.tabManager.createNewTab(tab);
         } else {
             const tab = new FileContentDiffTab();
             tab.repository = this.commit.repository;
             tab.leftFile = changedFile.oldFile;
             tab.rightFile = changedFile.newFile;
+            tab.ui.isPersistent = false;
             this.tabManager.createNewTab(tab);
         }
     }

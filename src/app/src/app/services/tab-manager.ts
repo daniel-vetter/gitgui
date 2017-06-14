@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from "@angular/core";
+import * as Rx from "rxjs";
 
 @Injectable()
 export class TabManager {
@@ -6,29 +7,20 @@ export class TabManager {
     private _allTabs: Tab[] = [];
     private _selectedTab: Tab;
 
-    onSelectedTabChanged = new EventEmitter<Tab>();
-    onTabListChanged = new EventEmitter<Tab[]>();
-    onTabChanged = new EventEmitter<Tab>();
+    onSelectedTabChanged = new Rx.Subject<Tab>();
+    onTabListChanged = new Rx.Subject<Tab[]>();
+    onTabChanged = new Rx.Subject<Tab>();
 
     createNewTab(tab: Tab) {
-        this.closeTemporaryTab();
-        tab.ui.onDetailsChange = (x) => { this.onTabChanged.emit(x); };
+        tab.ui.onDetailsChange = (x) => { this.onTabChanged.next(x); };
         this._allTabs.push(tab);
-        this.onTabListChanged.emit(this.allTabs);
+        this.onTabListChanged.next(this.allTabs);
         this.selectedTab = tab;
     }
 
-    closeTemporaryTab() {
-        if (this._selectedTab && !this._selectedTab.ui.isPersistent) {
-            this.closeTab(this._selectedTab);
-        }
-    }
-
     closeAllTabs() {
-        this.selectedTab = undefined;
-        this.allTabs.forEach(x => x.ui.onDetailsChange = undefined);
-        this._allTabs = [];
-        this.onTabListChanged.emit(this.allTabs);
+        while (this._allTabs.length > 0)
+            this.closeTab(this._allTabs[0]);
     }
 
     closeTab(tab: Tab) {
@@ -45,7 +37,7 @@ export class TabManager {
         }
         tab.ui.onDetailsChange = undefined;
         this._allTabs.splice(index, 1);
-        this.onTabListChanged.emit(this.allTabs);
+        this.onTabListChanged.next(this.allTabs);
     }
 
     get allTabs(): Tab[] {
@@ -66,9 +58,12 @@ export class TabManager {
 
         const oldSelectedTab = this._selectedTab;
         this._selectedTab = tab;
-        if (oldSelectedTab && !oldSelectedTab.ui.isPersistent)
-            this.closeTemporaryTab();
-        this.onSelectedTabChanged.emit(this.selectedTab);
+        this.onSelectedTabChanged.next(this._selectedTab);
+
+        if (oldSelectedTab && !oldSelectedTab.ui.isPersistent) {
+            this._allTabs.splice(this._allTabs.indexOf(oldSelectedTab), 1);
+            this.onTabListChanged.next(this.allTabs);
+        }
     }
 }
 
@@ -82,7 +77,7 @@ export class TabUi {
     onDetailsChange: (TabContainer) => void;
     private _title = "";
     private _isCloseable = true;
-    private _isPersistent = false;
+    private _isPersistent = true;
 
     get title(): string {
         return this._title;

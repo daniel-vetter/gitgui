@@ -66,10 +66,12 @@ export class RepositoryStatusComponent implements OnChanges {
             const file = changedFile.oldFile ? changedFile.oldFile : changedFile.newFile;
             const tab = new FileContentTab();
             tab.file = file;
+            tab.ui.isPersistent = false;
             this.tabManager.createNewTab(tab);
         } else {
             const tab = new FileContentDiffTab();
             tab.repository = this.repository;
+            tab.ui.isPersistent = false;
             tab.leftFile = changedFile.oldFile;
             tab.rightFile = changedFile.newFile;
             this.tabManager.createNewTab(tab);
