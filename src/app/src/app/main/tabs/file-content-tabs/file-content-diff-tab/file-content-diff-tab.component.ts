@@ -17,7 +17,7 @@ export class FileContentDiffTabComponent implements OnChanges, AfterViewInit {
     rightFileName: string = "";
     leftContent: string = "";
     rightContent: string = "";
-    private isBinary: boolean = false;
+    isBinary: boolean = false;
 
     private editor: monaco.editor.IDiffEditor;
 

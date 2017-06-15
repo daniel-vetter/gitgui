@@ -2,7 +2,7 @@
 
     <div class="fill scrollContainer"
          (scroll)="onScroll($event)"
-         (document:mouseleave)="onMouseOut()"
+         (document:mouseleave)="onMouseOut($event)"
          (mouseout)="onMouseOut($event)"
          (mousemove)="onMouseMove($event)"
          (mousedown)="onMouseDown($event)"
