@@ -37,7 +37,6 @@ export class RepositoryStatusComponent implements OnChanges {
     }
 
     ngOnChanges(changes: any) {
-        console.log(autosize);
         if (changes.repository) {
             if (this.onStatusChangeSubscription)
                 this.onStatusChangeSubscription.unsubscribe();
@@ -65,6 +64,7 @@ export class RepositoryStatusComponent implements OnChanges {
         if (!changedFile.oldFile || !changedFile.newFile) {
             const file = changedFile.oldFile ? changedFile.oldFile : changedFile.newFile;
             const tab = new FileContentTab();
+            tab.repository = this.repository;
             tab.file = file;
             tab.ui.isPersistent = false;
             this.tabManager.createNewTab(tab);
