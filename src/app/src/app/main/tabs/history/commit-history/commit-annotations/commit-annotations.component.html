@@ -6,7 +6,7 @@
          [style.height.px]="metrics.commitHeight"
          (mouseenter)="onMouseEnter(annotationBundle)"
          (mouseleave)="onMouseLeave(annotationBundle)">
-        <div class="line" [style.top.px]="metrics.commitHeight / 2" [style.borderColor]="annotationBundle.color"></div>
+        <div class="line" [hidden]="!annotationBundle.visible" [style.top.px]="metrics.commitHeight / 2" [style.borderColor]="annotationBundle.color"></div>
         <div [style.width.px]="annotationBundle.totalWidth" [style.height.px]="metrics.commitHeight" style="position: absolute"></div>
         <div *ngFor="let annotation of annotationBundle.annotations;"
               class="refBox"
