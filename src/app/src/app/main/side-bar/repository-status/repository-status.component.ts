@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, ViewChild } from "@angular/core";
-import { Repository, ChangedFile, UpdateState } from "../../../services/git/model";
+import { Repository, ChangedFile, UpdatedElements } from "../../../services/git/model";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
 import { Intermediate } from "../../../shared/check-box/check-box.component";
 import { Subscription } from "../../../services/event-aggregator";
@@ -40,7 +40,7 @@ export class RepositoryStatusComponent implements OnChanges {
         if (changes.repository) {
             if (this.onStatusChangeSubscription)
                 this.onStatusChangeSubscription.unsubscribe();
-            this.onStatusChangeSubscription = this.repository.onUpdate.subscribe((x: UpdateState) => {
+            this.onStatusChangeSubscription = this.repository.updateState.onUpdateFinished.subscribe((x: UpdatedElements) => {
                 if (x.status)
                     this.updateTree()
             });

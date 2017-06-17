@@ -1,7 +1,7 @@
 import { Component, Input, Output, ViewChild, OnChanges, ChangeDetectorRef, EventEmitter } from "@angular/core";
 import { LaneColorProvider } from "./services/lane-color-provider";
 import { LaneAssigner } from "./services/lane-assigner";
-import { Repository, RepositoryCommit, UpdateState } from "../../../../services/git/model";
+import { Repository, RepositoryCommit, UpdatedElements } from "../../../../services/git/model";
 import { VisibleRange, HistoryRepository, HistoryCommitEntry, HistoryEntryBase } from "./model/model";
 import { RepositoryToHistoryRepositoryMapper } from "./services/repository-to-history-repository-mapper";
 import { Metrics } from "./services/metrics";
@@ -58,7 +58,7 @@ export class CommitHistoryComponent implements OnChanges {
             this.displayRepository();
             if (this.onStatusChangeSubscription)
                 this.onStatusChangeSubscription.unsubscribe();
-            this.onStatusChangeSubscription = this.repository.onUpdate.subscribe((x: UpdateState) => {
+            this.onStatusChangeSubscription = this.repository.updateState.onUpdateFinished.subscribe((x: UpdatedElements) => {
                 this.displayRepository();
                 this.updateVisibleRange();
                 this.updateShadowVisibility();
@@ -71,16 +71,13 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     private displayRepository() {
-        console.time("displayRepository")
         this.historyRepository = this.repositoryToHistoryRepositoryMapper.map(this.repository);
-        console.timeEnd("displayRepository")
         this.totalLaneGridWidth = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
         this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, this.metrics.getBubbleRight(10));
         this.maxScrollHeight = this.historyRepository.entries.length * this.metrics.commitHeight;
         this.entryClicked = undefined;
         this.entryHighlighted = undefined;
         this.entrySelected = undefined;
-
     }
 
     onScroll(event) {

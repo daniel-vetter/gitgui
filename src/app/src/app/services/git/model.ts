@@ -1,4 +1,5 @@
 import { EventEmitter } from "@angular/core";
+import * as Rx from "rxjs";
 
 export class Repository {
     status: RepositoryStatus;
@@ -7,10 +8,16 @@ export class Repository {
     location: string;
     head: RepositoryCommit;
 
-    onUpdate = new EventEmitter<UpdateState>();
+    updateState = new RepositoryUpdateState();
 }
 
-export class UpdateState {
+export class RepositoryUpdateState {
+    onUpdateStarted = new Rx.Subject<UpdatedElements>();
+    onUpdateFinished = new Rx.Subject<UpdatedElements>();
+    currentlyUpdatingElements: UpdatedElements | undefined;
+}
+
+export class UpdatedElements {
     constructor(public commits: boolean,
                 public refs: boolean,
                 public status: boolean,

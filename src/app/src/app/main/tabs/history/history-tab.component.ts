@@ -13,8 +13,8 @@ declare var global: any;
 export class HistoryTabComponent implements OnChanges {
     @Input() tab: HistoryTab;
 
-    repository: Repository | undefined;
-    selectedCommit: RepositoryCommit;
+    repository?: Repository;
+    selectedCommit?: RepositoryCommit;
 
     constructor(private sideBarManager: SideBarManager) { }
 
@@ -24,6 +24,8 @@ export class HistoryTabComponent implements OnChanges {
             this.tab.ui.isCloseable = false;
         } else {
             this.repository = undefined;
+            this.selectedCommit = undefined;
+            this.onSelectedCommitChange();
         }
     }
 

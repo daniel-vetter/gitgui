@@ -3,7 +3,7 @@ import { CommitsReader } from "./commits-reader";
 import { StatusReader } from "./status-reader";
 import { RefsReader } from "./refs-reader";
 import { CurrentHeadReader } from "./current-head-reader";
-import { Repository, UpdateState } from "../model";
+import { Repository, UpdatedElements } from "../model";
 
 @Injectable()
 export class RepositoryReader {
@@ -21,13 +21,23 @@ export class RepositoryReader {
     }
 
     async updateStatus(repository: Repository): Promise<Repository> {
-        const x = await this.statusReader.readStatus(repository.location);
-        repository.status = x;
-        repository.onUpdate.emit(new UpdateState(false, false, true, false));
+        if (repository.updateState.currentlyUpdatingElements) {
+            throw Error("Repository is currently updating");
+        }
+        repository.updateState.currentlyUpdatingElements = new UpdatedElements(false, false, true, false);
+        repository.updateState.onUpdateStarted.next(repository.updateState.currentlyUpdatingElements);
+        repository.status = await this.statusReader.readStatus(repository.location);
+        repository.updateState.onUpdateFinished.next(repository.updateState.currentlyUpdatingElements);
         return repository;
     }
 
     async updateRepository(repository: Repository): Promise<Repository> {
+        if (repository.updateState.currentlyUpdatingElements) {
+            throw Error("Repository is currently updating");
+        }
+        repository.updateState.currentlyUpdatingElements = new UpdatedElements(true, true, true, true);
+        repository.updateState.onUpdateStarted.next(repository.updateState.currentlyUpdatingElements);
+
         const commitsPromise = this.commitsReader.readAllCommits(repository.location);
         const statusPromise = this.statusReader.readStatus(repository.location);
         const currentHeadHashPromise = this.currentHeadReader.readCurrentHeadHash(repository.location);
@@ -41,7 +51,7 @@ export class RepositoryReader {
             throw Error("Could not find head commit");
         repository.head = currentHeadCommit;
         repository.refs = await this.refsReader.readAllRefs(repository.location, repository.commits);
-        repository.onUpdate.emit(new UpdateState(true, true, true, true));
+        repository.updateState.onUpdateFinished.next(repository.updateState.currentlyUpdatingElements);
         return repository;
     }
 }

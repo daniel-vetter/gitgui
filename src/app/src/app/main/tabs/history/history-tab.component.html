@@ -5,4 +5,6 @@
     <div style="background: white; flex: 1">
         <commit-history [repository]="repository" [(selectedCommit)]="selectedCommit" (selectedCommitChange)="onSelectedCommitChange()"></commit-history>
     </div>
+    <loading-overlay></loading-overlay>
 </div>
+

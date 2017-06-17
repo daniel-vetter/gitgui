@@ -1,20 +1,13 @@
 <div class="root fill" tabindex="0" (window:resize)="onWindowResize()" (keydown)="onKeyDown($event)" #root>
 
-    <div class="fill scrollContainer"
-         (scroll)="onScroll($event)"
-         (document:mouseleave)="onMouseOut($event)"
-         (mouseout)="onMouseOut($event)"
-         (mousemove)="onMouseMove($event)"
-         (mousedown)="onMouseDown($event)"
-         (mouseup)="onMouseUp($event)"
-         #scrollWrapper>
 
-         <!-- The selection background gets drawn behind all other components -->
+
+    <div class="fill scrollContainer" (scroll)="onScroll($event)" (document:mouseleave)="onMouseOut($event)" (mouseout)="onMouseOut($event)"
+        (mousemove)="onMouseMove($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)" #scrollWrapper>
+
+        <!-- The selection background gets drawn behind all other components -->
         <div class="overlay" [style.height.px]="maxScrollHeight">
-            <commit-selection-background
-                                        [entryClicked]="entryClicked"
-                                        [entrySelected]="entrySelected"
-                                        [entryHighlighted]="entryHighlighted">
+            <commit-selection-background [entryClicked]="entryClicked" [entrySelected]="entrySelected" [entryHighlighted]="entryHighlighted">
             </commit-selection-background>
         </div>
 
@@ -24,37 +17,27 @@
 
 
             <div [style.width.px]="annotationGridWidth">
-                <commit-annotations [historyRepository]="historyRepository"
-                                    [visibleRange]="visibleRange"
-                                    [width]="annotationGridWidth">
+                <commit-annotations [historyRepository]="historyRepository" [visibleRange]="visibleRange" [width]="annotationGridWidth">
                 </commit-annotations>
             </div>
 
             <div [style.width.px]="currentLaneGridWidth" style="position: relative">
-                <commit-lanes [historyRepository]="historyRepository"
-                              [visibleRange]="visibleRange"
-                              [width]="currentLaneGridWidth"
-                              [horizontalScroll]="laneGridScrollPosition">
+                <commit-lanes [historyRepository]="historyRepository" [visibleRange]="visibleRange" [width]="currentLaneGridWidth" [horizontalScroll]="laneGridScrollPosition">
                 </commit-lanes>
             </div>
 
             <div style="flex: 1;">
-                <commit-titles [historyRepository]="historyRepository"
-                               [visibleRange]="visibleRange">
+                <commit-titles [historyRepository]="historyRepository" [visibleRange]="visibleRange">
                 </commit-titles>
             </div>
 
             <!-- A overlay containing two vertical divs (10px width) which represent the resize click zones -->
             <div class="overlay" style="display: flex;" [style.height.px]="maxScrollHeight" [class.inResizeMode]="isInLaneGridResizeMode || isInAnnotationGridResizeMode">
-                <div class="resizeBar" [style.left.px]="annotationGridWidth - 5"
-                                        (mousedown)="onAnnotationGridResizeMouseDown($event)"
-                                        (document:mouseup)="onAnnotationGridResizeMouseUp($event)"
-                                        (document:mousemove)="onAnnotationGridResizeMouseMove($event)">
+                <div class="resizeBar" [style.left.px]="annotationGridWidth - 5" (mousedown)="onAnnotationGridResizeMouseDown($event)" (document:mouseup)="onAnnotationGridResizeMouseUp($event)"
+                    (document:mousemove)="onAnnotationGridResizeMouseMove($event)">
                 </div>
-                <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 5"
-                                        (mousedown)="onLaneGridResizeMouseDown($event)"
-                                        (document:mouseup)="onLaneGridResizeMouseUp($event)"
-                                        (document:mousemove)="onLaneGridResizeMouseMove($event)">
+                <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 5" (mousedown)="onLaneGridResizeMouseDown($event)"
+                    (document:mouseup)="onLaneGridResizeMouseUp($event)" (document:mousemove)="onLaneGridResizeMouseMove($event)">
                 </div>
             </div>
         </div>
@@ -63,12 +46,9 @@
 
 
     <!-- Horizontal scrollbar to scroll the lane grid -->
-    <div class="horizontalScrollContainer"
-         [class.visible]="mouseIsInLaneGrid || isInLaneGridResizeMode"
-         [style.left.px]="annotationGridWidth"
-         [style.width.px]="currentLaneGridWidth"
-         (scroll)="onLaneGridScroll($event)">
-        <div style="opacity: 0; height: 1px;" [style.width.px]="totalLaneGridWidth" ></div>
+    <div class="horizontalScrollContainer" [class.visible]="mouseIsInLaneGrid || isInLaneGridResizeMode" [style.left.px]="annotationGridWidth"
+        [style.width.px]="currentLaneGridWidth" (scroll)="onLaneGridScroll($event)">
+        <div style="opacity: 0; height: 1px;" [style.width.px]="totalLaneGridWidth"></div>
     </div>
 
     <!-- Overlay to display a shadow on the laneGrid Border if content is hidden behind the commit titles or annotation grid -->
@@ -77,5 +57,5 @@
         <div [style.width.px]="currentLaneGridWidth"></div>
         <div class="shadowBorder" [class.visible]="showRightLaneGridBorder" style="flex: 1"></div>
     </div>
-</div>
 
+</div>

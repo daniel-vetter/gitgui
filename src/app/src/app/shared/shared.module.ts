@@ -4,13 +4,15 @@ import { BrowserModule } from "@angular/platform-browser";
 import { TreeViewComponent } from "./tree-view/tree-view.component";
 import { CheckBoxComponent } from "./check-box/check-box.component";
 import { LoadingComponent } from "./loading/loading.component";
+import { LoadingOverlayComponent } from "./loading-overlay/loading-overlay.component";
 
 @NgModule({
     declarations: [
         ProfileImageComponent,
         TreeViewComponent,
         CheckBoxComponent,
-        LoadingComponent
+        LoadingComponent,
+        LoadingOverlayComponent
     ],
     imports: [
         BrowserModule
@@ -18,7 +20,9 @@ import { LoadingComponent } from "./loading/loading.component";
     exports: [
         ProfileImageComponent,
         TreeViewComponent,
-        CheckBoxComponent
+        CheckBoxComponent,
+        LoadingComponent,
+        LoadingOverlayComponent
     ]
 })
 export class SharedModule {
