@@ -15,7 +15,7 @@ import { Subscription } from "../../../../services/event-aggregator";
 })
 export class CommitHistoryComponent implements OnChanges {
 
-    @Input() repository: Repository = undefined;
+    @Input() repository: Repository;
     @Output() selectedCommitChange = new EventEmitter<RepositoryCommit>();
     @ViewChild("canvas") canvas;
     @ViewChild("scrollWrapper") scrollWrapper;
@@ -32,9 +32,9 @@ export class CommitHistoryComponent implements OnChanges {
     historyRepository: HistoryRepository;
     mouseIsInLaneGrid = false;
 
-    entryClicked: HistoryEntryBase;
-    entryHighlighted: HistoryEntryBase;
-    entrySelected: HistoryEntryBase;
+    entryClicked: HistoryEntryBase | undefined;
+    entryHighlighted: HistoryEntryBase | undefined;
+    entrySelected: HistoryEntryBase | undefined;
 
     showLeftLaneGridBorder: boolean = false;
     showRightLaneGridBorder: boolean = false;
@@ -80,7 +80,7 @@ export class CommitHistoryComponent implements OnChanges {
         this.entryClicked = undefined;
         this.entryHighlighted = undefined;
         this.entrySelected = undefined;
-        
+
     }
 
     onScroll(event) {
@@ -92,7 +92,7 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     @Input()
-    get selectedCommit(): RepositoryCommit {
+    get selectedCommit(): RepositoryCommit | undefined {
         if (this.entrySelected === undefined)
             return undefined;
         if (!(this.entrySelected instanceof HistoryCommitEntry))
@@ -100,8 +100,8 @@ export class CommitHistoryComponent implements OnChanges {
         return this.entrySelected.repositoryCommit;
     }
 
-    set selectedCommit(commit: RepositoryCommit) {
-
+    set selectedCommit(commit: RepositoryCommit | undefined) {
+        // TODO
     }
 
     private updateVisibleRange() {
@@ -225,7 +225,7 @@ export class CommitHistoryComponent implements OnChanges {
         this.changeDetectorRef.detectChanges();
     }
 
-    hitTest(x: number, y: number): HistoryEntryBase {
+    hitTest(x: number, y: number): HistoryEntryBase | undefined {
         const bounds = this.scrollWrapper.nativeElement.getBoundingClientRect();
         x -= bounds.left;
         y -= bounds.top - this.scrollWrapper.nativeElement.scrollTop;

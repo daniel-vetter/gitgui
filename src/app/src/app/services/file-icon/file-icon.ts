@@ -32,12 +32,8 @@ export class FileIconManager {
     private async loadIcons() {
         try {
             const manifestPath = await this.packageLoader.load(this.config.get().fileIconPackageUrl);
-            if (manifestPath) {
-                this.iconPackage = this.packageParser.parse(manifestPath, this.themeManager.currentTheme === "light");
-                this.onFileIconsChanged.emit();
-            } else {
-                console.warn("no manifest file found in icon package");
-            }
+            this.iconPackage = this.packageParser.parse(manifestPath, this.themeManager.currentTheme === "light");
+            this.onFileIconsChanged.emit();
         } catch (error) {
             console.warn("error while parsing icon package", error);
         }
@@ -50,8 +46,8 @@ export class FileIconManager {
         const bundle = new IconBundle();
         if (this.iconPackage.folderNames.has(folderName) &&
             this.iconPackage.folderNamesExpanded.has(folderName)) {
-            bundle.collapsed = this.iconPackage.folderNames.get(folderName);
-            bundle.expanded = this.iconPackage.folderNamesExpanded.get(folderName);
+            bundle.collapsed = this.iconPackage.folderNames.get(folderName)!;
+            bundle.expanded = this.iconPackage.folderNamesExpanded.get(folderName)!;
         } else {
             bundle.expanded = this.iconPackage.folderExpanded;
             bundle.collapsed = this.iconPackage.folder;
@@ -64,11 +60,11 @@ export class FileIconManager {
             return this.defaultFileIcon;
 
         if (this.iconPackage.fileNames.has(fileName)) {
-            return this.iconPackage.folderNames.get(fileName);
+            return this.iconPackage.folderNames.get(fileName)!;
         } else {
             const extension = Path.getExtension(fileName);
             if (this.iconPackage.fileExtensions.has(extension)) {
-                return this.iconPackage.fileExtensions.get(extension);
+                return this.iconPackage.fileExtensions.get(extension)!;
             } else {
                 return this.iconPackage.file;
             }

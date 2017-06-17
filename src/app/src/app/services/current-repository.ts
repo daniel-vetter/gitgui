@@ -5,15 +5,15 @@ import { EventAggregator } from "./event-aggregator";
 @Injectable()
 export class CurrentRepository {
 
-    private currentRepository: Repository;
+    private currentRepository: Repository | undefined;
 
     constructor(private eventAggregator: EventAggregator) {}
 
-    get(): Repository {
+    get(): Repository | undefined {
         return this.currentRepository;
     }
 
-    set(repository: Repository) {
+    set(repository: Repository | undefined) {
         if (this.currentRepository !== repository) {
             this.currentRepository = repository;
             this.eventAggregator.publish("CurrentRepositoryChanged");

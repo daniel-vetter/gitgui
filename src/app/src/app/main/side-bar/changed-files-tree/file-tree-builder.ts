@@ -68,7 +68,9 @@ export class FileTreeBuilder {
     private getPathFromChangedFile(changedFile: ChangedFile): string {
         if (changedFile.newFile)
             return changedFile.newFile.path;
-        return changedFile.oldFile.path;
+        if (changedFile.oldFile)
+            return changedFile.oldFile.path;
+        throw Error("Invalid state in ChangedFile");
     }
 
     private orderChildren(node: FileTreeNode) {
@@ -84,6 +86,7 @@ export class FileTreeBuilder {
                     return 1;
                 if (a.label === b.label)
                     return 0;
+                throw Error("Sorting failed");
             });
         });
     }
@@ -114,7 +117,7 @@ export class FileTreeBuilder {
         });
     }
 
-    private assignParents(node: FileTreeNode, parent: FileTreeNode = undefined) {
+    private assignParents(node: FileTreeNode, parent?: FileTreeNode) {
         node.parent = parent;
         node.children.forEach(x => this.assignParents(x, node));
     }
@@ -141,7 +144,7 @@ export class FileTreeNode {
     isHeaderNode: boolean;
     markRemoved: boolean;
     hintText: string;
-    parent: FileTreeNode;
+    parent: FileTreeNode | undefined;
 }
 
 class ChildIndex {
@@ -152,7 +155,7 @@ class ChildIndex {
         return this.getSubIndex(node).set(child.label, child);
     }
 
-    get(node: FileTreeNode, childLabel: string): FileTreeNode {
+    get(node: FileTreeNode, childLabel: string): FileTreeNode | undefined {
         return this.getSubIndex(node).get(childLabel);
     }
 

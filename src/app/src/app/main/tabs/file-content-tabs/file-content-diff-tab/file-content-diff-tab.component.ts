@@ -9,7 +9,7 @@ import { Git } from "../../../../services/git/git";
     styleUrls: ["./file-content-diff-tab.component.scss"]
 })
 export class FileContentDiffTabComponent implements OnChanges, AfterViewInit {
-    @Input() tab: FileContentDiffTab = undefined;
+    @Input() tab: FileContentDiffTab;
 
     @ViewChild("container") container;
 

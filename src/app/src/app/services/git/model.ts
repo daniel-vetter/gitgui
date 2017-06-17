@@ -26,8 +26,8 @@ export class RepositoryStatus {
 
 export class ChangedFile  {
     type: FileChangeType;
-    oldFile: FileRef;
-    newFile: FileRef;
+    oldFile?: FileRef;
+    newFile?: FileRef;
 }
 
 export class IndexChangedFile extends ChangedFile {

@@ -9,7 +9,7 @@ import { Git } from "../../../../services/git/git";
     styleUrls: ["./file-content-tab.component.scss"]
 })
 export class FileContentTabComponent implements OnChanges, AfterViewInit {
-    @Input() tab: FileContentTab = undefined;
+    @Input() tab: FileContentTab;
     @ViewChild("container") container;
 
     fileName: string = "";

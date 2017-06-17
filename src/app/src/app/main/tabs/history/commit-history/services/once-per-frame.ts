@@ -22,7 +22,7 @@ export class OncePerFrame {
         const actions = this.actionsToRun;
         this.actionsToRun = new Map<string, () => void>();
         for (const key of Array.from(actions.keys())) {
-            actions.get(key)();
+            actions.get(key)!();
         }
         requestAnimationFrame(() => this.onRequest());
     }

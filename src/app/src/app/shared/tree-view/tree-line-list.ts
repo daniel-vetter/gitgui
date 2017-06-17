@@ -29,7 +29,7 @@ export class TreeLineList {
         this.reIndexLines();
     }
 
-    private applyExpandState(vm: TreeLine, currentState: boolean = undefined) {
+    private applyExpandState(vm: TreeLine, currentState?: boolean) {
         if (currentState === undefined)
             currentState = this.adapter.getExpandedState(vm.data);
         vm.isExpanded = currentState;
@@ -51,7 +51,7 @@ export class TreeLineList {
         }
     }
 
-    private getLineFromData(data: any, parent: TreeLine = undefined): TreeLine {
+    private getLineFromData(data: any, parent?: TreeLine): TreeLine {
         const line = new TreeLine();
         line.data = data;
         line.hasChildren = this.adapter.hasChildren(data);

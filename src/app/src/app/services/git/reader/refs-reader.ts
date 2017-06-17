@@ -40,7 +40,7 @@ export class RefsReader {
                     throw new Error("The ref \"" + line.ref.fullName + "\" is not connected to a commit. " +
                         "(connected to: \"" + line.objectType + "\")");
                 }
-                ref.commit = commitIndex.get(line.objectName);
+                ref.commit = commitIndex.get(line.objectName)!;
                 result.push(ref);
                 continue;
             }
@@ -51,12 +51,12 @@ export class RefsReader {
                 ref.fullName = line.ref.fullName;
                 ref.shortName = line.ref.shortName;
                 if (line.objectType === "commit") { // lightweight tag
-                    ref.commit = commitIndex.get(line.objectName);
+                    ref.commit = commitIndex.get(line.objectName)!;
                 } else if (line.objectName === "tag") { // annotated tag
                     if (line.resolvedObjectType !== "commit") {
                         throw new Error("Tag \"" + line.objectName + "\" not pointing to a commit.");
                     }
-                    ref.commit = commitIndex.get(line.resolvedObjectName);
+                    ref.commit = commitIndex.get(line.resolvedObjectName)!;
                     (<RepositoryTagRef>ref).annotationHash = line.objectName;
                 }
                 result.push(ref);
@@ -73,7 +73,7 @@ export class RefsReader {
                 }
                 ref.shortName = line.ref.shortName.substr(splitter + 1);
                 ref.remote = line.ref.shortName.substr(0, splitter);
-                ref.commit = commitIndex.get(line.objectName);
+                ref.commit = commitIndex.get(line.objectName)!;
                 result.push(ref);
                 continue;
             }
@@ -84,10 +84,10 @@ export class RefsReader {
 
         // after all ref object are created, we can connect all local branch refs with its upstream refs.
         for (const line of lines.filter(y => y.upstream)) {
-            const upstream = <RepositoryRemoteRef>result.find(y => y.fullName === line.upstream.fullName);
+            const upstream = <RepositoryRemoteRef>result.find(y => y.fullName === line.upstream!.fullName);
             const localRef = <RepositoryHeadRef>result.find(y => y.fullName === line.ref.fullName);
             if (!upstream) {
-                console.warn("upstream \"" + line.upstream.fullName + "\" not found.");
+                console.warn("upstream \"" + line.upstream!.fullName + "\" not found.");
                 continue;
             }
 
@@ -151,5 +151,5 @@ class OutputLine {
     resolvedObjectName: string;
     resolvedObjectType: string;
     ref: Ref;
-    upstream: Ref;
+    upstream: Ref | undefined;
 }

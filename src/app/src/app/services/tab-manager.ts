@@ -5,7 +5,7 @@ import * as Rx from "rxjs";
 export class TabManager {
 
     private _allTabs: Tab[] = [];
-    private _selectedTab: Tab;
+    private _selectedTab: Tab | undefined;
 
     onSelectedTabChanged = new Rx.Subject<Tab>();
     onTabListChanged = new Rx.Subject<Tab[]>();
@@ -44,16 +44,16 @@ export class TabManager {
         return Array.from(this._allTabs);
     }
 
-    get selectedTab(): Tab {
+    get selectedTab(): Tab | undefined {
         if (this._selectedTab)
             return this._selectedTab;
         return undefined;
     }
 
-    set selectedTab(tab: Tab) {
+    set selectedTab(tab: Tab | undefined) {
         if (this._selectedTab === tab)
             return;
-        if (this._allTabs.indexOf(tab) === -1 && tab !== undefined)
+        if (tab !== undefined && this._allTabs.indexOf(tab) === -1)
             throw new Error("The given tab can not be selected because its not part of the tab list.");
 
         const oldSelectedTab = this._selectedTab;
@@ -74,7 +74,7 @@ export abstract class Tab {
 
 export class TabUi {
 
-    onDetailsChange: (TabContainer) => void;
+    onDetailsChange: ((TabContainer) => void) | undefined;
     private _title = "";
     private _isCloseable = true;
     private _isPersistent = true;

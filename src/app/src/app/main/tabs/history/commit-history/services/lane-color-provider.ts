@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class LaneColorProvider {
-    getColorForLane(lane: number, transparent = undefined): string {
-        return this.hslToRgb(((lane + 6) * 0.1) % 1, 1, 0.4, transparent);
+    getColorForLane(lane: number, alpha?: number): string {
+        return this.hslToRgb(((lane + 6) * 0.1) % 1, 1, 0.4, alpha === undefined ? 1 : alpha);
     }
 
     private hslToRgb(h: number, s: number, l: number, a: number): string {

@@ -12,9 +12,9 @@ export class CommitSelectionBackgroundComponent implements OnChanges {
     @Input() entrySelected: HistoryCommitEntry;
     @Input() entryHighlighted: HistoryCommitEntry;
 
-    entrySelectedTop: number = undefined;
-    entryHighlightedTop: number = undefined;
-    entryClickedTop: number = undefined;
+    entrySelectedTop?: number;
+    entryHighlightedTop?: number;
+    entryClickedTop?: number;
 
     constructor(private metrics: Metrics) {}
 

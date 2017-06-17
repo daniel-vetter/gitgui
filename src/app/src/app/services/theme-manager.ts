@@ -6,7 +6,7 @@ const systemPreferences = remote.systemPreferences;
 export class ThemeManager {
 
     private _currentTheme: Theme = "light";
-    private _rootStyleElement: HTMLStyleElement = undefined;
+    private _rootStyleElement?: HTMLStyleElement;
 
     public onCurrentThemeChanged = new EventEmitter();
     public get currentTheme(): Theme {

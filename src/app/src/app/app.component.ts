@@ -39,17 +39,17 @@ export class AppComponent implements OnInit {
     private domChangeMonitor() {
         var observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation: MutationRecord) => {
-                if (mutation.type === "attributes" && (mutation.attributeName === undefined || mutation.attributeName.startsWith("ng-")))
+                if (mutation.type === "attributes" && (mutation.attributeName === undefined || mutation.attributeName!.startsWith("ng-")))
                     return;
                 if (mutation.target instanceof Comment)
                     return;
 
                 if (mutation.type === "attributes" && mutation.oldValue !== undefined && mutation.attributeName !== undefined) {
-                    const attr = mutation.target.attributes.getNamedItem(mutation.attributeName)
+                    const attr = mutation.target.attributes.getNamedItem(mutation.attributeName!)
                     if (attr)
                         mutation["newValue"] = attr.value
                 }
-                
+
                 console.log(mutation);
             });
         });

@@ -21,13 +21,16 @@ export class PackageLoader {
             const packageBasePath = Path.combine(this.platform.appDataDirectory, "fileIconPackages");
             const indexFilePath = Path.combine(packageBasePath, "index.json");
             this.fileSystem.ensureDirectoryExists(packageBasePath);
-            let index: IndexFileContent = undefined;
+            let index: IndexFileContent | undefined;
             if (!this.fileSystem.exists(indexFilePath)) {
                 index = <IndexFileContent>{};
                 index.packages = [];
             } else {
                 index = this.fileSystem.readJson(indexFilePath);
             }
+
+            if(!index)
+                throw Error("could not load package index");
 
             let indexEntry = index.packages.find(x => x.url === url);
             if (indexEntry === undefined) {
@@ -51,8 +54,6 @@ export class PackageLoader {
             }
             this.fileSystem.saveJsonAsync(indexFilePath, index);
             processStatus.completed();
-            if (!indexEntry.manifestFilePath)
-                return undefined;
             return Path.combine(repositoryContentPath, indexEntry.manifestFilePath);
         }
         finally {
@@ -92,7 +93,7 @@ export class PackageLoader {
                 continue;
             }
         }
-        return undefined;
+        throw Error("could not find manifestFilePath");
     }
 
     private getNewId(): string {

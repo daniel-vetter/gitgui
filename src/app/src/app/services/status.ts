@@ -4,7 +4,7 @@ export class Status {
     private _runningProcesses: StatusProcessTracker[] = [];
     onRunningProcessesChange = new EventEmitter();
 
-    startProcess(description: string, workToDo: () => any = undefined): StatusProcessTracker {
+    startProcess(description: string, workToDo: (() => any) | undefined = undefined): StatusProcessTracker {
         const tracker = new StatusProcessTracker(description, x => {
             const index = this._runningProcesses.indexOf(x);
             if (index !== -1) {

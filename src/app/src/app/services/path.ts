@@ -8,7 +8,7 @@ export class Path {
         return pathLib.join(...paths);
     }
 
-    static makeAbsolute(path: string, workingDirectory: string = undefined): string {
+    static makeAbsolute(path: string, workingDirectory?: string): string {
         if (workingDirectory)
             return pathLib.resolve(workingDirectory, path);
         return pathLib.resolve(path)

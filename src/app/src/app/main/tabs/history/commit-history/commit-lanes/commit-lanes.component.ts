@@ -11,8 +11,8 @@ import { LineRangeQueryHelper } from "../services/line-range-query-helper";
 })
 export class CommitLanesComponent implements OnChanges {
 
-    @Input() historyRepository: HistoryRepository = undefined;
-    @Input() visibleRange: VisibleRange = undefined;
+    @Input() historyRepository: HistoryRepository;
+    @Input() visibleRange: VisibleRange;
     @Input() horizontalScroll = 0;
     @Input() width = 0;
 
@@ -120,7 +120,7 @@ export class CommitLanesComponent implements OnChanges {
 }
 
 export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommitEntry> {
-    data: HistoryCommitEntry;
+    data: HistoryCommitEntry | undefined;
     color: string;
     positionTop: number;
     positionLeft: number;
@@ -131,39 +131,39 @@ export class CommitBubbleViewModel implements PoolableViewModel<HistoryCommitEnt
 
     clear() {
         this.data = undefined;
-        this.color = undefined;
-        this.positionTop = undefined;
-        this.positionLeft = undefined;
-        this.lineWidth = undefined;
-        this.showAnnotationLine = undefined;
+        this.color = "#000000";
+        this.positionTop = 0;
+        this.positionLeft = 0;
+        this.lineWidth = 0;
+        this.showAnnotationLine = false;
+        this.visible = false;
     }
 }
 
 export class LineViewModel implements PoolableViewModel<Line> {
-    id: string;
-    data: Line;
+    data: Line | undefined;
     positionTop: number;
     positionLeft: number;
     width: number;
     height: number;
-    borderTopColor: string;
-    borderLeftColor: string;
-    borderRightColor: string;
-    borderBottomColor: string;
+    borderTopColor: string | undefined;
+    borderLeftColor: string | undefined;
+    borderRightColor: string | undefined;
+    borderBottomColor: string | undefined;
     borderRadius: string;
     visible: boolean;
 
     clear() {
-        this.id = undefined;
         this.data = undefined;
-        this.positionTop = undefined;
-        this.positionLeft = undefined;
-        this.width = undefined;
-        this.height = undefined;
+        this.positionTop = 0;
+        this.positionLeft = 0;
+        this.width = 0;
+        this.height = 0;
         this.borderTopColor = undefined;
         this.borderLeftColor = undefined;
         this.borderRightColor = undefined;
         this.borderBottomColor = undefined;
-        this.borderRadius = undefined;
+        this.borderRadius = "0%";
+        this.visible = false;
     }
 }

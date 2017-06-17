@@ -9,7 +9,7 @@ import { Notification, NotificationType } from "./notifications";
 
 })
 export class NotificationBoxComponent implements OnChanges {
-    @Input() notification: Notification = undefined;
+    @Input() notification: Notification;
     @Output() onCloseRequested = new EventEmitter();
 
     private buttonWasClicked = false;

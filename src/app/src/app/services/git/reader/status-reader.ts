@@ -60,7 +60,7 @@ export class StatusReader {
 
     }
 
-    private parseChangeType(char: string): FileChangeType {
+    private parseChangeType(char: string): FileChangeType | undefined {
         if (char === " ") return undefined;
         else if (char === "M") return FileChangeType.Modified;
         else if (char === "A") return FileChangeType.Added;

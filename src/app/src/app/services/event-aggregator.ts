@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from "@angular/core";
-import { AppEvents } from "../model/events";
+import { AppEvents, AppEvent } from "../model/events";
 
 @Injectable()
 export class EventAggregator {
@@ -10,7 +10,7 @@ export class EventAggregator {
         return this.getEmitter(type).subscribe(x => handler(x));
     }
 
-    publish<K extends keyof AppEvents>(type: K, message: AppEvents[K] = undefined): void {
+    publish<K extends keyof AppEvents>(type: K, message: AppEvents[K] = new AppEvent()): void {
         this.getEmitter(type).emit(message);
     }
 

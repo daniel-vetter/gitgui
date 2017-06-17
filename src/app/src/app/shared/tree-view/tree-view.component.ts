@@ -9,7 +9,7 @@ import { ReusePool, PoolableViewModel } from "../../main/tabs//history/commit-hi
     styleUrls: ["./tree-view.component.scss"]
 })
 export class TreeViewComponent implements OnChanges {
-    @Input() adapter: ITreeViewAdapter<any> = undefined;
+    @Input() adapter: ITreeViewAdapter<any>;
     @Input() data: any[] = [];
     @Input() lineHeight: number = 20;
     @Input() selectedItem: any = undefined;
@@ -20,7 +20,7 @@ export class TreeViewComponent implements OnChanges {
     @ContentChild(TemplateRef) templateRef: TemplateRef<any>;
     @ViewChild("scrollWrapper") scrollWrapper;
 
-    private treeLineList = new TreeLineList([], undefined);
+    private treeLineList: TreeLineList;
     visibleTreeLines = new ReusePool<TreeLine, TreeLineViewModel>(() => new TreeLineViewModel());
     totalScrollHeight: number;
 
@@ -97,10 +97,10 @@ export class TreeLineViewModel implements PoolableViewModel<TreeLine> {
     isSelected: boolean;
     hasChildren: boolean;
     clear() {
-        this.hasChildren = undefined;
-        this.isExpanded = undefined;
-        this.paddingLeft = undefined;
-        this.top = undefined;
+        this.hasChildren = false;
+        this.isExpanded = false;
+        this.paddingLeft = 0;
+        this.top = 0;
     }
 }
 

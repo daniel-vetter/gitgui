@@ -1,4 +1,4 @@
-import { Repository, ChangedFile } from "../model";
+import { Repository, ChangedFile, FileRef } from "../model";
 import { GitRaw } from "../infrastructure/git-raw";
 import { Injectable } from "@angular/core";
 
@@ -21,9 +21,11 @@ export class Index {
         return (await this.gitRaw.run(repository.location, ["reset", changedFile])).exitCode === 0;
     }
 
-    private getNewestFileRef(changedFile: ChangedFile) {
+    private getNewestFileRef(changedFile: ChangedFile): FileRef {
         if (changedFile.newFile)
             return changedFile.newFile;
-        return changedFile.oldFile;
+        if (changedFile.oldFile)
+            return changedFile.oldFile;
+        throw Error("Invalid state in ChangedFile");
     }
 }

@@ -112,7 +112,7 @@ class ChildIndex {
         return this.getSubIndex(node).set(child.name, child);
     }
 
-    get(node: RefNode, childLabel: string): RefNode {
+    get(node: RefNode, childLabel: string): RefNode | undefined {
         return this.getSubIndex(node).get(childLabel);
     }
 

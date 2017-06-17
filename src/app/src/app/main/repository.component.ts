@@ -11,7 +11,7 @@ import { RepositoryOpener } from "../services/repository-opener";
 })
 export class RepositoryComponent implements OnInit, OnDestroy {
 
-    repository: Repository;
+    repository?: Repository;
     selectedCommit: RepositoryCommit;
     repositoryIsOpening: boolean;
     showSideBar: boolean;

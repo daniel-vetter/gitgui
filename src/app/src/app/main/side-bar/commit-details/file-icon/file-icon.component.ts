@@ -9,8 +9,8 @@ import { IconDefinition, IconImageDefinition, IconMaterialDefinition } from "../
 export class FileIconComponent implements OnChanges {
     @Input() icon: IconDefinition;
     visible = false;
-    imgPath: string;
-    materialName: string;
+    imgPath: string | undefined;
+    materialName: string | undefined;
 
     ngOnChanges() {
         if (!this.icon) {

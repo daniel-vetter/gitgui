@@ -30,11 +30,11 @@ export class PackageParser {
         if (!data)
             return;
         if (data.file && allIconDefinitions.get(data.file))
-            pack.file = allIconDefinitions.get(data.file);
+            pack.file = allIconDefinitions.get(data.file)!;
         if (data.folder && allIconDefinitions.get(data.folder))
-            pack.folder = allIconDefinitions.get(data.folder);
+            pack.folder = allIconDefinitions.get(data.folder)!;
         if (data.folderExpanded && allIconDefinitions.get(data.folderExpanded))
-            pack.folderExpanded = allIconDefinitions.get(data.folderExpanded);
+            pack.folderExpanded = allIconDefinitions.get(data.folderExpanded)!;
 
         this.readReferences(data.fileExtensions, pack.fileExtensions, allIconDefinitions);
         this.readReferences(data.fileNames, pack.fileNames, allIconDefinitions);
@@ -48,7 +48,7 @@ export class PackageParser {
                    allIconDefinitions: Map<string, IconDefinition>): void {
         for (const key in data) {
             if (data.hasOwnProperty(key)) {
-                target.set(key, allIconDefinitions.get(data[key]));
+                target.set(key, allIconDefinitions.get(data[key])!);
             }
         }
     }

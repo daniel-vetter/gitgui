@@ -8,7 +8,6 @@ import { GitPathProvider } from "./infrastructure/git-executable-provider";
 import { GitRaw } from "./infrastructure/git-raw";
 import { Process } from "./infrastructure/process";
 import { Cloner } from "./reader/cloner";
-import { ObjectDiffReader } from "./reader/object-diff-reader";
 import { ObjectReader } from "./reader/object-reader";
 import { CurrentHeadReader } from "./reader/current-head-reader";
 import { Git } from "./git";
@@ -26,7 +25,6 @@ import { Commiter } from "./actions/commiter";
         RefsReader,
         CommitDetailsReader,
         Cloner,
-        ObjectDiffReader,
         ObjectReader,
         CurrentHeadReader,
         Index,

@@ -51,9 +51,9 @@ export class RepositoryToHistoryRepositoryMapper {
         for (const historyCommit of historyRepository.entries) {
             if (!(historyCommit instanceof HistoryCommitEntry))
                 continue;
-            const repositoryCommit = hashToRepositoryCommitMap.get(historyCommit.hash);
+            const repositoryCommit = hashToRepositoryCommitMap.get(historyCommit.hash)!;
             for (const parent of repositoryCommit.parents) {
-                const parentHistoryCommit = hashToHistoryCommitMap.get(parent.hash);
+                const parentHistoryCommit = hashToHistoryCommitMap.get(parent.hash)!;
                 historyCommit.parents.push(parentHistoryCommit);
                 parentHistoryCommit.children.push(historyCommit);
             }
@@ -62,7 +62,7 @@ export class RepositoryToHistoryRepositoryMapper {
         // connect "Current changes" entry with the HEAD entry
         if (historyRepository.entries.length > 0 && historyRepository.entries[0] instanceof HistoryCurrentChangesEntry) {
             const currentChangeEntry = historyRepository.entries[0];
-            const headCommitEntry = hashToHistoryCommitMap.get(repository.head.hash);
+            const headCommitEntry = hashToHistoryCommitMap.get(repository.head.hash)!;
             currentChangeEntry.parents.push(headCommitEntry);
             headCommitEntry.children.push(currentChangeEntry);
         }

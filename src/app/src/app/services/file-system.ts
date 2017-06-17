@@ -48,7 +48,7 @@ export class FileSystem {
         });
     }
 
-    findFiles(path: string, fileFilter: (x: string) => boolean, directoryFilter: (x: string) => boolean = undefined): string[] {
+    findFiles(path: string, fileFilter: (x: string) => boolean, directoryFilter?: (x: string) => boolean): string[] {
         let results: string[] = [];
         const list = fs.readdirSync(path);
         list.forEach(file => {

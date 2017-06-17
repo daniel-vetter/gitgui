@@ -9,11 +9,12 @@ export class LaneAssigner {
      * @returns the the highest lane count assigned
      */
     assignLanes(repository: HistoryRepository): void {
-        const lanes: number[] = [];
+        const lanes: (number | undefined)[] = [];
         for (const commit of repository.entries) {
 
             for (let i = 0; i < lanes.length; i++) {
-                if (lanes[i] <= commit.index)
+                const index = lanes[i];
+                if (index !== undefined && index <= commit.index)
                     lanes[i] = undefined;
             }
 

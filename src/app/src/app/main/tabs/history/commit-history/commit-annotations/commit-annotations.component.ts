@@ -11,20 +11,25 @@ import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
     styleUrls: ["./commit-annotations.component.scss"]
 })
 export class CommitAnnotationsComponent implements OnChanges {
-    @Input() historyRepository: HistoryRepository = undefined;
-    @Input() visibleRange: VisibleRange = undefined;
-    @Input() width = undefined;
+    @Input() historyRepository?: HistoryRepository;
+    @Input() visibleRange?: VisibleRange;
+    @Input() width: number = 0;
 
     annotationBundles = new ReusePool<HistoryEntryBase, AnnotationBundleViewModel>(() => new AnnotationBundleViewModel());
     font: string;
-    currentExpandedCommit: HistoryCommitEntry;
+    currentExpandedCommit?: HistoryCommitEntry;
 
     constructor(private metrics: Metrics,
         private laneColorProvider: LaneColorProvider,
         private widthCalculator: WidthCalculator,
         private elementRef: ElementRef,
         private changeDetectorRef: ChangeDetectorRef) {
-        this.font = window.getComputedStyle(document.body, null).font;
+        const bodyFont = window.getComputedStyle(document.body, undefined).font;
+        if (bodyFont == null || bodyFont == undefined) {
+            throw Error("<body> has not font defined.");
+        } else {
+            this.font = bodyFont;
+        }
     }
 
     ngOnChanges(changes: any) {
@@ -40,7 +45,7 @@ export class CommitAnnotationsComponent implements OnChanges {
         this.annotationBundles.remapRange(this.historyRepository.entries, this.visibleRange.start, this.visibleRange.end, (entry, vm) => {
 
             if (!(entry instanceof HistoryCommitEntry))
-                return;
+                return false;
 
             if (entry.tags.length === 0 &&
                 entry.branches.length === 0)
@@ -164,13 +169,13 @@ class AnnotationBundleViewModel implements PoolableViewModel<HistoryCommitEntry>
     data: HistoryCommitEntry;
     visible: boolean;
     clear() {
-        this.top = undefined;
-        this.annotations = undefined;
-        this.color = undefined;
-        this.colorLight = undefined;
-        this.hiddenAnnotationCount = undefined;
-        this.hiddenAnnotationCountWidth = undefined;
-        this.totalWidth = undefined;
+        this.top = 0;
+        this.annotations = [];
+        this.color = "#000000";
+        this.colorLight = "#000000";
+        this.hiddenAnnotationCount = 0;
+        this.hiddenAnnotationCountWidth = 0;
+        this.totalWidth = 0;
     }
 }
 

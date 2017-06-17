@@ -48,7 +48,7 @@ export class CommitDetailsComponent implements OnChanges {
             const file = changedFile.oldFile ? changedFile.oldFile : changedFile.newFile;
             const tab = new FileContentTab();
             tab.repository = this.commit.repository;
-            tab.file = file;
+            tab.file = file!;
             tab.ui.isPersistent = false;
             this.tabManager.createNewTab(tab);
         } else {

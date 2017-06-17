@@ -9,8 +9,8 @@ import { md5 } from "./md5";
 export class ProfileImageComponent implements OnChanges {
 
     @Input() commit: RepositoryCommit;
-    imageUrl: string = undefined;
-    shortName: string = undefined;
+    imageUrl?: string;
+    shortName: string = "";
     requestId = 0;
 
     constructor(private changeDetectorRef: ChangeDetectorRef) {

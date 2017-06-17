@@ -36,7 +36,10 @@ export class RepositoryReader {
         repository.commits.forEach(x => x.repository = repository);
         repository.status = await statusPromise;
         const currentHeadHash = await currentHeadHashPromise;
-        repository.head = repository.commits.find(x => x.hash === currentHeadHash);
+        const currentHeadCommit =  repository.commits.find(x => x.hash === currentHeadHash);
+        if (!currentHeadCommit)
+            throw Error("Could not find head commit");
+        repository.head = currentHeadCommit;
         repository.refs = await this.refsReader.readAllRefs(repository.location, repository.commits);
         repository.onUpdate.emit(new UpdateState(true, true, true, true));
         return repository;

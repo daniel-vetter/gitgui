@@ -41,7 +41,7 @@ export class CommitsReader {
                 if (!parentCommit) {
                     continue;
                 }
-                commitIndex.get(currentCommitHash).parents.push(commitIndex.get(parentHash));
+                commitIndex.get(currentCommitHash)!.parents.push(commitIndex.get(parentHash)!);
             }
         });
         return allCommits;

@@ -46,6 +46,8 @@ export class Process {
 
     private onIncomingResponse(arg: ProcessStartResponse) {
         const subscriber = this.runningRequest.get(arg.id);
+        if (!subscriber)
+            throw Error("Invalid process id: " + arg.id);
 
         if (arg.type === PROCESS_START_RESPONSE_TYPE_EXIT) {
             this.zone.run(() => {

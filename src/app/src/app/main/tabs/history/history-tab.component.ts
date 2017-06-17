@@ -11,9 +11,9 @@ declare var global: any;
     templateUrl: "./history-tab.component.html"
 })
 export class HistoryTabComponent implements OnChanges {
-    @Input() tab: HistoryTab = undefined;
+    @Input() tab: HistoryTab;
 
-    repository: Repository;
+    repository: Repository | undefined;
     selectedCommit: RepositoryCommit;
 
     constructor(private sideBarManager: SideBarManager) { }
@@ -31,7 +31,7 @@ export class HistoryTabComponent implements OnChanges {
         if (this.selectedCommit) {
             this.sideBarManager.setContent(new SideBarCommitDetails(this.selectedCommit));
         } else {
-            this.sideBarManager.setContent(new SideBarRepositoryStatus(this.repository));
+            this.sideBarManager.setContent(new SideBarRepositoryStatus(this.repository!));
         }
     }
 }

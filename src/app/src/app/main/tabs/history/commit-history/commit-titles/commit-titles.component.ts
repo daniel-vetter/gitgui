@@ -12,8 +12,8 @@ import { RepositoryCommit } from "../../../../../services/git/model";
 })
 export class CommitTitlesComponent implements OnChanges {
 
-    @Input() historyRepository: HistoryRepository = undefined;
-    @Input() visibleRange: VisibleRange = undefined;
+    @Input() historyRepository?: HistoryRepository;
+    @Input() visibleRange: VisibleRange = new VisibleRange(0, 0);
 
     visibleCommits = new ReusePool<HistoryEntryBase, CommitTitleViewModel>(() => new CommitTitleViewModel());
 
@@ -59,7 +59,7 @@ export class CommitTitlesComponent implements OnChanges {
 
 export class CommitTitleViewModel implements PoolableViewModel<HistoryEntryBase> {
     id: string;
-    data: HistoryEntryBase;
+    data?: HistoryEntryBase;
     title: string;
     positionTop: number;
     color: string;
@@ -70,12 +70,12 @@ export class CommitTitleViewModel implements PoolableViewModel<HistoryEntryBase>
 
 
     clear() {
-        this.id = undefined;
+        this.id = "";
         this.data = undefined;
-        this.title = undefined;
-        this.positionTop = undefined;
-        this.color = undefined;
-        this.profileImageUrl = undefined;
-        this.isVirtual = undefined;
+        this.title = "";
+        this.positionTop = 0;
+        this.color = "#000000";
+        this.profileImageUrl = "";
+        this.isVirtual = false;
     }
 }

@@ -1,7 +1,7 @@
 export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 
     public viewModels: TViewModel[] = [];
-    private debugTitle: string = undefined;
+    private debugTitle: string | undefined = undefined;
 
     constructor(private viewModelFactory: () => TViewModel) {}
 
@@ -82,7 +82,7 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 }
 
 export interface PoolableViewModel<TModel> {
-    data: TModel;
+    data?: TModel;
     visible: boolean;
     clear();
 }

@@ -11,7 +11,7 @@ export class LineRangeQueryHelper {
 
     private updateIndex() {
         if (!this.entries) return;
-        const lines = [];
+        const lines: Line[] = [];
         this.lineIndex = [];
 
         for (const entry of this.entries) {
