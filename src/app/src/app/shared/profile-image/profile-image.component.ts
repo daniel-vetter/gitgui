@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, NgZone, ChangeDetectorRef } from "@angular/core";
+import { Component, Input, OnChanges, NgZone, ChangeDetectorRef, SimpleChanges } from "@angular/core";
 import { RepositoryCommit } from "../../services/git/model";
 import { md5 } from "./md5";
 
@@ -21,7 +21,7 @@ export class ProfileImageComponent implements OnChanges {
         this.changeDetectorRef.detectChanges();
     }
 
-    ngOnChanges(changes) {
+    ngOnChanges(changes: SimpleChanges) {
         if (!changes.commit)
             return;
         if (this.commit === undefined) {

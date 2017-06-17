@@ -1,4 +1,4 @@
-import { Input, OnChanges, Component } from "@angular/core";
+import { Input, OnChanges, Component, SimpleChanges } from "@angular/core";
 import { HistoryCommitEntry, HistoryRepository, VisibleRange, HistoryEntryBase, HistoryCurrentChangesEntry } from "../model/model";
 import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 import { LaneColorProvider } from "../services/lane-color-provider";
@@ -23,7 +23,7 @@ export class CommitTitlesComponent implements OnChanges {
         this.visibleRange = new VisibleRange(0, 0);
     }
 
-    ngOnChanges(changes) {
+    ngOnChanges(changes: SimpleChanges) {
         this.updateVisibleCommits();
     }
 
@@ -52,7 +52,7 @@ export class CommitTitlesComponent implements OnChanges {
         });
     }
 
-    show(item) {
+    show(item: CommitTitleViewModel) {
         console.log(item);
     }
 }

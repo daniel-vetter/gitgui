@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, TemplateRef, ContentChild, ViewChild, EventEmitter, Output } from "@angular/core";
+import { Component, Input, OnChanges, TemplateRef, ContentChild, ViewChild, EventEmitter, Output, QueryList, ElementRef } from "@angular/core";
 
 import { TreeLineList, TreeLine } from "./tree-line-list";
 import { ReusePool, PoolableViewModel } from "../../main/tabs//history/commit-history/services/reuse-pool";
@@ -18,7 +18,7 @@ export class TreeViewComponent implements OnChanges {
     @Output() itemMouseDown = new EventEmitter<any>();
     @Output() itemMouseUp = new EventEmitter<any>();
     @ContentChild(TemplateRef) templateRef: TemplateRef<any>;
-    @ViewChild("scrollWrapper") scrollWrapper;
+    @ViewChild("scrollWrapper") scrollWrapper : ElementRef;
 
     private treeLineList: TreeLineList;
     visibleTreeLines = new ReusePool<TreeLine, TreeLineViewModel>(() => new TreeLineViewModel());
@@ -67,7 +67,7 @@ export class TreeViewComponent implements OnChanges {
     }
 
     private updateVisibleLines() {
-
+console.log(this.scrollWrapper);
         const visibleStart = Math.max(0, Math.floor(this.scrollWrapper.nativeElement.scrollTop / this.lineHeight));
         const visibleEnd = Math.floor(visibleStart + this.scrollWrapper.nativeElement.clientHeight / this.lineHeight) + 1;
 

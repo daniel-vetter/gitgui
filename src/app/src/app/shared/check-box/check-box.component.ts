@@ -22,7 +22,7 @@ export class CheckBoxComponent implements OnInit,  OnChanges {
         this.update();
     }
 
-    onClick(event) {
+    onClick(event: MouseEvent) {
 
         if (this.checked === undefined || this.checked === false) {
             this.checked = true;

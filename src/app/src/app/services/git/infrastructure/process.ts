@@ -12,7 +12,7 @@ import {
 } from "../../../../../../shared/ipc-interfaces/process-start";
 const { ipcRenderer } = (<any>window).require("electron");
 
-declare var TextDecoder;
+declare var TextDecoder: any;
 
 @Injectable()
 export class Process {
@@ -21,7 +21,7 @@ export class Process {
     private runningRequest = new Map<number, Rx.Subscriber<ProcessStatus>>();
 
     constructor(private zone: NgZone) {
-        ipcRenderer.on(PROCESS_START_RESPONSE, (event, args) => {
+        ipcRenderer.on(PROCESS_START_RESPONSE, (event: any, args: ProcessStartResponse) => {
             this.onIncomingResponse(args);
         });
     }

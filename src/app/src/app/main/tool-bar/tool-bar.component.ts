@@ -26,7 +26,7 @@ export class ToolBarComponent {
     onRefreshClicked() {
         const allOpenRepositories: Repository[] = [];
         for (const tab of this.tabManager.allTabs) {
-            const repository = tab["repository"];
+            const repository = (<any>tab)["repository"]; // TODO: Use a interface
             if (repository && allOpenRepositories.indexOf(repository) === -1) {
                 allOpenRepositories.push(repository);
             }
@@ -34,6 +34,5 @@ export class ToolBarComponent {
         for (const rep of allOpenRepositories) {
             this.git.updateRepository(rep);
         }
-        
     }
 }

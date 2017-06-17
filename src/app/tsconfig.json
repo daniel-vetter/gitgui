@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "target": "es5",
     "strictNullChecks": true,
+    "strict": true,
     "typeRoots": [
       "node_modules/@types"
     ],

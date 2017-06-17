@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, AfterViewInit, ViewChild } from "@angular/core";
+import { Component, Input, OnChanges, AfterViewInit, ViewChild, ElementRef } from "@angular/core";
 import { FileContentTab } from "../../tabs";
 import { Path } from "../../../../services/path";
 import { Git } from "../../../../services/git/git";
@@ -10,7 +10,7 @@ import { Git } from "../../../../services/git/git";
 })
 export class FileContentTabComponent implements OnChanges, AfterViewInit {
     @Input() tab: FileContentTab;
-    @ViewChild("container") container;
+    @ViewChild("container") container: ElementRef;
 
     fileName: string = "";
     content: string = "";
@@ -36,7 +36,7 @@ export class FileContentTabComponent implements OnChanges, AfterViewInit {
     private createEditors() {
         // HACK: wait till the monaco editor is loaded
         // TODO: move this to the app startup, so the app is not display till the editor is fully loaded.
-        if (!window["monaco"]) {
+        if (!(<any>window)["monaco"]) {
             setTimeout(() => this.createEditors(), 0);
             return;
         }

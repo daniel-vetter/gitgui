@@ -16,7 +16,7 @@ export class FileSystem {
     }
 
     getDirectories(path: string): string[] {
-        return fs.readdirSync(path).filter(file => fs.statSync(Path.combine(path, file)).isDirectory());
+        return fs.readdirSync(path).filter((file: string) => fs.statSync(Path.combine(path, file)).isDirectory());
     }
 
     readJson(path: string): any {
@@ -29,7 +29,7 @@ export class FileSystem {
 
     async readText(path: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
-            fs.readFile(path, "utf8", (error, data) => {
+            fs.readFile(path, "utf8", (error: string, data: string) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -51,7 +51,7 @@ export class FileSystem {
     findFiles(path: string, fileFilter: (x: string) => boolean, directoryFilter?: (x: string) => boolean): string[] {
         let results: string[] = [];
         const list = fs.readdirSync(path);
-        list.forEach(file => {
+        list.forEach((file: string) => {
             file = Path.combine(path, file);
             const stat = fs.statSync(file);
             if (stat && stat.isDirectory()) {

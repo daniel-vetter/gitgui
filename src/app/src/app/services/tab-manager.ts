@@ -68,13 +68,15 @@ export class TabManager {
 }
 
 export abstract class Tab {
-    ui = new TabUi();
-    abstract get key();
+    ui = new TabUi(this);
+    abstract get key(): string;
 }
 
 export class TabUi {
 
-    onDetailsChange: ((TabContainer) => void) | undefined;
+    constructor(private tab: Tab) {}
+
+    onDetailsChange: ((tabContainer: Tab) => void) | undefined;
     private _title = "";
     private _isCloseable = true;
     private _isPersistent = true;
@@ -108,6 +110,6 @@ export class TabUi {
 
     private raiseChangeEvent() {
         if (this.onDetailsChange)
-            this.onDetailsChange(this);
+            this.onDetailsChange(this.tab);
     }
 }

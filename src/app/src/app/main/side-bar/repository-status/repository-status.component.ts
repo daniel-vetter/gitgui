@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild } from "@angular/core";
+import { Component, Input, OnChanges, ViewChild, ElementRef } from "@angular/core";
 import { Repository, ChangedFile, UpdatedElements } from "../../../services/git/model";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
 import { Intermediate } from "../../../shared/check-box/check-box.component";
@@ -17,7 +17,7 @@ import * as autosize from "autosize";
 })
 export class RepositoryStatusComponent implements OnChanges {
     @Input() repository: Repository;
-    @ViewChild("commitMessageTextArea") commitMessageTextArea;
+    @ViewChild("commitMessageTextArea") commitMessageTextArea: ElementRef;
 
     changedFiles: ChangedFile[] = [];
     commitMessage: string = "";

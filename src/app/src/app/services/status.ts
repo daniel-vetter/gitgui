@@ -1,20 +1,21 @@
 import { EventEmitter } from "@angular/core";
+import * as Rx from "rxjs";
 export class Status {
 
     private _runningProcesses: StatusProcessTracker[] = [];
-    onRunningProcessesChange = new EventEmitter();
+    onRunningProcessesChange = new Rx.Subject<void>();
 
     startProcess(description: string, workToDo: (() => any) | undefined = undefined): StatusProcessTracker {
         const tracker = new StatusProcessTracker(description, x => {
             const index = this._runningProcesses.indexOf(x);
             if (index !== -1) {
                 this._runningProcesses.splice(index, 1);
-                this.onRunningProcessesChange.emit();
+                this.onRunningProcessesChange.next();
             }
         });
 
         this._runningProcesses.push(tracker);
-        this.onRunningProcessesChange.emit();
+        this.onRunningProcessesChange.next();
 
         if (workToDo) {
             let result: any;

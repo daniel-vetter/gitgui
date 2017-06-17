@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Status } from "../../services/status";
+import * as Rx from "rxjs";
+import { Subscription } from "../../services/event-aggregator";
 
 @Component({
     selector: "status-bar",
@@ -8,7 +10,7 @@ import { Status } from "../../services/status";
 })
 export class StatusBarComponent implements OnInit, OnDestroy {
 
-    private _subscription;
+    private _subscription: Rx.Subscription;
     statusText: string;
 
     constructor(private status: Status) {}

@@ -84,5 +84,5 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
 export interface PoolableViewModel<TModel> {
     data?: TModel;
     visible: boolean;
-    clear();
+    clear(): void;
 }
