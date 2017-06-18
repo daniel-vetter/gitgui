@@ -212,14 +212,12 @@ export class CommitHistoryComponent implements OnChanges {
         }
     }
 
-    onMouseOut(event: MouseEvent) {
+    onMouseLeave(event: MouseEvent) {
         if (!this.repository)
             return;
-        if (event === undefined || this.scrollWrapper.nativeElement === event.target) {
-            if (this.entryHighlighted !== undefined) {
-                this.entryHighlighted = undefined;
-                this.changeDetectorRef.detectChanges();
-            }
+        if (this.entryHighlighted !== undefined) {
+            this.entryHighlighted = undefined;
+            this.changeDetectorRef.detectChanges();
         }
     }
 
