@@ -97,9 +97,14 @@ export class RepositoryStatusComponent implements OnChanges {
     async onCommitClicked() {
         this.status.startProcess("Committing", async () => {
 
-            const historyTabs = this.tabManager.allTabs.filter(async x => x instanceof HistoryTab && await x.repository === this.repository);
-            if (historyTabs.length === 1)
-                this.tabManager.selectedTab = historyTabs[0];
+            for (const tab of this.tabManager.allTabs) {
+                if (!(tab instanceof HistoryTab))
+                    continue;
+                if (this.repository == await tab.repository) {
+                    this.tabManager.selectedTab = tab;
+                    break;
+                }
+            }
 
             await this.git.commit(this.repository, this.commitMessage, false);
             await this.git.updateRepository(this.repository);
