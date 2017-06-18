@@ -43,10 +43,8 @@ export class CommitLanesComponent implements OnChanges {
                 this.totalLaneCount = 0;
             }
         }
-        if (changes.visibleRange || changes.horizontalScroll || changes.width) {
-            this.updateBubbles();
-            this.updateLines();
-        }
+        this.updateBubbles();
+        this.updateLines();
     }
 
     private updateBubbles() {
