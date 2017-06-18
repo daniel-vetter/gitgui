@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ContentChild, ElementRef, AfterContentInit } from "@angular/core";
+import { Component, TemplateRef, ContentChild, ElementRef, AfterContentInit, Input } from "@angular/core";
 
 @Component({
     selector: "loading-overlay",
@@ -6,6 +6,8 @@ import { Component, TemplateRef, ContentChild, ElementRef, AfterContentInit } fr
     styleUrls: ["./loading-overlay.component.scss"]
 })
 export class LoadingOverlayComponent implements AfterContentInit {
+
+    @Input() type: LoadingOverlayType = "Top";
 
     constructor(private root: ElementRef) {
 
@@ -18,3 +20,5 @@ export class LoadingOverlayComponent implements AfterContentInit {
         parent.style.position = "relative";
     }
 }
+
+export type LoadingOverlayType = "Full" | "Top";

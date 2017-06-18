@@ -3,7 +3,7 @@ import { Tab } from "../../services/tab-manager";
 
 export class HistoryTab extends Tab {
     key = "HistoryTab";
-    repository: Repository;
+    repository: Promise<Repository>;
 }
 
 export class FileContentDiffTab extends Tab {

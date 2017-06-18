@@ -1,4 +1,3 @@
-import { CurrentRepository } from "./current-repository";
 import { Injectable } from "@angular/core";
 import { EventAggregator } from "./event-aggregator";
 import { Status } from "./status";
@@ -17,25 +16,20 @@ export class RepositoryOpener {
     }
 
     constructor(private git: Git,
-        private currentRepository: CurrentRepository,
         private eventAggregator: EventAggregator,
         private status: Status,
         private tabManager: TabManager) { }
 
     async open(path: string) {
         const status = this.status.startProcess("Opening Repository");
-        this._isOpening = true;
         this.eventAggregator.publish("OpenRepositoryStarted");
-        this.currentRepository.set(undefined);
-        const x = await this.git.readRepository(path);
-        this.tabManager.closeAllTabs();
+        const repository = this.git.readRepository(path);
         const tab = new HistoryTab();
-        tab.repository = x;
+        tab.repository = repository;
         tab.ui.title = Path.getLastPart(path);
         tab.ui.isCloseable = false;
         tab.ui.isPersistent = true;
         this.tabManager.createNewTab(tab);
-        this._isOpening = false;
         this.eventAggregator.publish("OpenRepositoryEnded");
         status.completed();
     }

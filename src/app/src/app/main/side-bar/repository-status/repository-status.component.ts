@@ -97,7 +97,7 @@ export class RepositoryStatusComponent implements OnChanges {
     async onCommitClicked() {
         this.status.startProcess("Committing", async () => {
 
-            const historyTabs = this.tabManager.allTabs.filter(x => x instanceof HistoryTab && x.repository === this.repository);
+            const historyTabs = this.tabManager.allTabs.filter(async x => x instanceof HistoryTab && await x.repository === this.repository);
             if (historyTabs.length === 1)
                 this.tabManager.selectedTab = historyTabs[0];
 

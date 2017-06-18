@@ -24,10 +24,12 @@ export class RepositoryReader {
         if (repository.updateState.currentlyUpdatingElements) {
             throw Error("Repository is currently updating");
         }
-        repository.updateState.currentlyUpdatingElements = new UpdatedElements(false, false, true, false);
-        repository.updateState.onUpdateStarted.next(repository.updateState.currentlyUpdatingElements);
+        const updatedElements = new UpdatedElements(false, false, true, false);
+        repository.updateState.currentlyUpdatingElements = updatedElements;
+        repository.updateState.onUpdateStarted.next(updatedElements);
         repository.status = await this.statusReader.readStatus(repository.location);
-        repository.updateState.onUpdateFinished.next(repository.updateState.currentlyUpdatingElements);
+        repository.updateState.currentlyUpdatingElements = undefined;
+        repository.updateState.onUpdateFinished.next(updatedElements);
         return repository;
     }
 
@@ -35,8 +37,9 @@ export class RepositoryReader {
         if (repository.updateState.currentlyUpdatingElements) {
             throw Error("Repository is currently updating");
         }
-        repository.updateState.currentlyUpdatingElements = new UpdatedElements(true, true, true, true);
-        repository.updateState.onUpdateStarted.next(repository.updateState.currentlyUpdatingElements);
+        const updatedElements = new UpdatedElements(true, true, true, true);
+        repository.updateState.currentlyUpdatingElements = updatedElements;
+        repository.updateState.onUpdateStarted.next(updatedElements);
 
         const commitsPromise = this.commitsReader.readAllCommits(repository.location);
         const statusPromise = this.statusReader.readStatus(repository.location);
@@ -51,7 +54,8 @@ export class RepositoryReader {
             throw Error("Could not find head commit");
         repository.head = currentHeadCommit;
         repository.refs = await this.refsReader.readAllRefs(repository.location, repository.commits);
-        repository.updateState.onUpdateFinished.next(repository.updateState.currentlyUpdatingElements);
+        repository.updateState.currentlyUpdatingElements = undefined;
+        repository.updateState.onUpdateFinished.next(updatedElements);
         return repository;
     }
 }

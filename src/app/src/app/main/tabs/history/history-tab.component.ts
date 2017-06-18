@@ -2,6 +2,7 @@ import { Component, Input, OnChanges } from "@angular/core";
 import { HistoryTab } from "../tabs";
 import { Repository, RepositoryCommit } from "../../../services/git/model";
 import { SideBarManager, SideBarCommitDetails, SideBarRepositoryStatus } from "../../../services/side-bar-manager";
+import { LoadingOverlayType } from "../../../shared/loading-overlay/loading-overlay.component";
 
 declare var monaco: any;
 declare var global: any;
@@ -13,14 +14,15 @@ declare var global: any;
 export class HistoryTabComponent implements OnChanges {
     @Input() tab: HistoryTab;
 
+    loadingOverlayType: LoadingOverlayType = "Full";
     repository?: Repository;
     selectedCommit?: RepositoryCommit;
 
     constructor(private sideBarManager: SideBarManager) { }
 
-    ngOnChanges() {
+    async ngOnChanges() {
         if (this.tab && this.tab.repository) {
-            this.repository = this.tab.repository;
+            this.repository = await this.tab.repository;
             this.tab.ui.isCloseable = false;
         } else {
             this.repository = undefined;

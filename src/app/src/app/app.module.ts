@@ -7,7 +7,6 @@ import { AppComponent } from "./app.component";
 import { EventAggregator } from "./services/event-aggregator";
 import { Config } from "./services/config";
 import { CommitHistoryModule } from "./main/tabs/history/commit-history/commit-history.module";
-import { CurrentRepository } from "./services/current-repository";
 import { ThemeManager } from "./services/theme-manager";
 import { CommitDetailsComponent } from "./main/side-bar/commit-details/commit-details.component";
 import { GitModule } from "./services/git/git.module";
@@ -79,7 +78,6 @@ import { FileTreeBuilder } from "./main/side-bar/changed-files-tree/file-tree-bu
       EventAggregator,
       Platform,
       Config,
-      CurrentRepository,
       ThemeManager,
       RepositoryOpener,
       FileTreeBuilder,
