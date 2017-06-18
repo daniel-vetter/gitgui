@@ -26,6 +26,7 @@ export class RepositoryStatusComponent implements OnChanges {
     commitButtonEnabled = true;
 
     private processTracker = new ProcessTracker();
+    private commitIsRunning = false;
 
     constructor(private fileTreeBuilder: FileTreeBuilder,
         private git: Git,
@@ -70,7 +71,8 @@ export class RepositoryStatusComponent implements OnChanges {
     private updateButtonEnableState() {
         this.commitButtonEnabled = this.repository.status.indexChanges.length !== 0 &&
                                    this.commitMessage !== undefined &&
-                                   this.commitMessage.trim() !== "";
+                                   this.commitMessage.trim() !== "" &&
+                                   this.commitIsRunning === false;
     }
 
     onFileSelected(changedFile: ChangedFile) {
@@ -119,7 +121,8 @@ export class RepositoryStatusComponent implements OnChanges {
         if (!this.commitButtonEnabled)
             return;
         this.status.startProcess("Committing", async () => {
-
+            this.commitIsRunning = true;
+            this.updateButtonEnableState();
             await this.processTracker.allDone();
             for (const tab of this.tabManager.allTabs) {
                 if (!(tab instanceof HistoryTab))
@@ -132,9 +135,10 @@ export class RepositoryStatusComponent implements OnChanges {
 
             await this.git.commit(this.repository, this.commitMessage, false);
             await this.git.updateRepository(this.repository);
+            this.commitMessage = "";
+            this.commitIsRunning = false;
             this.updateTree();
             this.updateButtonEnableState();
-            this.commitMessage = "";
         });
     }
 
