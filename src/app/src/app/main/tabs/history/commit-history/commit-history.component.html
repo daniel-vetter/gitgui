@@ -14,8 +14,6 @@
         <!-- The three parts of this component: Annotions, LaneGrid, CommitTitles -->
         <div class="scrollInner" [style.height.px]="maxScrollHeight">
 
-
-
             <div [style.width.px]="annotationGridWidth">
                 <commit-annotations [historyRepository]="historyRepository" [visibleRange]="visibleRange" [width]="annotationGridWidth">
                 </commit-annotations>
@@ -42,8 +40,6 @@
             </div>
         </div>
     </div>
-
-
 
     <!-- Horizontal scrollbar to scroll the lane grid -->
     <div class="horizontalScrollContainer" [class.visible]="mouseIsInLaneGrid || isInLaneGridResizeMode" [style.left.px]="annotationGridWidth"

@@ -21,9 +21,12 @@ export class CommitLanesComponent implements OnChanges {
 
     private lineQueryHelper = new LineRangeQueryHelper([]);
     private totalLaneCount = 0;
+    metrics: Metrics;
 
     constructor(private laneColorProvider: LaneColorProvider,
-        private metrics: Metrics) { }
+        metrics: Metrics) {
+            this.metrics = metrics;
+        }
 
     ngOnChanges(changes: any) {
         if (!this.historyRepository)
