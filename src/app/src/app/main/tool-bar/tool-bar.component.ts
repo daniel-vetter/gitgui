@@ -23,10 +23,15 @@ export class ToolBarComponent {
         throw "Test";
     }
 
-    onRefreshClicked() {
+    async onRefreshClicked() {
         const allOpenRepositories: Repository[] = [];
         for (const tab of this.tabManager.allTabs) {
-            const repository = (<any>tab)["repository"]; // TODO: Use a interface
+            const repositoryOrRepositoryPromise = <Repository | Promise<Repository>>((<any>tab)["repository"]); // TODO: Use a interface
+            let repository: Repository | undefined;
+            if (repositoryOrRepositoryPromise instanceof Repository)
+                repository = repositoryOrRepositoryPromise;
+            else if (repositoryOrRepositoryPromise !== undefined)
+                repository = await repositoryOrRepositoryPromise;
             if (repository && allOpenRepositories.indexOf(repository) === -1) {
                 allOpenRepositories.push(repository);
             }
