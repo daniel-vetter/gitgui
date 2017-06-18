@@ -4,6 +4,7 @@ import { Notifications } from "../notifications/notifications";
 import { Git } from "../../services/git/git";
 import { TabManager } from "../../services/tab-manager";
 import { Repository } from "../../services/git/model";
+import { Status } from "../../services/status";
 @Component({
     templateUrl: "./tool-bar.component.html",
     styleUrls: ["./tool-bar.component.scss"],
@@ -12,8 +13,9 @@ import { Repository } from "../../services/git/model";
 export class ToolBarComponent {
 
     constructor(private fileOpenRepository: FileOpenRepository,
-                private git: Git,
-                private tabManager: TabManager) {}
+        private git: Git,
+        private tabManager: TabManager,
+        private status: Status) { }
 
     onOpenClicked() {
         this.fileOpenRepository.onClick();
@@ -23,21 +25,24 @@ export class ToolBarComponent {
         throw "Test";
     }
 
-    async onRefreshClicked() {
-        const allOpenRepositories: Repository[] = [];
-        for (const tab of this.tabManager.allTabs) {
-            const repositoryOrRepositoryPromise = <Repository | Promise<Repository>>((<any>tab)["repository"]); // TODO: Use a interface
-            let repository: Repository | undefined;
-            if (repositoryOrRepositoryPromise instanceof Repository)
-                repository = repositoryOrRepositoryPromise;
-            else if (repositoryOrRepositoryPromise !== undefined)
-                repository = await repositoryOrRepositoryPromise;
-            if (repository && allOpenRepositories.indexOf(repository) === -1) {
-                allOpenRepositories.push(repository);
+    onRefreshClicked() {
+        this.status.startProcess("Updating repository", async () => {
+            const allOpenRepositories: Repository[] = [];
+            for (const tab of this.tabManager.allTabs) {
+                const repositoryOrRepositoryPromise = <Repository | Promise<Repository>>((<any>tab)["repository"]); // TODO: Use a interface
+                let repository: Repository | undefined;
+                if (repositoryOrRepositoryPromise instanceof Repository)
+                    repository = repositoryOrRepositoryPromise;
+                else if (repositoryOrRepositoryPromise !== undefined)
+                    repository = await repositoryOrRepositoryPromise;
+                if (repository && allOpenRepositories.indexOf(repository) === -1) {
+                    allOpenRepositories.push(repository);
+                }
             }
-        }
-        for (const rep of allOpenRepositories) {
-            this.git.updateRepository(rep);
-        }
+            for (const rep of allOpenRepositories) {
+                await this.git.updateRepository(rep);
+            }
+        });
+
     }
 }

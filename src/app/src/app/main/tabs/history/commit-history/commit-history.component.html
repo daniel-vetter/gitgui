@@ -58,4 +58,6 @@
         <div class="shadowBorder" [class.visible]="showRightLaneGridBorder" style="flex: 1"></div>
     </div>
 
+    <loading-overlay *ngIf="showLoadingAnimation" [type]="'Full'"></loading-overlay>
+
 </div>

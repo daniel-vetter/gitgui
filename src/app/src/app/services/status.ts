@@ -5,7 +5,7 @@ export class Status {
     private _runningProcesses: StatusProcessTracker[] = [];
     onRunningProcessesChange = new Rx.Subject<void>();
 
-    startProcess(description: string, workToDo: (() => any) | undefined = undefined): StatusProcessTracker {
+    startProcess(description: string, workToDo: (() => void) | (() => Promise<void>) | undefined = undefined): StatusProcessTracker {
         const tracker = new StatusProcessTracker(description, x => {
             const index = this._runningProcesses.indexOf(x);
             if (index !== -1) {

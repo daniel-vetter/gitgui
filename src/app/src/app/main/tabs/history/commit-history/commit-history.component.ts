@@ -15,7 +15,7 @@ import { Subscription } from "../../../../services/event-aggregator";
 })
 export class CommitHistoryComponent implements OnChanges {
 
-    @Input() repository: Repository;
+    @Input() repository?: Repository;
     @Output() selectedCommitChange = new EventEmitter<RepositoryCommit>();
     @ViewChild("canvas") canvas: ElementRef;
     @ViewChild("scrollWrapper") scrollWrapper: ElementRef;
@@ -29,7 +29,7 @@ export class CommitHistoryComponent implements OnChanges {
     annotationGridWidth = 200;
     isInLaneGridResizeMode = false;
     isInAnnotationGridResizeMode = false;
-    historyRepository: HistoryRepository;
+    historyRepository?: HistoryRepository;
     mouseIsInLaneGrid = false;
 
     entryClicked: HistoryEntryBase | undefined;
@@ -39,8 +39,11 @@ export class CommitHistoryComponent implements OnChanges {
     showLeftLaneGridBorder: boolean = false;
     showRightLaneGridBorder: boolean = false;
 
+    showLoadingAnimation = false;
+
     oncePerFrame = new OncePerFrame();
-    onStatusChangeSubscription: Subscription;
+    onUpdateStartedSubscription: Subscription;
+    onUpdateFinishedSubscription: Subscription;
 
     constructor(private laneColorProvider: LaneColorProvider,
         private laneAssigner: LaneAssigner,
@@ -51,30 +54,46 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (!this.repository)
-            return;
-
         if (changes.repository) {
+            if (this.onUpdateStartedSubscription)
+                this.onUpdateStartedSubscription.unsubscribe();
+            if (this.onUpdateFinishedSubscription)
+                this.onUpdateFinishedSubscription.unsubscribe();
+
             this.displayRepository();
-            if (this.onStatusChangeSubscription)
-                this.onStatusChangeSubscription.unsubscribe();
-            this.onStatusChangeSubscription = this.repository.updateState.onUpdateFinished.subscribe((x: UpdatedElements) => {
-                this.displayRepository();
-                this.updateVisibleRange();
-                this.updateShadowVisibility();
-                this.changeDetectorRef.detectChanges();
-            });
+            if (this.repository) {
+                this.onUpdateStartedSubscription = this.repository.updateState.onUpdateStarted.subscribe((x: UpdatedElements) => {
+                    this.showLoadingAnimation = x.commits || x.head;
+                    this.changeDetectorRef.detectChanges();
+                });
+                this.onUpdateFinishedSubscription = this.repository.updateState.onUpdateFinished.subscribe((x: UpdatedElements) => {
+                    this.showLoadingAnimation = false;
+                    this.displayRepository();
+                    this.updateVisibleRange();
+                    this.updateShadowVisibility();
+                    this.changeDetectorRef.detectChanges();
+                });
+                this.showLoadingAnimation = this.repository.updateState.currentlyUpdatingElements !== undefined;
+            }
         }
+
         this.updateVisibleRange();
         this.updateShadowVisibility();
         this.changeDetectorRef.detectChanges();
     }
 
     private displayRepository() {
-        this.historyRepository = this.repositoryToHistoryRepositoryMapper.map(this.repository);
-        this.totalLaneGridWidth = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
-        this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, this.metrics.getBubbleRight(10));
-        this.maxScrollHeight = this.historyRepository.entries.length * this.metrics.commitHeight;
+        if (this.repository) {
+            this.historyRepository = this.repositoryToHistoryRepositoryMapper.map(this.repository);
+            this.totalLaneGridWidth = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
+            this.currentLaneGridWidth = Math.min(this.totalLaneGridWidth, this.metrics.getBubbleRight(10));
+            this.maxScrollHeight = this.historyRepository.entries.length * this.metrics.commitHeight;
+        } else {
+            this.historyRepository = undefined;
+            this.totalLaneGridWidth = 0;
+            this.currentLaneGridWidth = 0;
+            this.maxScrollHeight = 0;
+        }
         this.entryClicked = undefined;
         this.entryHighlighted = undefined;
         this.entrySelected = undefined;
@@ -162,6 +181,7 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     private limitLaneGridWidth() {
+        if (!this.historyRepository) return;
         const minSize = this.metrics.bubbleWidth;
         const maxSizeBecauseOfComponentBorder = this.scrollWrapper.nativeElement.clientWidth - this.annotationGridWidth - 100;
         const maxSizeBecauseOfLaneCount = this.metrics.getBubbleRight(this.historyRepository.totalLaneCount - 1);
@@ -223,6 +243,8 @@ export class CommitHistoryComponent implements OnChanges {
     }
 
     hitTest(x: number, y: number): HistoryEntryBase | undefined {
+        if (!this.historyRepository)
+            return undefined;
         const bounds = this.scrollWrapper.nativeElement.getBoundingClientRect();
         x -= bounds.left;
         y -= bounds.top - this.scrollWrapper.nativeElement.scrollTop;
@@ -245,6 +267,7 @@ export class CommitHistoryComponent implements OnChanges {
     onKeyDown(event: KeyboardEvent) {
         this.oncePerFrame.run("keydown", () => {
             if (!this.entrySelected) return;
+            if (!this.historyRepository) return;
             let move = 0;
             if (event.keyCode === 40) move = 1;
             if (event.keyCode === 38) move = -1;
