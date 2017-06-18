@@ -31,6 +31,6 @@ export class RepositoryOpener {
         tab.ui.isPersistent = true;
         this.tabManager.createNewTab(tab);
         this.eventAggregator.publish("OpenRepositoryEnded");
-        status.completed();
+        repository.then(() => status.completed());
     }
 }
