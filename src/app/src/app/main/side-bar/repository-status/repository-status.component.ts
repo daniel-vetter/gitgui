@@ -9,6 +9,7 @@ import { FileContentTab, FileContentDiffTab, HistoryTab } from "../../tabs/tabs"
 import { TabManager } from "../../../services/tab-manager";
 import { Status } from "../../../services/status";
 import * as autosize from "autosize";
+import { ProcessTracker } from "./process-tracker";
 
 @Component({
     selector: "repository-status",
@@ -23,6 +24,8 @@ export class RepositoryStatusComponent implements OnChanges {
     commitMessage: string = "";
     onStatusChangeSubscription: Subscription;
     commitButtonEnabled = true;
+
+    private processTracker = new ProcessTracker();
 
     constructor(private fileTreeBuilder: FileTreeBuilder,
         private git: Git,
@@ -90,19 +93,25 @@ export class RepositoryStatusComponent implements OnChanges {
 
     async onStageClicked(changeFile: ChangedFile | string) {
         this.status.startProcess("Staging", async () => {
+            const process = this.processTracker.processHasStarted();
             await this.git.stage(this.repository, changeFile);
             await this.git.updateRepositoryStatus(this.repository);
+            await new Promise(resolver => { setTimeout(() => resolver(), 5000)});
             this.updateTree();
             this.updateButtonEnableState();
+            process.completed();
         });
     }
 
     async onUnstageClicked(changedFile: ChangedFile) {
         this.status.startProcess("Unstaging", async () => {
+            const process = this.processTracker.processHasStarted();
             await this.git.unstage(this.repository, changedFile);
             await this.git.updateRepositoryStatus(this.repository);
+            await new Promise(resolver => { setTimeout(() => resolver(), 5000)});
             this.updateTree();
             this.updateButtonEnableState();
+            process.completed();
         });
     }
 
@@ -111,6 +120,7 @@ export class RepositoryStatusComponent implements OnChanges {
             return;
         this.status.startProcess("Committing", async () => {
 
+            await this.processTracker.allDone();
             for (const tab of this.tabManager.allTabs) {
                 if (!(tab instanceof HistoryTab))
                     continue;
