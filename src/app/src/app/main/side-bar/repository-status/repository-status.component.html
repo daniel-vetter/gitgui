@@ -16,11 +16,11 @@
 
     <div class="content commitMessage">
         <div>Commit message:</div>
-        <textarea type="text" [(ngModel)]="commitMessage" rows="1" (keydown)="onCommitMessageKeyDown($event)" #commitMessageTextArea></textarea>
+        <textarea type="text" [(ngModel)]="commitMessage" (ngModelChange)="onCommitMessageChanged()" rows="1" (keydown)="onCommitMessageKeyDown($event)" #commitMessageTextArea></textarea>
     </div>
 
     <div>
-        <button style="width: 100%; padding: 0.5em;" (click)="onCommitClicked()">Commit</button>
+        <button style="width: 100%; padding: 0.5em;" [disabled]="!commitButtonEnabled" (click)="onCommitClicked()">Commit</button>
     </div>
 
 </div>

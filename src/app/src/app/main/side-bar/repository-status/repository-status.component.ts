@@ -22,6 +22,7 @@ export class RepositoryStatusComponent implements OnChanges {
     changedFiles: ChangedFile[] = [];
     commitMessage: string = "";
     onStatusChangeSubscription: Subscription;
+    commitButtonEnabled = true;
 
     constructor(private fileTreeBuilder: FileTreeBuilder,
         private git: Git,
@@ -41,11 +42,14 @@ export class RepositoryStatusComponent implements OnChanges {
             if (this.onStatusChangeSubscription)
                 this.onStatusChangeSubscription.unsubscribe();
             this.onStatusChangeSubscription = this.repository.updateState.onUpdateFinished.subscribe((x: UpdatedElements) => {
-                if (x.status)
-                    this.updateTree()
+                if (x.status) {
+                    this.updateTree();
+                    this.updateButtonEnableState();
+                }
             });
         }
         this.updateTree();
+        this.updateButtonEnableState();
     }
 
     private updateTree() {
@@ -58,6 +62,12 @@ export class RepositoryStatusComponent implements OnChanges {
             this.changedFiles.push(file);
         for (const file of this.repository.status.indexChanges)
             this.changedFiles.push(file);
+    }
+
+    private updateButtonEnableState() {
+        this.commitButtonEnabled = this.repository.status.indexChanges.length !== 0 &&
+                                   this.commitMessage !== undefined &&
+                                   this.commitMessage.trim() !== "";
     }
 
     onFileSelected(changedFile: ChangedFile) {
@@ -83,6 +93,7 @@ export class RepositoryStatusComponent implements OnChanges {
             await this.git.stage(this.repository, changeFile);
             await this.git.updateRepositoryStatus(this.repository);
             this.updateTree();
+            this.updateButtonEnableState();
         });
     }
 
@@ -91,10 +102,13 @@ export class RepositoryStatusComponent implements OnChanges {
             await this.git.unstage(this.repository, changedFile);
             await this.git.updateRepositoryStatus(this.repository);
             this.updateTree();
+            this.updateButtonEnableState();
         });
     }
 
     async onCommitClicked() {
+        if (!this.commitButtonEnabled)
+            return;
         this.status.startProcess("Committing", async () => {
 
             for (const tab of this.tabManager.allTabs) {
@@ -109,6 +123,7 @@ export class RepositoryStatusComponent implements OnChanges {
             await this.git.commit(this.repository, this.commitMessage, false);
             await this.git.updateRepository(this.repository);
             this.updateTree();
+            this.updateButtonEnableState();
             this.commitMessage = "";
         });
     }
@@ -117,6 +132,10 @@ export class RepositoryStatusComponent implements OnChanges {
         if (event.ctrlKey && event.keyCode === 13) {
             this.onCommitClicked();
         }
+    }
+
+    onCommitMessageChanged() {
+        this.updateButtonEnableState();
     }
 }
 
