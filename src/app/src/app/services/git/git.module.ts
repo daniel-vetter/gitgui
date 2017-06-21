@@ -13,6 +13,7 @@ import { CurrentHeadReader } from "./reader/current-head-reader";
 import { Git } from "./git";
 import { Index } from "./actions/index";
 import { Commiter } from "./actions/commiter";
+import { RepositoryUpdateTracker } from "./reader/repository-update-tracker";
 
 @NgModule({
     providers: [
@@ -29,7 +30,8 @@ import { Commiter } from "./actions/commiter";
         CurrentHeadReader,
         Index,
         Commiter,
-        Git
+        Git,
+        RepositoryUpdateTracker
     ]
 })
 export class GitModule {

@@ -73,7 +73,7 @@ export class CommitHistoryComponent implements OnChanges {
                     this.updateShadowVisibility();
                     this.changeDetectorRef.detectChanges();
                 });
-                this.showLoadingAnimation = this.repository.updateState.currentlyUpdatingElements !== undefined;
+                this.showLoadingAnimation = this.repository.updateState.isUpdating;
             }
         }
 

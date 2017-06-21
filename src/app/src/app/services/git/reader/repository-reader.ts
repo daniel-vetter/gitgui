@@ -4,13 +4,15 @@ import { StatusReader } from "./status-reader";
 import { RefsReader } from "./refs-reader";
 import { CurrentHeadReader } from "./current-head-reader";
 import { Repository, UpdatedElements } from "../model";
+import { RepositoryUpdateTracker } from "./repository-update-tracker";
 
 @Injectable()
 export class RepositoryReader {
     constructor(private commitsReader: CommitsReader,
         private statusReader: StatusReader,
         private refsReader: RefsReader,
-        private currentHeadReader: CurrentHeadReader) {
+        private currentHeadReader: CurrentHeadReader,
+        private repositoryUpdateTracker: RepositoryUpdateTracker) {
 
     }
 
@@ -21,41 +23,32 @@ export class RepositoryReader {
     }
 
     async updateStatus(repository: Repository): Promise<Repository> {
-        if (repository.updateState.currentlyUpdatingElements) {
-            throw Error("Repository is currently updating");
-        }
-        const updatedElements = new UpdatedElements(false, false, true, false);
-        repository.updateState.currentlyUpdatingElements = updatedElements;
-        repository.updateState.onUpdateStarted.next(updatedElements);
+        this.repositoryUpdateTracker.updateStarting(repository, false, false, true, false);
         repository.status = await this.statusReader.readStatus(repository.location);
-        repository.updateState.currentlyUpdatingElements = undefined;
-        repository.updateState.onUpdateFinished.next(updatedElements);
+        this.repositoryUpdateTracker.updateFinished(repository);
         return repository;
     }
 
     async updateRepository(repository: Repository): Promise<Repository> {
-        if (repository.updateState.currentlyUpdatingElements) {
-            throw Error("Repository is currently updating");
+        this.repositoryUpdateTracker.updateStarting(repository, true, true, true, true);
+        try {
+            const commitsPromise = this.commitsReader.readAllCommits(repository.location);
+            const statusPromise = this.statusReader.readStatus(repository.location);
+            const currentHeadHashPromise = this.currentHeadReader.readCurrentHeadHash(repository.location);
+
+            repository.commits = await commitsPromise;
+            repository.commits.forEach(x => x.repository = repository);
+            repository.status = await statusPromise;
+            const currentHeadHash = await currentHeadHashPromise;
+            const currentHeadCommit = repository.commits.find(x => x.hash === currentHeadHash);
+            if (!currentHeadCommit)
+                throw Error("Could not find head commit");
+            repository.head = currentHeadCommit;
+            repository.refs = await this.refsReader.readAllRefs(repository.location, repository.commits);
+        } finally {
+            this.repositoryUpdateTracker.updateFinished(repository);
         }
-        const updatedElements = new UpdatedElements(true, true, true, true);
-        repository.updateState.currentlyUpdatingElements = updatedElements;
-        repository.updateState.onUpdateStarted.next(updatedElements);
-
-        const commitsPromise = this.commitsReader.readAllCommits(repository.location);
-        const statusPromise = this.statusReader.readStatus(repository.location);
-        const currentHeadHashPromise = this.currentHeadReader.readCurrentHeadHash(repository.location);
-
-        repository.commits = await commitsPromise;
-        repository.commits.forEach(x => x.repository = repository);
-        repository.status = await statusPromise;
-        const currentHeadHash = await currentHeadHashPromise;
-        const currentHeadCommit =  repository.commits.find(x => x.hash === currentHeadHash);
-        if (!currentHeadCommit)
-            throw Error("Could not find head commit");
-        repository.head = currentHeadCommit;
-        repository.refs = await this.refsReader.readAllRefs(repository.location, repository.commits);
-        repository.updateState.currentlyUpdatingElements = undefined;
-        repository.updateState.onUpdateFinished.next(updatedElements);
         return repository;
     }
 }
+

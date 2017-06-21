@@ -98,7 +98,6 @@ export class RepositoryStatusComponent implements OnChanges {
             const process = this.processTracker.processHasStarted();
             await this.git.stage(this.repository, changeFile);
             await this.git.updateRepositoryStatus(this.repository);
-            await new Promise(resolver => { setTimeout(() => resolver(), 5000)});
             this.updateTree();
             this.updateButtonEnableState();
             process.completed();
@@ -110,7 +109,6 @@ export class RepositoryStatusComponent implements OnChanges {
             const process = this.processTracker.processHasStarted();
             await this.git.unstage(this.repository, changedFile);
             await this.git.updateRepositoryStatus(this.repository);
-            await new Promise(resolver => { setTimeout(() => resolver(), 5000)});
             this.updateTree();
             this.updateButtonEnableState();
             process.completed();

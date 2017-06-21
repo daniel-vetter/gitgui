@@ -14,14 +14,14 @@ export class Repository {
 export class RepositoryUpdateState {
     onUpdateStarted = new Rx.Subject<UpdatedElements>();
     onUpdateFinished = new Rx.Subject<UpdatedElements>();
-    currentlyUpdatingElements: UpdatedElements | undefined;
+    isUpdating: boolean = false;
 }
 
 export class UpdatedElements {
-    constructor(public commits: boolean,
-                public refs: boolean,
-                public status: boolean,
-                public head: boolean) {}
+    public commits = false;
+    public refs = false;
+    public status = false;
+    public head = false;
 }
 
 export class RepositoryStatus {
