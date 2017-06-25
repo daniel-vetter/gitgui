@@ -1,5 +1,6 @@
 import { EventEmitter } from "@angular/core";
 import * as Rx from "rxjs";
+import { RepositoryConfig } from "./reader/config-reader";
 
 export class Repository {
     status: RepositoryStatus;
@@ -7,6 +8,7 @@ export class Repository {
     refs: RepositoryRef[] = [];
     location: string;
     head: RepositoryCommit;
+    config: RepositoryConfig;
 
     updateState = new RepositoryUpdateState();
 }
@@ -22,6 +24,7 @@ export class UpdatedElements {
     public refs = false;
     public status = false;
     public head = false;
+    public config = false;
 }
 
 export class RepositoryStatus {

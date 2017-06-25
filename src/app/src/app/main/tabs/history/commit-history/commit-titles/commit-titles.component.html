@@ -9,7 +9,7 @@
         <div class="profileImg"
              style="height: 24px; width: 24px; border-style: solid; border-width: 2px; margin-right: 3px"
              [style.borderColor]="item.color">
-             <profile-image [commit]="item.profileImageCommit"></profile-image>
+             <profile-image [userName]="item.authorUserName" [userMail]="item.authorUserMail"></profile-image>
         </div>
 
         <div class="title" [class.virtual]="item.isVirtual">

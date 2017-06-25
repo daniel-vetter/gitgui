@@ -18,6 +18,9 @@ export class RepositoryToHistoryRepositoryMapper {
         if (repository === undefined)
             return historyRepository;
 
+        historyRepository.userName = repository.config.userName;
+        historyRepository.userMail = repository.config.userMail;
+
         // add "Current changes" entry
         if (repository.status.indexChanges.length > 0 ||
             repository.status.workTreeChanges.length > 0) {

@@ -3,6 +3,8 @@ import { RepositoryCommit } from "../../../../../services/git/model";
 export class HistoryRepository {
     totalLaneCount = 0;
     entries: HistoryEntryBase[];
+    userName: string;
+    userMail: string;
 }
 
 export class HistoryEntryBase {

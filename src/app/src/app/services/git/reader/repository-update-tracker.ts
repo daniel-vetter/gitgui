@@ -7,7 +7,7 @@ export class RepositoryUpdateTracker {
     private updatedElements = new Map<Repository, UpdatedElements>();
     private concurrentUpdateCount = new Map<Repository, number>();
 
-    updateStarting(repository: Repository, commits: boolean, refs: boolean, status: boolean, head: boolean) {
+    updateStarting(repository: Repository, commits: boolean, refs: boolean, status: boolean, head: boolean, config: boolean) {
         let item = this.updatedElements.get(repository);
         let concurrentUpdateCount = this.concurrentUpdateCount.get(repository);
         if (item === undefined)
@@ -20,6 +20,7 @@ export class RepositoryUpdateTracker {
         item.refs = item.refs || refs;
         item.status = item.status || status;
         item.head = item.head || head;
+        item.config = item.config || config;
 
         this.updatedElements.set(repository, item);
         this.concurrentUpdateCount.set(repository, concurrentUpdateCount);

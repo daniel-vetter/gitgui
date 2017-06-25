@@ -5,6 +5,7 @@ import { RefsReader } from "./refs-reader";
 import { CurrentHeadReader } from "./current-head-reader";
 import { Repository, UpdatedElements } from "../model";
 import { RepositoryUpdateTracker } from "./repository-update-tracker";
+import { ConfigReader } from "./config-reader";
 
 @Injectable()
 export class RepositoryReader {
@@ -12,7 +13,8 @@ export class RepositoryReader {
         private statusReader: StatusReader,
         private refsReader: RefsReader,
         private currentHeadReader: CurrentHeadReader,
-        private repositoryUpdateTracker: RepositoryUpdateTracker) {
+        private repositoryUpdateTracker: RepositoryUpdateTracker,
+        private configReader: ConfigReader) {
 
     }
 
@@ -23,22 +25,24 @@ export class RepositoryReader {
     }
 
     async updateStatus(repository: Repository): Promise<Repository> {
-        this.repositoryUpdateTracker.updateStarting(repository, false, false, true, false);
+        this.repositoryUpdateTracker.updateStarting(repository, false, false, true, false, false);
         repository.status = await this.statusReader.readStatus(repository.location);
         this.repositoryUpdateTracker.updateFinished(repository);
         return repository;
     }
 
     async updateRepository(repository: Repository): Promise<Repository> {
-        this.repositoryUpdateTracker.updateStarting(repository, true, true, true, true);
+        this.repositoryUpdateTracker.updateStarting(repository, true, true, true, true, true);
         try {
             const commitsPromise = this.commitsReader.readAllCommits(repository.location);
             const statusPromise = this.statusReader.readStatus(repository.location);
             const currentHeadHashPromise = this.currentHeadReader.readCurrentHeadHash(repository.location);
+            const config = this.configReader.readConfig(repository.location);
 
             repository.commits = await commitsPromise;
             repository.commits.forEach(x => x.repository = repository);
             repository.status = await statusPromise;
+            repository.config = await config;
             const currentHeadHash = await currentHeadHashPromise;
             const currentHeadCommit = repository.commits.find(x => x.hash === currentHeadHash);
             if (!currentHeadCommit)

@@ -41,12 +41,15 @@ export class CommitTitlesComponent implements OnChanges {
                 to.title = from.title;
                 to.positionTop = this.metrics.commitHeight * from.index;
                 to.color = this.laneColorProvider.getColorForLane(from.lane);
-                to.profileImageCommit = from.repositoryCommit;
+                to.authorUserMail = from.authorMail;
+                to.authorUserName = from.authorName;
                 to.isVirtual = false;
             }
             if (from instanceof HistoryCurrentChangesEntry) {
                 to.isVirtual = true;
                 to.title = "Uncommited changes";
+                to.authorUserName = this.historyRepository!.userName;
+                to.authorUserMail = this.historyRepository!.userMail;
             }
             return true;
         });
@@ -65,7 +68,8 @@ export class CommitTitleViewModel implements PoolableViewModel<HistoryEntryBase>
     color: string;
     profileImageUrl: string;
     visible: boolean;
-    profileImageCommit: RepositoryCommit;
+    authorUserName: string;
+    authorUserMail: string;
     isVirtual: boolean;
 
 

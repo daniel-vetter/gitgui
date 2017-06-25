@@ -8,7 +8,9 @@ import { md5 } from "./md5";
 })
 export class ProfileImageComponent implements OnChanges {
 
-    @Input() commit: RepositoryCommit;
+    @Input() userName?: string = "";
+    @Input() userMail?: string = "";
+
     imageUrl?: string;
     shortName: string = "";
     requestId = 0;
@@ -22,19 +24,13 @@ export class ProfileImageComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (!changes.commit)
-            return;
-        if (this.commit === undefined) {
+        if (this.userMail === undefined || this.userName === undefined) {
             this.imageUrl = undefined;
             this.changeDetectorRef.detectChanges();
             return;
         }
 
-        let hash = "";
-        if (this.commit && this.commit.authorMail) {
-            hash = md5(this.commit.authorMail.trim().toLowerCase());
-        }
-
+        const hash = md5(this.userMail.trim().toLowerCase());
         const url = "https://www.gravatar.com/avatar/" + hash + "?d=blank";
         const tempImage = new Image();
         const requestId = ++this.requestId;
@@ -47,13 +43,12 @@ export class ProfileImageComponent implements OnChanges {
         tempImage.src = url;
 
         this.shortName = "";
-        if (this.commit.authorName) {
-            const parts = this.commit.authorName.trim().split(" ");
-            if (parts.length === 1)
-                this.shortName = parts[0].substr(0, 1);
-            else {
-                this.shortName = parts[0].substr(0, 1) + parts[parts.length - 1].substr(0, 1);
-            }
+        this.userName
+        const parts = this.userName.trim().split(" ");
+        if (parts.length === 1)
+            this.shortName = parts[0].substr(0, 1);
+        else {
+            this.shortName = parts[0].substr(0, 1) + parts[parts.length - 1].substr(0, 1);
         }
     }
 }
