@@ -4,12 +4,12 @@ import { HistoryTab } from "../main/tabs/tabs";
 describe(TabManager.name, () => {
     interface EventRecord {
         eventType: string;
-        selectedTab: Tab;
+        selectedTab: Tab | undefined;
         allTabs: Tab[];
     }
 
     function monitorEvents(x: TabManager): EventRecord[] {
-        const events = [];
+        const events: EventRecord[] = [];
         x.onTabListChanged.subscribe(() => {
             events.push({ eventType: "onTabListChanged", selectedTab: x.selectedTab, allTabs: Array.from(x.allTabs) });
         });
