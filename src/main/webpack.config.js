@@ -6,6 +6,7 @@ module.exports = {
   context: path.resolve(__dirname, './src'),
   entry: {
     main: './main.ts',
+    maintest: './main-test.ts'
   },
   target: 'electron',
   node: {

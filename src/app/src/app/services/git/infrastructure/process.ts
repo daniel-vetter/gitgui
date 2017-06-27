@@ -27,7 +27,7 @@ export class Process {
     }
 
     run(command: string, args: string[], workDirectory: string): Rx.Observable<ProcessStatus> {
-
+        console.log(command, args)
         const id = ++this.lastId;
 
         const observable = Rx.Observable.create((subscriber: Rx.Subscriber<ProcessStatus>) => {

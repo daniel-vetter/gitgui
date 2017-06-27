@@ -14,7 +14,8 @@ module.exports = function (config) {
       require('@angular/cli/plugins/karma')
     ],
     client:{
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
+      loadScriptsViaRequire: true
     },
     coverageIstanbulReporter: {
       reports: [ 'html', 'lcovonly' ],
@@ -30,11 +31,12 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['ElectronVisible'],
     singleRun: false,
-	
+
 	customLaunchers: {
       ElectronVisible: {
         base: 'Electron',
-        flags: ['--show']
+        flags: ['--show'],
+        require: "../../build/app/maintest.js"
       }
     }
   });
