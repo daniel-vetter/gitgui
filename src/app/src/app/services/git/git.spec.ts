@@ -11,22 +11,22 @@ describe(Git.name, () => {
 
     var git: Git;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [GitModule],
             providers: [Platform, FileSystem]
-        })
+        });
 
         git = TestBed.get(Git);
-    }));
+    });
 
-    describe("stuff", () => {
-        it("should", async(async () => {
+    describe("Sample test", () => {
+        it("should load a repository", async done => {
+
 
             const repository = await git.readRepository("C:\\temp\\TypeScript");
-            console.log(repository.config.userMail);
-            expect(true).toBe(true);
-        }));
+            expect(repository.commits.length).toBeGreaterThan(1);
+            done();
+        });
     });
-})
-
+});
