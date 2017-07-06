@@ -67,7 +67,6 @@ export class TreeViewComponent implements OnChanges {
     }
 
     private updateVisibleLines() {
-console.log(this.scrollWrapper);
         const visibleStart = Math.max(0, Math.floor(this.scrollWrapper.nativeElement.scrollTop / this.lineHeight));
         const visibleEnd = Math.floor(visibleStart + this.scrollWrapper.nativeElement.clientHeight / this.lineHeight) + 1;
 

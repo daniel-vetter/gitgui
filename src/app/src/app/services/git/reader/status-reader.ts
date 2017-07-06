@@ -19,7 +19,6 @@ export class StatusReader {
         for (const line of lines) {
             if (line.startsWith("warning: "))
                 continue;
-            console.log(line);
             const path = line.substr(3);
 
             if ((line[0] === "!" && line[1] === "!") ||
