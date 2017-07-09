@@ -12,7 +12,7 @@ node src/app/node_modules/electron-packager/cli.js \
     build/app \
     GitGui \
     --platform=linux \
-    --electron-version=1.7.2 \
+    --electron-version=1.6.11 \
     --out=build/dist \
     --icon=src/app/icon.ico \
     --app-copyright="Daniel Vetter 2017" \

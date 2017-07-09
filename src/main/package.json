@@ -5,7 +5,7 @@
   "devDependencies": {
     "@types/node": "7.0.1",
     "copy-webpack-plugin": "4.0.1",
-    "electron": "1.7.2",
+    "electron": "1.6.11",
     "ts-loader": "2.0.0",
     "typescript": "2.1.5",
     "webpack": "2.2.0",
