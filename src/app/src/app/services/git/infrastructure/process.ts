@@ -27,7 +27,6 @@ export class Process {
     }
 
     run(command: string, args: string[], workDirectory: string): Rx.Observable<ProcessStatus> {
-        console.log(command, args)
         const id = ++this.lastId;
 
         const observable = Rx.Observable.create((subscriber: Rx.Subscriber<ProcessStatus>) => {
@@ -47,7 +46,7 @@ export class Process {
     private onIncomingResponse(arg: ProcessStartResponse) {
         const subscriber = this.runningRequest.get(arg.id);
         if (!subscriber)
-            throw Error("Invalid process id: " + arg.id);
+            return;
 
         if (arg.type === PROCESS_START_RESPONSE_TYPE_EXIT) {
             this.zone.run(() => {

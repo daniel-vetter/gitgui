@@ -13,7 +13,7 @@ export class ProcessStartRequestHandler {
 
     private onProcessStart(event, arg: ProcessStartRequest) {
         this.state.set(arg.id, "");
-        const process = spawn(arg.command, arg.args, { cwd: arg.workDirectory });
+        const process = spawn("\"" + arg.command + "\"", arg.args, { cwd: arg.workDirectory, shell: true });
         process.on("exit", code => {
 
             event.sender.send(PROCESS_START_RESPONSE, <ProcessStartResponse>{

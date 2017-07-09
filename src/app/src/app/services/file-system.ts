@@ -1,17 +1,23 @@
 const remote = (<any>window).require("electron").remote;
 const fs = remote.require("fs");
+const fsExtra = remote.require("fs-extra");
+const process = remote.require("process");
 import { Path } from "./path";
 
 export class FileSystem {
-    ensureDirectoryExists(path: string): boolean {
-        if (!fs.existsSync(path)) {
-            fs.mkdirSync(path);
-            return true;
-        }
-        return false;
+    ensureDirectoryExists(path: string): void {
+        fsExtra.ensureDirSync(path);
     }
 
-    exists(path: string) {
+    createDirectory(path: string): void {
+        fsExtra.mkdir(path);
+    }
+
+    deleteDirectory(path: string): void {
+        fsExtra.removeSync(path);
+    }
+
+    exists(path: string): boolean {
         return fs.existsSync(path);
     }
 
@@ -37,6 +43,14 @@ export class FileSystem {
                 }
             });
         });
+    }
+
+    setCurrentWorkingDirectory(path: string) {
+        process.chdir(path);
+    }
+
+    getCurrentWorkingDirectory(): string {
+        return process.cwd();
     }
 
     saveJsonAsync(path: string, data: any): Promise<boolean> {
