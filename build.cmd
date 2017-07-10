@@ -7,7 +7,10 @@ cd ..
 cd main
 cmd /c npm install
 node node_modules\webpack\bin\webpack.js
-cd ..\..
+cd ..
+cd app
+cmd /c npm run test-single-run
+cd ../..
 node src\app\node_modules\electron-packager\cli.js ^
      build\app GitGui ^
      --platform=win32 ^
