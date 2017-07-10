@@ -47,6 +47,8 @@ describe(Git.name, () => {
         it("should load the correct commit count", waitForPromise(async () => {
 
             await run("git init");
+            await run("git config user.name \"GitGui Testing User\"")
+            await run("git config user.email \"testing@git.com\"")
             await run("git help > show.txt");
             await run("git add --all");
             await run("git commit -m \"Test Stuff\"");
