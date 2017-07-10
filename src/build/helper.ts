@@ -1,10 +1,32 @@
 import * as child_process from "child_process";
 import * as electronPackager from "electron-packager";
 
-export function shellRun(command: string, workingDir: string = "."): Promise<number> {
-    return new Promise<number>((d, r) => {
-        child_process.spawn("cmd", ["/c", command], { cwd: workingDir, shell: true, stdio: "inherit" })
-            .on("exit", code => { d(code); });
+export function shellRun(command: string, workingDir: string = ".", expectedExitCode = 0): Promise<number> {
+    return new Promise<number>((onDone, onError) => {
+
+        let shellName = undefined;
+        let args = [];
+
+        if (process.platform === "win32") {
+            shellName = "cmd";
+            args = ["/c", command];
+        } else if (process.platform === "linux") {
+            shellName = "bash";
+            args = ["-c", "\"" + command + "\""]
+        } else throw new Error("Unsported platform");
+
+
+        child_process.spawn(shellName, args, {
+            cwd: workingDir,
+            shell: true,
+            stdio: "inherit"
+        }).on("exit", code => {
+            if (code === expectedExitCode) {
+                onDone(code);
+            } else {
+                onError("Unexpected exit code: " + code);
+            }
+        });
     });
 }
 
