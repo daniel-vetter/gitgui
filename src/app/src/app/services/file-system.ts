@@ -1,20 +1,23 @@
 const remote = (<any>window).require("electron").remote;
 const fs = remote.require("fs");
-const fsExtra = remote.require("fs-extra");
 const process = remote.require("process");
 import { Path } from "./path";
+import { FSEXTRA_REMOVE_DIRECTORY } from "../../../../shared/ipc-interfaces/fs-extra";
+const { ipcRenderer } = (<any>window).require("electron");
 
 export class FileSystem {
+
     ensureDirectoryExists(path: string): void {
-        fsExtra.ensureDirSync(path);
+        if (!this.exists(path))
+            this.createDirectory(path);
     }
 
     createDirectory(path: string): void {
-        fsExtra.mkdir(path);
+        fs.mkdir(path);
     }
 
     deleteDirectory(path: string): void {
-        fsExtra.removeSync(path);
+        ipcRenderer.sendSync(FSEXTRA_REMOVE_DIRECTORY, { path: path });
     }
 
     exists(path: string): boolean {

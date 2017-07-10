@@ -10,5 +10,8 @@
     "typescript": "2.1.5",
     "webpack": "2.2.0",
     "@types/electron": "1.4.31"
+  },
+  "dependencies": {
+    "fs-extra": "^3.0.1"
   }
 }

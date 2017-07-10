@@ -32,7 +32,7 @@ describe(Git.name, () => {
         //Create workspace directory where the tests will be run
         originalWorkingDirectory = fileSystem.getCurrentWorkingDirectory();
         if (fileSystem.exists(testDirectory))
-            fileSystem.deleteDirectory(testDirectory)
+            fileSystem.deleteDirectory(testDirectory);
         fileSystem.createDirectory(testDirectory);
         fileSystem.setCurrentWorkingDirectory(testDirectory);
     }));
