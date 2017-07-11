@@ -17,7 +17,8 @@ export class ConfigReader {
                 continue;
             var firstLineEnd = line.indexOf("\n");
             if (firstLineEnd === -1) {
-                throw new Error("Invalid config line: " + line);
+                console.log("Skipped config line: " + line);
+                continue;
             }
 
             const key = line.substr(0, firstLineEnd).toLowerCase();
