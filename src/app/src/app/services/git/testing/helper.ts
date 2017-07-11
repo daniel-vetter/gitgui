@@ -1,7 +1,9 @@
 import { TestBed } from "@angular/core/testing";
 import { Process } from "../infrastructure/process";
+import { Path } from "app/services/path";
 const remote = (<any>window).require("electron").remote;
 const remoteProcess = remote.process;
+const remoteOs = remote.require("os");
 
 export function waitForPromise(action: () => Promise<any>) {
     return (done: any) => {
@@ -30,7 +32,7 @@ export function getTempDirectory() {
     if (remoteProcess.platform === "win32") {
         return "C:\\GitGuiTests";
     } else if (remoteProcess.platform === "linux") {
-        return "/home/daniel/GitGuiTests";
+        return Path.combine(remoteOs.homedir(), "GitGuiTests");
     } else throw new Error("Unsported platform");
 }
 
