@@ -23,7 +23,7 @@ import * as electronPackager from "electron-packager";
 
     await run("Packaging", async () => {
         await packager({
-            dir: "./build/app2",
+            dir: "./build/app",
             out: "./build/dist",
             name: "GitGui",
             icon: "./src/app/icon.ico",
