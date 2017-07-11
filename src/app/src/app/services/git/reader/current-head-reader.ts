@@ -7,6 +7,6 @@ export class CurrentHeadReader {
     }
 
     async readCurrentHeadHash(repositoryPath: string): Promise<string> {
-        return (await this.gitRaw.run(repositoryPath, ["rev-parse", "head"])).data.trim();
+        return (await this.gitRaw.run(repositoryPath, ["rev-parse", "HEAD"])).data.trim();
     }
 }
