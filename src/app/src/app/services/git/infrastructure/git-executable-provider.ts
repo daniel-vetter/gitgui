@@ -15,23 +15,19 @@ export class GitPathProvider {
             return this.gitPath;
         }
 
-        let app: string;
-        let args: string[];
-
+        let command: string;
         if (process.platform === "win32") {
-            app = "cmd";
-            args = ["/c", "where", "git"]
+            command = "where git";
         } else if (process.platform === "linux") {
-            app = "/bin/sh";
-            args = ["-c", "which git"]
+            command = "which git";
         } else {
-            throw new Error("TODO: Add support for other platforms.")
+            throw new Error("Unsupported platform")
         }
 
-        const processResult = await this.process.runAndWait(app, args, ".")
+        const processResult = await this.process.runAndWait(command, [], ".", true)
         if (processResult.exitCode !== 0) {
             throw Error("could not find path to the git executable. " +
-                "Please ensure git is installed and added to the PATH environment variable.");
+                "Please ensure git is installed and added to the PATH environment variable. Output: " + processResult.data);
         }
         this.gitPath = processResult.data.trim();
         return this.gitPath;

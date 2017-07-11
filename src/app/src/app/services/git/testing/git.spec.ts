@@ -6,7 +6,7 @@ import { AppModule } from "../../../app.module";
 import { Platform } from "../../platform";
 import { FileSystem } from "../../file-system";
 import { GitRaw } from "../infrastructure/git-raw";
-import { waitForPromise, run } from "./helper";
+import { waitForPromise, run, getTempDirectory } from "./helper";
 import { Repository } from "../model";
 
 
@@ -16,7 +16,7 @@ describe(Git.name, () => {
     var git: Git;
     var gitRaw: GitRaw;
     let originalWorkingDirectory: string | undefined = undefined;
-    const testDirectory = "C:\\GitGuiTests";
+    const testDirectory = getTempDirectory();
 
     beforeEach(waitForPromise(async () => {
         //Init git system

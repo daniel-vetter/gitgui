@@ -26,7 +26,7 @@ export class Process {
         });
     }
 
-    run(command: string, args: string[], workDirectory: string): Rx.Observable<ProcessStatus> {
+    run(command: string, args: string[], workDirectory: string, shell = false): Rx.Observable<ProcessStatus> {
         const id = ++this.lastId;
 
         const observable = Rx.Observable.create((subscriber: Rx.Subscriber<ProcessStatus>) => {
@@ -37,6 +37,7 @@ export class Process {
             id: id,
             command: command,
             args: args,
+            shell: shell,
             workDirectory: workDirectory
         });
 
@@ -69,11 +70,11 @@ export class Process {
         }
     }
 
-    runAndWait(pathToApp: string, args: string[], workDirectory: string): Promise<ProcessResult> {
+    runAndWait(pathToApp: string, args: string[], workDirectory: string, shell = false): Promise<ProcessResult> {
         const data: string[] = [];
         return new Promise((resolve) => {
 
-            return this.run(pathToApp, args, workDirectory).subscribe(x => {
+            return this.run(pathToApp, args, workDirectory, shell).subscribe(x => {
 
                 if (x instanceof ProcessRunStdOut || x instanceof ProcessRunErrOut) {
                     // Save all data block for later concatenation.

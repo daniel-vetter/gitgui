@@ -10,12 +10,10 @@ export class ProcessStartRequestHandler {
         ipcMain.on(PROCESS_START_REQUEST, (event, arg) => { this.onProcessStart(event, arg) });
     }
 
-
     private onProcessStart(event, arg: ProcessStartRequest) {
         this.state.set(arg.id, "");
-        const process = spawn("\"" + arg.command + "\"", arg.args, { cwd: arg.workDirectory, shell: true });
+        const process = spawn(arg.command, arg.args, { cwd: arg.workDirectory, shell: arg.shell });
         process.on("exit", code => {
-
             event.sender.send(PROCESS_START_RESPONSE, <ProcessStartResponse>{
                 id: arg.id,
                 type: PROCESS_START_RESPONSE_TYPE_STDOUT,

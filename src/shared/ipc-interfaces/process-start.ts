@@ -8,6 +8,7 @@ export interface ProcessStartRequest {
     id: number;
     command: string;
     args: string[];
+    shell: boolean;
     workDirectory: string;
 }
 
