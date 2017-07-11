@@ -41,3 +41,28 @@ export function packager(options: electronPackager.Options): Promise<void> {
         });
     });
 }
+
+export async function run(title: string, action: () => Promise<any>) {
+
+    console.log("\x1b[1m\x1b[32m-------------------------------------------------------------------------------");
+    console.log("\x1b[1m\x1b[32m  " + title);
+    console.log("\x1b[1m\x1b[32m-------------------------------------------------------------------------------");
+
+    try {
+        await action();
+        console.log("");
+        console.log("");
+    } catch(e) {
+        if (e instanceof Error) {
+            console.error(e.name + ": " + e.message);
+        } else {
+            console.error(e);
+        }
+
+        console.log("");
+        console.log("");
+        console.log("\x1b[1m\x1b[31mBuild script failed.");
+
+        process.exit(1);
+    }
+}
