@@ -13,7 +13,7 @@ export function shellRun(command: string, workingDir: string = ".", expectedExit
         } else if (process.platform === "linux") {
             shellName = "bash";
             args = ["-c", "\"" + command + "\""]
-        } else throw new Error("Unsported platform");
+        } else throw new Error("Unsupported platform");
 
 
         child_process.spawn(shellName, args, {
