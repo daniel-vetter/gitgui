@@ -44,9 +44,9 @@ export function packager(options: electronPackager.Options): Promise<void> {
 
 export async function run(title: string, action: () => Promise<any>) {
 
-    console.log("\x1b[1m\x1b[32m-------------------------------------------------------------------------------");
-    console.log("\x1b[1m\x1b[32m  " + title);
-    console.log("\x1b[1m\x1b[32m-------------------------------------------------------------------------------");
+    console.log("\x1b[1m\x1b[32m-------------------------------------------------------------------------------\x1b[0m");
+    console.log("\x1b[1m\x1b[32m  " + title + "\x1b[0m");
+    console.log("\x1b[1m\x1b[32m-------------------------------------------------------------------------------\x1b[0m");
 
     try {
         await action();
@@ -61,7 +61,7 @@ export async function run(title: string, action: () => Promise<any>) {
 
         console.log("");
         console.log("");
-        console.log("\x1b[1m\x1b[31mBuild script failed.");
+        console.log("\x1b[1m\x1b[31mBuild script failed.\x1b[0m");
 
         process.exit(1);
     }
