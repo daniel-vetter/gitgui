@@ -8,8 +8,8 @@ import * as electronPackager from "electron-packager";
     });
 
     await run("Installing packages", async () => {
-        await shellRun("npm install", "./src/main");
-        await shellRun("npm install", "./src/app");
+        await shellRun("npm install", "./src/main", true);
+        await shellRun("npm install", "./src/app", true);
     });
 
     await run("Building app", async () => {
