@@ -2,9 +2,7 @@ html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    font: small-caption;
-    font-family: var(--theme-font-name);
-    font-size: var(--theme-font-size);
+    font: var(--theme-font);
     color: var(--theme-font-color);
     background-color: var(--theme-window-background-color);
     padding: 0;
@@ -15,7 +13,7 @@ html, body {
 
 input, textarea {
     padding: 3px;
-    font: small-caption;
+    font: var(--theme-font);
     color: var(--theme-font-color);
     background-color: var(--theme-workspace-background-color);
     border: 1px solid var(--theme-workspace-border-color);

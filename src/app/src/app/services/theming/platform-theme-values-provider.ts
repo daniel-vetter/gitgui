@@ -28,9 +28,8 @@ export class PlatformThemeValuesProvider {
 
 export interface PlatformThemeValues {
     windowBackgroundColor: string;
+    font: string;
     fontColor: string;
     workspaceBackgroundColor: string;
     workspaceBorderColor: string;
-    fontName: string;
-    fontSize: string;
 }

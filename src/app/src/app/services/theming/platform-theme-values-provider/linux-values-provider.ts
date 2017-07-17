@@ -4,12 +4,10 @@ export class LinuxValuesProvider {
     getValues(): Promise<PlatformThemeValues> {
         //gsettings get org.gnome.desktop.interface font-name
         return Promise.resolve(<PlatformThemeValues>{
-            fontName: "Ubuntu",
-            fontSize: "10pt",
+            font: "10pt Ubuntu",
             windowBackgroundColor: "#F2F1F0",
             workspaceBackgroundColor: "#FFFFFF",
             workspaceBorderColor: "#909090"
-            
         });
     }
 }
