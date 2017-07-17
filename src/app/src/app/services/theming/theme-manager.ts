@@ -29,8 +29,6 @@ export class ThemeManager {
         let platformValues = "";
         let themeValues = "";
 
-        console.log(values);
-
         for (var key in values) {
             if (!values.hasOwnProperty(key))
                 continue;
