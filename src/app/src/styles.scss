@@ -6,7 +6,7 @@ html, body {
     font-family: var(--theme-font-name);
     font-size: var(--theme-font-size);
     color: var(--theme-font-color);
-    background-color: var(--theme-window-background);
+    background-color: var(--theme-window-background-color);
     padding: 0;
     margin: 0;
     user-select: none;
@@ -17,8 +17,8 @@ input, textarea {
     padding: 3px;
     font: small-caption;
     color: var(--theme-font-color);
-    background-color: var(--theme-workspace-background);
-    border: 1px solid var(--theme-workspace-border);
+    background-color: var(--theme-workspace-background-color);
+    border: 1px solid var(--theme-workspace-border-color);
 
     &:focus {
         outline: none;

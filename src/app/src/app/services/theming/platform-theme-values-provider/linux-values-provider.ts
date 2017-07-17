@@ -5,7 +5,11 @@ export class LinuxValuesProvider {
         //gsettings get org.gnome.desktop.interface font-name
         return Promise.resolve(<PlatformThemeValues>{
             fontName: "Ubuntu",
-            fontSize: "11pt" 
+            fontSize: "10pt",
+            windowBackgroundColor: "#F2F1F0",
+            workspaceBackgroundColor: "#FFFFFF",
+            workspaceBorderColor: "#909090"
+            
         });
     }
 }

@@ -27,8 +27,8 @@
 .commitMessage {
     font-family: Consolas;
     user-select: auto;
-    background: var(--theme-workspace-background);
-    border: 1px solid var(--theme-workspace-border);
+    background: var(--theme-workspace-background-color);
+    border: 1px solid var(--theme-workspace-border-color);
     padding: 0.3em;
     word-wrap: break-word;
     white-space: pre-wrap;
@@ -38,5 +38,5 @@
 .profileImage {
     height: 48px;
     width: 48px;
-    border: 1px solid var(--theme-workspace-border);
+    border: 1px solid var(--theme-workspace-border-color);
 }
