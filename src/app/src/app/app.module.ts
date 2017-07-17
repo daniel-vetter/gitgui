@@ -7,7 +7,6 @@ import { AppComponent } from "./app.component";
 import { EventAggregator } from "./services/event-aggregator";
 import { Config } from "./services/config";
 import { CommitHistoryModule } from "./main/tabs/history/commit-history/commit-history.module";
-import { ThemeManager } from "./services/theme-manager";
 import { CommitDetailsComponent } from "./main/side-bar/commit-details/commit-details.component";
 import { GitModule } from "./services/git/git.module";
 import { RepositoryComponent } from "./main/repository.component";
@@ -41,6 +40,10 @@ import { FileContentDiffTabComponent } from "./main/tabs/file-content-tabs/file-
 import { FileContentTabComponent } from "./main/tabs/file-content-tabs/file-content-tab/file-content-tab.component";
 import { ChangedFilesTreeComponent } from "./main/side-bar/changed-files-tree/changed-files-tree.component";
 import { FileTreeBuilder } from "./main/side-bar/changed-files-tree/file-tree-builder";
+import { ThemeManager } from "app/services/theming/theme-manager";
+import { PlatformThemeValuesProvider } from "app/services/theming/platform-theme-values-provider";
+import { LinuxValuesProvider } from "app/services/theming/platform-theme-values-provider/linux-values-provider";
+import { WindowsValuesProvider } from "app/services/theming/platform-theme-values-provider/windows-values-provider";
 
 @NgModule({
   declarations: [
@@ -89,7 +92,10 @@ import { FileTreeBuilder } from "./main/side-bar/changed-files-tree/file-tree-bu
       TabManager,
       SideBarManager,
       Notifications,
-      NotificationStore
+      NotificationStore,
+      PlatformThemeValuesProvider,
+      WindowsValuesProvider,
+      LinuxValuesProvider
   ],
   bootstrap: [AppComponent]
 })

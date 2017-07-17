@@ -1,10 +1,10 @@
 import { Component, OnInit, ErrorHandler } from "@angular/core";
-import { ThemeManager } from "./services/theme-manager";
 import { MenuManager } from "./menu/menu-manager";
 import { Config } from "./services/config";
 import { RepositoryOpener } from "./services/repository-opener";
 import { FileIconManager } from "./services/file-icon/file-icon";
 import { TabManager } from "./services/tab-manager";
+import { ThemeManager } from "app/services/theming/theme-manager";
 
 @Component({
     selector: "app-root",

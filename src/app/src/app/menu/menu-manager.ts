@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { ThemeManager } from "../services/theme-manager";
 import { FileOpenRepository } from "./handler/file-open-repository";
 import { SettingsColorTheme } from "./handler/settings-color-theme";
+import { ThemeManager } from "app/services/theming/theme-manager";
 const remote = (<any>window).require("electron").remote;
 const Menu = remote.Menu;
 

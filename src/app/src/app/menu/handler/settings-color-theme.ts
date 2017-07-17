@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ThemeManager } from "../../services/theme-manager";
+import { ThemeManager } from "app/services/theming/theme-manager";
 
 @Injectable()
 export class SettingsColorTheme {

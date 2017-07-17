@@ -3,7 +3,7 @@ import { Injectable, EventEmitter } from "@angular/core";
 import { PackageLoader } from "./package-loader";
 import { PackageParser, IconPackage } from "./package-parser";
 import { Path } from "../path";
-import { ThemeManager } from "../theme-manager";
+import { ThemeManager } from "app/services/theming/theme-manager";
 
 @Injectable()
 export class FileIconManager {

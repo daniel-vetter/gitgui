@@ -3,6 +3,8 @@ html, body {
     width: 100%;
     overflow: hidden;
     font: small-caption;
+    font-family: var(--theme-font-name);
+    font-size: var(--theme-font-size);
     color: var(--theme-font-color);
     background-color: var(--theme-window-background);
     padding: 0;

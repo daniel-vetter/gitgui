@@ -21,4 +21,16 @@ export class Platform {
         this.fileSystem.ensureDirectoryExists(baseDir);
         return baseDir;
     }
+
+    get current(): PlatformType {
+        if (process.platform === "win32") {
+            return "Windows";
+        }
+        if (process.platform === "linux") {
+            return "Linux";
+        }
+        throw new Error("Unsupported platform");
+    }
 }
+
+export type PlatformType = "Windows" | "Linux";
