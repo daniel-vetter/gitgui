@@ -2,8 +2,8 @@
 
 
 
-    <div class="fill scrollContainer" (scroll)="onScroll($event)" (mouseleave)="onMouseLeave($event)"
-        (mousemove)="onMouseMove($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)" #scrollWrapper>
+    <div class="fill scrollContainer" (mouseleave)="onMouseLeave($event)"
+         (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)" #scrollWrapper>
 
         <!-- The selection background gets drawn behind all other components -->
         <div class="overlay" [style.height.px]="maxScrollHeight">
@@ -32,10 +32,10 @@
             <!-- A overlay containing two vertical divs (10px width) which represent the resize click zones -->
             <div class="overlay" style="display: flex;" [style.height.px]="maxScrollHeight" [class.inResizeMode]="isInLaneGridResizeMode || isInAnnotationGridResizeMode">
                 <div class="resizeBar" [style.left.px]="annotationGridWidth - 5" (mousedown)="onAnnotationGridResizeMouseDown($event)" (document:mouseup)="onAnnotationGridResizeMouseUp($event)"
-                    (document:mousemove)="onAnnotationGridResizeMouseMove($event)">
+                    >
                 </div>
                 <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 5" (mousedown)="onLaneGridResizeMouseDown($event)"
-                    (document:mouseup)="onLaneGridResizeMouseUp($event)" (document:mousemove)="onLaneGridResizeMouseMove($event)">
+                    (document:mouseup)="onLaneGridResizeMouseUp($event)">
                 </div>
             </div>
         </div>

@@ -5,6 +5,7 @@ import { TreeViewComponent } from "./tree-view/tree-view.component";
 import { CheckBoxComponent } from "./check-box/check-box.component";
 import { LoadingComponent } from "./loading/loading.component";
 import { LoadingOverlayComponent } from "./loading-overlay/loading-overlay.component";
+import { ImageResolver } from "./profile-image/image-resolver";
 
 @NgModule({
     declarations: [
@@ -23,6 +24,10 @@ import { LoadingOverlayComponent } from "./loading-overlay/loading-overlay.compo
         CheckBoxComponent,
         LoadingComponent,
         LoadingOverlayComponent
+    ],
+
+    providers: [
+        ImageResolver
     ]
 })
 export class SharedModule {

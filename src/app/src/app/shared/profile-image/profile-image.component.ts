@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, NgZone, ChangeDetectorRef, SimpleChanges } from "@angular/core";
 import { RepositoryCommit } from "../../services/git/model";
 import { md5 } from "./md5";
+import { ImageResolver } from "./image-resolver";
 
 @Component({
     selector: "profile-image",
@@ -15,32 +16,27 @@ export class ProfileImageComponent implements OnChanges {
     shortName: string = "";
     requestId = 0;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef) {
-        changeDetectorRef.detach();
+    constructor(private changeDetectorRef: ChangeDetectorRef, private ngZone: NgZone, private imageResolver: ImageResolver) {
+        //   changeDetectorRef.detach();
     }
 
     ngOnInit() {
-        this.changeDetectorRef.detectChanges();
+        // this.changeDetectorRef.detectChanges();
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (this.userMail === undefined || this.userName === undefined) {
             this.imageUrl = undefined;
-            this.changeDetectorRef.detectChanges();
+            //this.changeDetectorRef.detectChanges();
             return;
         }
 
-        const hash = md5(this.userMail.trim().toLowerCase());
-        const url = "https://www.gravatar.com/avatar/" + hash + "?d=blank";
-        const tempImage = new Image();
         const requestId = ++this.requestId;
-        tempImage.onload = () => {
+        this.imageResolver.resolve(this.userMail).then(x => {
             if (this.requestId === requestId) {
-                this.imageUrl = url;
-                this.changeDetectorRef.detectChanges();
+                this.imageUrl = x;
             }
-        };
-        tempImage.src = url;
+        });
 
         this.shortName = "";
         this.userName
