@@ -10,7 +10,7 @@ export class ThemeManager {
     private _currentTheme: Theme = "light";
     private styleElements: HTMLStyleElement[] = [];
 
-    constructor(private platformThemeValuesProvider: PlatformThemeValuesProvider) { 
+    constructor(private platformThemeValuesProvider: PlatformThemeValuesProvider) {
     }
 
     public onCurrentThemeChanged = new Rx.Subject();
@@ -32,7 +32,7 @@ export class ThemeManager {
         for (var key in values) {
             if (!values.hasOwnProperty(key))
                 continue;
- 
+
             platformValues += "--platform-" + this.propertyNameToCssName(key) + ": " + (<any>values)[key] + ";\n";
             platformValues += "--theme-" + this.propertyNameToCssName(key) + ": " + (<any>values)[key] + ";\n";
         }

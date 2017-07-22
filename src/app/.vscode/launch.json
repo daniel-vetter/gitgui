@@ -5,12 +5,11 @@
             "name": "Launch",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}/../build/app/main.js",
+            "program": "${workspaceRoot}/../../build/app/main.js",
             "stopOnEntry": false,
             "args": [],
-            "cwd": "${workspaceRoot}/../build/app",
+            "cwd": "${workspaceRoot}/../../build/app",
             "protocol": "auto",
-            
             "runtimeArgs": [
                 ".",
                 "--devtools",
@@ -19,11 +18,11 @@
             "env": {},
             "sourceMaps": true,
             "linux": {
-                "runtimeExecutable": "${workspaceRoot}/main/node_modules/electron/dist/electron"
+                "runtimeExecutable": "${workspaceRoot}/node_modules/electron/dist/electron"
             },
             "windows": {
-                "runtimeExecutable": "${workspaceRoot}/main/node_modules/electron/dist/electron.exe"
+                "runtimeExecutable": "${workspaceRoot}/node_modules/electron/dist/electron.exe"
             }
         }
-    ],
+    ]
 }

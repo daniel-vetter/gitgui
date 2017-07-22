@@ -8,23 +8,22 @@ import * as electronPackager from "electron-packager";
     });
 
     await run("Installing packages", async () => {
-        await shellRun("npm install", "./src/main", true);
         await shellRun("npm install", "./src/app", true);
     });
 
     await run("Building app", async () => {
-        await shellRun("node ./node_modules/@angular/cli/bin/ng build --prod --progress=false", "./src/app");
-        await shellRun("node ./node_modules/webpack/bin/webpack.js", "./src/main");
+        await shellRun("npm run build", "./src/app");
     });
 
     await run("Running test", async () => {
-        await shellRun("node ./node_modules/@angular/cli/bin/ng test --single-run --progress=false", "./src/app");
+        await shellRun("npm run test", "./src/app");
     });
 
     await run("Packaging", async () => {
         await packager({
             dir: "./build/app",
             out: "./build/dist",
+			asar: true,
             name: "GitGui",
             icon: "./src/app/icon.ico",
             appCopyright: "Daniel Vetter 2017",

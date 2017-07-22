@@ -5,7 +5,7 @@
   },
   "apps": [
     {
-      "root": "src",
+      "root": "frontend",
       "outDir": "../../build/app/app",
       "assets": [
         "assets",

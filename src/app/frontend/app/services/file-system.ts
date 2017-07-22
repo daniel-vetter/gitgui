@@ -2,7 +2,8 @@ const remote = (<any>window).require("electron").remote;
 const fs = remote.require("fs");
 const process = remote.require("process");
 import { Path } from "./path";
-import { FSEXTRA_REMOVE_DIRECTORY } from "../../../../shared/ipc-interfaces/fs-extra";
+import { FSEXTRA_REMOVE_DIRECTORY } from "../../../shared/ipc-interfaces/fs-extra";
+
 const { ipcRenderer } = (<any>window).require("electron");
 
 export class FileSystem {

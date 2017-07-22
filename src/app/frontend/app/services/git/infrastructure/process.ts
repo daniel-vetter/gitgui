@@ -1,15 +1,14 @@
 import { Injectable, NgZone } from "@angular/core";
 import { Observable } from "rxjs";
 import * as Rx from "rxjs";
-import {
-    ProcessStartRequest,
-    PROCESS_START_REQUEST,
-    PROCESS_START_RESPONSE,
-    ProcessStartResponse,
-    PROCESS_START_RESPONSE_TYPE_EXIT,
-    PROCESS_START_RESPONSE_TYPE_STDOUT,
-    PROCESS_START_RESPONSE_TYPE_STDERR
-} from "../../../../../../shared/ipc-interfaces/process-start";
+import { PROCESS_START_REQUEST,
+         PROCESS_START_RESPONSE,
+         ProcessStartResponse,
+         ProcessStartRequest,
+         PROCESS_START_RESPONSE_TYPE_EXIT,
+         PROCESS_START_RESPONSE_TYPE_STDOUT,
+         PROCESS_START_RESPONSE_TYPE_STDERR } from "../../../../../shared/ipc-interfaces/process-start";
+
 const { ipcRenderer } = (<any>window).require("electron");
 
 declare var TextDecoder: any;

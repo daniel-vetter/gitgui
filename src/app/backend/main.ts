@@ -36,7 +36,7 @@ class MainProcess {
             protocol: "file:",
             slashes: true
         });
-        this.mainWindow.setMenu(null);
+        this.mainWindow.setMenu(<any>null);
         this.mainWindow.loadURL(appUrl);
 
         if (process.argv.indexOf("--reload-on-change") !== -1) {
@@ -52,8 +52,8 @@ class MainProcess {
             this.mainWindow.webContents.openDevTools({ mode: "undocked" });
         }
 
-        this.mainWindow.on("closed", function () {
-            this.mainWindow = null;
+        this.mainWindow.on("closed", () => {
+            this.mainWindow = <any>null;
         });
     }
 }

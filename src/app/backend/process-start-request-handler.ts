@@ -1,16 +1,22 @@
 import { ipcMain } from "electron";
 import { spawn } from "child_process";
-import { ProcessStartRequest, PROCESS_START_REQUEST, PROCESS_START_RESPONSE, ProcessStartResponse, PROCESS_START_RESPONSE_TYPE_EXIT, PROCESS_START_RESPONSE_TYPE_STDOUT, PROCESS_START_RESPONSE_TYPE_STDERR } from "../../shared/ipc-interfaces/process-start";
+import { ProcessStartRequest,
+         PROCESS_START_REQUEST,
+         PROCESS_START_RESPONSE,
+         ProcessStartResponse,
+         PROCESS_START_RESPONSE_TYPE_EXIT,
+         PROCESS_START_RESPONSE_TYPE_STDOUT,
+         PROCESS_START_RESPONSE_TYPE_STDERR } from "../shared/ipc-interfaces/process-start";
 
 export class ProcessStartRequestHandler {
 
     private state = new Map<number, string>();
 
     setup() {
-        ipcMain.on(PROCESS_START_REQUEST, (event, arg) => { this.onProcessStart(event, arg) });
+        ipcMain.on(PROCESS_START_REQUEST, (event: any, arg: any) => { this.onProcessStart(event, arg) });
     }
 
-    private onProcessStart(event, arg: ProcessStartRequest) {
+    private onProcessStart(event: any, arg: ProcessStartRequest) {
         this.state.set(arg.id, "");
         console.log(arg.id, arg.command, arg.args, arg.workDirectory, arg.shell);
         const process = spawn(arg.command, arg.args, { cwd: arg.workDirectory, shell: arg.shell });

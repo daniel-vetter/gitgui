@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
 
 
     private domChangeMonitor() {
-        var observer = new MutationObserver((mutations) => {
+        const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation: MutationRecord) => {
                 if (mutation.type === "attributes" && (mutation.attributeName === undefined || mutation.attributeName!.startsWith("ng-")))
                     return;
@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
             });
         });
 
-        var config = {
+        const config = {
             attributes: true,
             childList: true,
             characterData: true,
