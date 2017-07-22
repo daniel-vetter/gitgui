@@ -36,7 +36,7 @@ module.exports = function (config) {
       ElectronVisible: {
         base: 'Electron',
         flags: ['--show'],
-        require: "../../build/app/maintest.js"
+        require: "../../build/test/test.js"
       }
     }
   });

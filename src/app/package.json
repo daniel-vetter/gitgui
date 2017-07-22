@@ -6,8 +6,8 @@
   "scripts": {
     "ng": "ng",
     "start": "electron ../../build/app",
-    "build": "ng build --progress=false --prod && webpack --hide-modules",
-    "build-watch": "concurrently \"webpack --hide-modules --watch\" \"ng build --progress=false -w\" --kill-others --names \"backend,frontend\"",
+    "build": "ng build --progress=false --prod && webpack --hide-modules --env=prod",
+    "build-watch": "concurrently \"webpack --hide-modules --env=prod --watch\" \"ng build --progress=false -w\" --kill-others --names \"backend,frontend\"",
     "test": "ng test --single-run --progress=false",
 	"test-watch": "ng test",
     "lint": "ng lint",
