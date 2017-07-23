@@ -1,0 +1,47 @@
+// cSpell Settings
+{
+    
+    // Version of the setting file.  Always 0.1
+    "version": "0.1",
+    
+    // language - current active spelling language
+    "language": "en",
+    
+    // words - list of words to be always considered correct
+    "words": [
+        "Bootstrapper",
+        "FSEXTRA",
+        "LOCALAPPDATA",
+        "Mergeable",
+        "Unstaging",
+        "autosize",
+        "backend",
+        "classlist",
+        "cloner",
+        "codelyzer",
+        "devtools",
+        "downstreams",
+        "gitgui",
+        "gsettings",
+        "injectable",
+        "jsonp",
+        "metainfos",
+        "objectname",
+        "objecttype",
+        "polyfills",
+        "poolable",
+        "refname",
+        "submenu",
+        "theming",
+        "toggledevtools",
+        "undocked",
+        "unstage"
+    ],
+    
+    // flagWords - list of words to be always considered incorrect
+    // This is useful for offensive words and common spelling errors.
+    // For example "hte" should be "the"
+    "flagWords": [
+        "hte"
+    ]
+}
