@@ -47,7 +47,7 @@ export class CommitTitlesComponent implements OnChanges {
             }
             if (from instanceof HistoryCurrentChangesEntry) {
                 to.isVirtual = true;
-                to.title = "Uncommited changes";
+                to.title = "Uncommitted changes";
                 to.authorUserName = this.historyRepository!.userName;
                 to.authorUserMail = this.historyRepository!.userMail;
             }

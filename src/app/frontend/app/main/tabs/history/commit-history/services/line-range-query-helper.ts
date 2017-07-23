@@ -50,13 +50,13 @@ export class LineRangeQueryHelper {
             return lines;
 
         const newList: Line[] = [];
-        const lastMergabelLines: Line[] = [];
+        const lastMergeableLines: Line[] = [];
         for (let i = 0; i < lines.length; i++) {
 
             const curLine = lines[i];
 
             if (curLine.laneStart === curLine.laneEnd) {
-                const lastLineOnThisLane = lastMergabelLines[curLine.laneStart];
+                const lastLineOnThisLane = lastMergeableLines[curLine.laneStart];
 
                 if (lastLineOnThisLane &&
                     curLine.indexStart === lastLineOnThisLane.indexEnd &&
@@ -65,7 +65,7 @@ export class LineRangeQueryHelper {
                     curLine.laneStart === lastLineOnThisLane.laneEnd) {
                     lastLineOnThisLane.indexEnd = curLine.indexEnd;
                 } else {
-                    lastMergabelLines[curLine.laneStart] = curLine;
+                    lastMergeableLines[curLine.laneStart] = curLine;
                     newList.push(curLine);
                 }
 

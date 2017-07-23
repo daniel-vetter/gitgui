@@ -19,6 +19,6 @@ export class ObjectReader {
         } else if (fileRef instanceof DiskFileRef) {
             return this.fileSystem.readText(Path.makeAbsolute(fileRef.path, gitRepositoryPath));
         }
-        throw Error("unsported FileRef Type");
+        throw Error("Unsupported FileRef Type");
     }
 }

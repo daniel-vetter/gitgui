@@ -34,7 +34,7 @@ export class TabHeaderComponent implements OnInit {
     }
 
     onTabClicked(vm: TabViewModel, event: MouseEvent) {
-        if (event.button === 1) { // mMiddel mouse button
+        if (event.button === 1) { // Middle mouse button
             this.onCloseClicked(vm);
             return false;
         }

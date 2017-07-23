@@ -9,8 +9,8 @@
     "build": "ng build --progress=false --prod && webpack --hide-modules --env=prod",
     "build-watch": "concurrently \"webpack --hide-modules --env=prod --watch\" \"ng build --progress=false -w\" --kill-others --names \"backend,frontend\"",
     "test": "ng test --single-run --progress=false",
-	"test-watch": "ng test",
-    "lint": "tslint frontend/**/.*.ts && tslint backend/**/.*.ts && tslint shared/**/.*.ts",
+    "test-watch": "ng test",
+    "lint": "tslint frontend/**/.*.ts && tslint backend/**/.*.ts && tslint shared/**/.*.ts && cspell ./**/*.ts -e ./node_modules/** -c .vscode/cSpell.json",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -28,6 +28,7 @@
     "autosize": "^3.0.21",
     "concurrently": "^3.5.0",
     "core-js": "^2.4.1",
+    "cspell": "^1.8.1",
     "fs-extra": "^3.0.1",
     "monaco-editor": "^0.8.3",
     "rxjs": "^5.1.0",

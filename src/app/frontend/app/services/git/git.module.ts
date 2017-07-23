@@ -12,7 +12,7 @@ import { ObjectReader } from "./reader/object-reader";
 import { CurrentHeadReader } from "./reader/current-head-reader";
 import { Git } from "./git";
 import { Index } from "./actions/index";
-import { Commiter } from "./actions/commiter";
+import { Committer } from "./actions/committer";
 import { RepositoryUpdateTracker } from "./reader/repository-update-tracker";
 import { ConfigReader } from "./reader/config-reader";
 
@@ -30,7 +30,7 @@ import { ConfigReader } from "./reader/config-reader";
         ObjectReader,
         CurrentHeadReader,
         Index,
-        Commiter,
+        Committer,
         Git,
         RepositoryUpdateTracker,
         ConfigReader
