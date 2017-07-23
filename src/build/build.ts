@@ -10,6 +10,10 @@ import * as electronPackager from "electron-packager";
     await run("Installing packages", async () => {
         await shellRun("npm install", "./src/app", true);
     });
+	
+	await run("Linting", async () => {
+        await shellRun("npm run lint", "./src/app");
+    });
 
     await run("Building app", async () => {
         await shellRun("npm run build", "./src/app");

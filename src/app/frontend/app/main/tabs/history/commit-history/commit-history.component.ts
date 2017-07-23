@@ -1,4 +1,5 @@
-import { Component, Input, Output, ViewChild, OnChanges, ChangeDetectorRef, EventEmitter, ElementRef, SimpleChanges, OnDestroy, OnInit, NgZone } from "@angular/core";
+import { Component, Input, Output, ViewChild, OnChanges, ChangeDetectorRef,
+         EventEmitter, ElementRef, SimpleChanges, OnDestroy, OnInit, NgZone } from "@angular/core";
 import { LaneColorProvider } from "./services/lane-color-provider";
 import { LaneAssigner } from "./services/lane-assigner";
 import { Repository, RepositoryCommit, UpdatedElements } from "../../../../services/git/model";
@@ -37,8 +38,8 @@ export class CommitHistoryComponent implements OnChanges, OnInit, OnDestroy {
     entryHighlighted: HistoryEntryBase | undefined;
     entrySelected: HistoryEntryBase | undefined;
 
-    showLeftLaneGridBorder: boolean = false;
-    showRightLaneGridBorder: boolean = false;
+    showLeftLaneGridBorder = false;
+    showRightLaneGridBorder = false;
 
     showLoadingAnimation = false;
 
@@ -59,13 +60,16 @@ export class CommitHistoryComponent implements OnChanges, OnInit, OnDestroy {
 
     ngOnInit() {
         this.ngZone.runOutsideAngular(() => {
-            this.onDocumentMouseMoveWithoutChangeDetectionSubscription = Rx.Observable.fromEvent(document, "mousemove").subscribe((x: MouseEvent) => {
+            this.onDocumentMouseMoveWithoutChangeDetectionSubscription =
+                Rx.Observable.fromEvent(document, "mousemove").subscribe((x: MouseEvent) => {
                 this.onDocumentMouseMoveWithoutChangeDetection(x);
             });
-            this.onScrollWrapperMouseMoveWithoutChangeDetectionSubscription = Rx.Observable.fromEvent(this.scrollWrapper.nativeElement, "mousemove").subscribe((x: MouseEvent) => {
+            this.onScrollWrapperMouseMoveWithoutChangeDetectionSubscription =
+                Rx.Observable.fromEvent(this.scrollWrapper.nativeElement, "mousemove").subscribe((x: MouseEvent) => {
                 this.onMouseMove(x);
             });
-            this.onScrollWrapperScrollWithoutChangeDetectionSubscription = Rx.Observable.fromEvent(this.scrollWrapper.nativeElement, "scroll").subscribe((x: MouseEvent) => {
+            this.onScrollWrapperScrollWithoutChangeDetectionSubscription =
+                Rx.Observable.fromEvent(this.scrollWrapper.nativeElement, "scroll").subscribe((x: MouseEvent) => {
                 this.onScroll(x);
             });
         })

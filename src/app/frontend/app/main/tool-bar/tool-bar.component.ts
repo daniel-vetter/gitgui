@@ -22,7 +22,7 @@ export class ToolBarComponent {
     }
 
     onPushClicked() {
-        throw "Test";
+        throw new Error("Test");
     }
 
     onRefreshClicked() {

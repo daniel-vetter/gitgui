@@ -10,7 +10,7 @@ import { ITreeViewAdapter } from "../../../../shared/tree-view/tree-view.compone
 export class RefListComponent implements OnChanges {
     @Input() repository: Repository;
 
-    filter: string = "";
+    filter = "";
     nodes: RefNode[];
     branchNodeAdapter = new BranchNodeAdapter();
 

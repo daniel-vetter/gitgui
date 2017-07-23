@@ -15,7 +15,7 @@ export class ConfigReader {
         for (const line of lines) {
             if (line.trim() === "")
                 continue;
-            var firstLineEnd = line.indexOf("\n");
+            const firstLineEnd = line.indexOf("\n");
             if (firstLineEnd === -1) {
                 console.log("Skipped config line: " + line);
                 continue;
@@ -33,6 +33,6 @@ export class ConfigReader {
 }
 
 export class RepositoryConfig {
-    userName: string = "";
-    userMail: string = "";
+    userName = "";
+    userMail = "";
 }

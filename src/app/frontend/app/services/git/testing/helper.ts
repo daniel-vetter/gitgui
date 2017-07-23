@@ -23,7 +23,9 @@ export async function run(cmd: string, expectedExitCode = 0): Promise<number> {
     const result = await process.runAndWait(cmd, [], ".", true);
     if (expectedExitCode !== undefined) {
         if (expectedExitCode !== result.exitCode)
-            throw new Error("Shell command \"" + cmd + "\" returned exit code " + result.exitCode + ". Expected was " + expectedExitCode + ".\n\nOutput\n---------------\n" + result.data + "\n---------------\n");
+            throw new Error("Shell command \"" + cmd + "\" returned exit code " +
+                            result.exitCode + ". Expected was " + expectedExitCode +
+                            ".\n\nOutput\n---------------\n" + result.data + "\n---------------\n");
     }
     return result.exitCode;
 }
@@ -33,6 +35,6 @@ export function getTempDirectory() {
         return "C:\\GitGuiTests";
     } else if (remoteProcess.platform === "linux") {
         return Path.combine(remoteOs.homedir(), "GitGuiTests");
-    } else throw new Error("Unsported platform");
+    } else throw new Error("Unsupported platform");
 }
 

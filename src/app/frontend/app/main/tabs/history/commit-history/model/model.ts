@@ -15,9 +15,9 @@ export class HistoryEntryBase {
 }
 
 export class HistoryCurrentChangesEntry extends HistoryEntryBase {
-    addedFileCount: number = 0;
-    removedFileCount: number = 0;
-    changedFileCount: number = 0;
+    addedFileCount = 0;
+    removedFileCount = 0;
+    changedFileCount = 0;
 }
 
 export class HistoryCommitEntry extends HistoryEntryBase {

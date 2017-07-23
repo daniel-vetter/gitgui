@@ -14,10 +14,10 @@ export class CommitDetailsComponent implements OnChanges {
 
     @Input() commit: RepositoryCommit;
 
-    commitTitle: string = "";
-    authorName: string = "";
-    authorMail: string = "";
-    authorDate: string = "";
+    commitTitle = "";
+    authorName = "";
+    authorMail = "";
+    authorDate = "";
 
     changedFiles: ChangedFile[];
 

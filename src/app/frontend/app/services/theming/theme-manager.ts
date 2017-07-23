@@ -9,11 +9,11 @@ export class ThemeManager {
 
     private _currentTheme: Theme = "light";
     private styleElements: HTMLStyleElement[] = [];
+    public onCurrentThemeChanged = new Rx.Subject();
 
     constructor(private platformThemeValuesProvider: PlatformThemeValuesProvider) {
     }
 
-    public onCurrentThemeChanged = new Rx.Subject();
     public get currentTheme(): Theme {
         return this._currentTheme;
     }
@@ -27,9 +27,9 @@ export class ThemeManager {
         const values = await this.platformThemeValuesProvider.getValues();
 
         let platformValues = "";
-        let themeValues = "";
+        const themeValues = "";
 
-        for (var key in values) {
+        for (const key in values) {
             if (!values.hasOwnProperty(key))
                 continue;
 
@@ -73,7 +73,7 @@ export class ThemeManager {
             this.styleElements.push(styleElement);
         }
 
-        //Redraw scroll bars
+        // Redraw scroll bars
         document.body.style.display = "none";
         // tslint:disable-next-line:no-unused-expression
         document.body.offsetHeight;

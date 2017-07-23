@@ -17,7 +17,6 @@ export class StatusReader {
 
         const lines = gitResult.data.split("\0").filter(y => y !== "");
 
-        console.log(lines);
         for (const line of lines) {
             if (line.startsWith("warning: "))
                 continue;

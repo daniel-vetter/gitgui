@@ -10,7 +10,7 @@ export class Platform {
     constructor(private fileSystem: FileSystem) {}
 
     get appDataDirectory(): string {
-        let baseDir: string = "";
+        let baseDir = "";
         if (process.platform === "win32") {
             baseDir = Path.combine(process.env["LOCALAPPDATA"], "GitGui");
         } else if (process.platform === "linux") {

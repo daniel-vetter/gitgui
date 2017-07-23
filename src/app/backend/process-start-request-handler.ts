@@ -18,7 +18,6 @@ export class ProcessStartRequestHandler {
 
     private onProcessStart(event: any, arg: ProcessStartRequest) {
         this.state.set(arg.id, "");
-        console.log(arg.id, arg.command, arg.args, arg.workDirectory, arg.shell);
         const process = spawn(arg.command, arg.args, { cwd: arg.workDirectory, shell: arg.shell });
         process.on("close", code => {
             event.sender.send(PROCESS_START_RESPONSE, <ProcessStartResponse>{

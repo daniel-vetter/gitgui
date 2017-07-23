@@ -12,8 +12,8 @@ export class FileContentTabComponent implements OnChanges, AfterViewInit {
     @Input() tab: FileContentTab;
     @ViewChild("container") container: ElementRef;
 
-    fileName: string = "";
-    content: string = "";
+    fileName = "";
+    content = "";
 
     private editor: monaco.editor.IStandaloneCodeEditor;
 

@@ -12,14 +12,14 @@ import { Repository } from "../model";
 
 describe(Git.name, () => {
 
-    var fileSystem: FileSystem;
-    var git: Git;
-    var gitRaw: GitRaw;
-    let originalWorkingDirectory: string | undefined = undefined;
+    let fileSystem: FileSystem;
+    let git: Git;
+    let gitRaw: GitRaw;
+    let originalWorkingDirectory = "";
     const testDirectory = getTempDirectory();
 
     beforeEach(waitForPromise(async () => {
-        //Init git system
+        // Init git system
         await TestBed.configureTestingModule({
             imports: [GitModule],
             providers: [Platform, FileSystem]
@@ -29,7 +29,7 @@ describe(Git.name, () => {
         git = TestBed.get(Git);
         gitRaw = TestBed.get(GitRaw);
 
-        //Create workspace directory where the tests will be run
+        // Create workspace directory where the tests will be run
         originalWorkingDirectory = fileSystem.getCurrentWorkingDirectory();
         if (fileSystem.exists(testDirectory))
             fileSystem.deleteDirectory(testDirectory);

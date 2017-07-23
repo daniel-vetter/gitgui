@@ -1,6 +1,6 @@
 import { Process } from "../infrastructure/process";
 import { Injectable } from "@angular/core";
-const process = (<any>window).require("electron").remote.process;
+const nodeProcess = (<any>window).require("electron").remote.process;
 
 @Injectable()
 export class GitPathProvider {
@@ -16,9 +16,9 @@ export class GitPathProvider {
         }
 
         let command: string;
-        if (process.platform === "win32") {
+        if (nodeProcess.platform === "win32") {
             command = "where git";
-        } else if (process.platform === "linux") {
+        } else if (nodeProcess.platform === "linux") {
             command = "which git";
         } else {
             throw new Error("Unsupported platform")

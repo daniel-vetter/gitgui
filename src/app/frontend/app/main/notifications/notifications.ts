@@ -23,7 +23,7 @@ export class Notifications {
 }
 
 export class Notification {
-    text: string = "";
+    text = "";
     type: NotificationType = NotificationType.Info;
 }
 

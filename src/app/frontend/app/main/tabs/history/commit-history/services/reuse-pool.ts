@@ -3,7 +3,7 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
     public viewModels: TViewModel[] = [];
     private debugTitle: string | undefined = undefined;
 
-    constructor(private viewModelFactory: () => TViewModel) {}
+    constructor(private viewModelFactory: () => TViewModel) { }
 
     makeAllInvisible() {
         this.viewModels.forEach(x => x.visible = false);
@@ -73,7 +73,12 @@ export class ReusePool<TModel, TViewModel extends PoolableViewModel<TModel>> {
         }
 
         if (this.debugTitle !== undefined)
-            console.log("ReusePool " + this.debugTitle + " Remapping " + startIndex + "-"+ endIndex +" (Total: " + this.viewModels.length + ", Remap: "+ remapCount +", Reuse: "+reuseCount+", " + recreated + ")");
+            console.log("ReusePool " + this.debugTitle +
+                " Remapping " + startIndex + "-" + endIndex +
+                " (Total: " + this.viewModels.length +
+                ", Remap: " + remapCount +
+                ", Reuse: " + reuseCount +
+                ", " + recreated + ")");
     }
 
     enableLogging(title: string) {

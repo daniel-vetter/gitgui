@@ -29,7 +29,7 @@ export class PackageLoader {
                 index = this.fileSystem.readJson(indexFilePath);
             }
 
-            if(!index)
+            if (!index)
                 throw Error("could not load package index");
 
             let indexEntry = index.packages.find(x => x.url === url);

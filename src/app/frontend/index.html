@@ -20,7 +20,6 @@
 <script>
     var amdRequire = global.require;
     var myRequire = function(param) {
-        console.log("require" , param);
         if (param.startsWith("vs/"))
             return amdRequire(param);
         return nodeRequire(param)

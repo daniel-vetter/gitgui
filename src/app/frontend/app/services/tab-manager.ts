@@ -74,12 +74,12 @@ export abstract class Tab {
 
 export class TabUi {
 
-    constructor(private tab: Tab) {}
-
     onDetailsChange: ((tabContainer: Tab) => void) | undefined;
     private _title = "";
     private _isCloseable = true;
     private _isPersistent = true;
+
+    constructor(private tab: Tab) {}
 
     get title(): string {
         return this._title;

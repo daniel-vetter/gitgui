@@ -32,7 +32,7 @@ export class RepositoryUpdateTracker {
     }
 
     updateFinished(repository: Repository) {
-        let item = this.updatedElements.get(repository);
+        const item = this.updatedElements.get(repository);
         let concurrentUpdateCount = this.concurrentUpdateCount.get(repository);
         if (item === undefined || concurrentUpdateCount === undefined)
             throw Error("Could not change update state to finished because updateStarting was never called for this repository.")

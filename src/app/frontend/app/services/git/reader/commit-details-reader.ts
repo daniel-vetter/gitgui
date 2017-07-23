@@ -16,7 +16,7 @@ export class CommitDetailsReader {
 
     async getFileChangesOfCommit(commit: RepositoryCommit): Promise<ChangedFile[]> {
         const params = ["diff-tree", "--no-commit-id", "-r", "-m", "-z"];
-        if (commit.parents.length === 0) 
+        if (commit.parents.length === 0)
             params.push("4b825dc642cb6eb9a060e54bf8d69288fbee4904");
         params.push(commit.hash);
 
@@ -41,7 +41,7 @@ export class CommitDetailsReader {
                 item.oldFile = FileRef.fromBlob(sourceBlob, path);
             if (destinationMode !== "000000" && destinationBlob !== "0000000000000000000000000000000000000000")
                 item.newFile = FileRef.fromBlob(destinationBlob, path)
-            
+
             if (type === "A") item.type = FileChangeType.Added;
             if (type === "C") item.type = FileChangeType.Copied;
             if (type === "D") item.type = FileChangeType.Deleted;

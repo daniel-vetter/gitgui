@@ -1,5 +1,5 @@
 export class ConfigData {
-    loadLastRepositoryOnStartup: boolean = false;
+    loadLastRepositoryOnStartup = false;
     recentRepositories: string[] = [];
     fileIconPackageUrl = "https://github.com/jtlowe/studio-icons.git";
 }

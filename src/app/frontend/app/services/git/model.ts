@@ -16,7 +16,7 @@ export class Repository {
 export class RepositoryUpdateState {
     onUpdateStarted = new Rx.Subject<UpdatedElements>();
     onUpdateFinished = new Rx.Subject<UpdatedElements>();
-    isUpdating: boolean = false;
+    isUpdating = false;
 }
 
 export class UpdatedElements {
@@ -55,11 +55,12 @@ export enum FileChangeType {
 }
 
 export abstract class FileRef {
-    constructor(public path: string) {}
     public static fromDisk(path: string) { return new DiskFileRef(path); }
     public static fromIndex(path: string) { return new IndexFileRef(path); }
     public static fromHead(path: string) { return new HeadFileRef(path); }
     public static fromBlob(blob: string, path: string) { return new BlobFileRef(blob, path); }
+
+    constructor(public path: string) {}
 }
 
 export class DiskFileRef extends FileRef {

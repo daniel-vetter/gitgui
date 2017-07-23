@@ -13,7 +13,7 @@ import { ReusePool, PoolableViewModel } from "../services/reuse-pool";
 export class CommitAnnotationsComponent implements OnChanges {
     @Input() historyRepository?: HistoryRepository;
     @Input() visibleRange?: VisibleRange;
-    @Input() width: number = 0;
+    @Input() width = 0;
 
     annotationBundles = new ReusePool<HistoryEntryBase, AnnotationBundleViewModel>(() => new AnnotationBundleViewModel());
     font: string;
@@ -25,7 +25,7 @@ export class CommitAnnotationsComponent implements OnChanges {
         private elementRef: ElementRef,
         private changeDetectorRef: ChangeDetectorRef) {
         const bodyFont = window.getComputedStyle(document.body, undefined).font;
-        if (bodyFont == null || bodyFont == undefined) {
+        if (bodyFont === null || bodyFont === undefined) {
             throw Error("<body> has not font defined.");
         } else {
             this.font = bodyFont;

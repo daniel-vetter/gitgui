@@ -7,12 +7,12 @@ import { Component, Input, EventEmitter, Output, OnChanges, OnInit } from "@angu
 })
 export class CheckBoxComponent implements OnInit,  OnChanges {
 
-    @Input() triState: boolean = false;
+    @Input() triState = false;
     @Input() checked: boolean | Intermediate = false;
     @Output() checkedChange = new EventEmitter<boolean | Intermediate>();
 
-    showCheck: boolean = false;
-    showIntermediate: boolean = false;
+    showCheck = false;
+    showIntermediate = false;
 
     ngOnInit() {
         this.update();

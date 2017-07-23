@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild, ElementRef } from "@angular/core";
+import { Component, Input, OnChanges, ViewChild, ElementRef, OnInit, OnDestroy } from "@angular/core";
 import { Repository, ChangedFile, UpdatedElements } from "../../../services/git/model";
 import { IconDefinition } from "../../../services/file-icon/file-icon";
 import { Intermediate } from "../../../shared/check-box/check-box.component";
@@ -16,12 +16,12 @@ import { ProcessTracker } from "./process-tracker";
     templateUrl: "./repository-status.component.html",
     styleUrls: ["./repository-status.component.scss"]
 })
-export class RepositoryStatusComponent implements OnChanges {
+export class RepositoryStatusComponent implements OnInit, OnDestroy, OnChanges {
     @Input() repository: Repository;
     @ViewChild("commitMessageTextArea") commitMessageTextArea: ElementRef;
 
     changedFiles: ChangedFile[] = [];
-    commitMessage: string = "";
+    commitMessage = "";
     onStatusChangeSubscription: Subscription;
     commitButtonEnabled = true;
 
@@ -125,7 +125,7 @@ export class RepositoryStatusComponent implements OnChanges {
             for (const tab of this.tabManager.allTabs) {
                 if (!(tab instanceof HistoryTab))
                     continue;
-                if (this.repository == await tab.repository) {
+                if (this.repository === await tab.repository) {
                     this.tabManager.selectedTab = tab;
                     break;
                 }

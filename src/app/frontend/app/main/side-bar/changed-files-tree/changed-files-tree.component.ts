@@ -14,7 +14,7 @@ import { FileTreeBuilder, FileTreeNode } from "./file-tree-builder";
 export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() changedFiles: ChangedFile[] = [];
-    @Input() showStageButtons: boolean = false;
+    @Input() showStageButtons = false;
 
     @Output() onFileSelected = new EventEmitter<ChangedFile>();
     @Output() onFileStageClicked = new EventEmitter<ChangedFile>();
@@ -22,7 +22,7 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
     @Output() onFolderStageClicked = new EventEmitter<string>();
     @Output() onFolderUnstageClicked = new EventEmitter<string>();
 
-    filter: string = "";
+    filter = "";
     fileIconsChangeSubscription: Rx.Subscription;
 
     changeFilesTree: FileTreeNode[] = [];
@@ -76,7 +76,6 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
         } else {
             if (treeNode.isFolder) {
                 this.onFolderUnstageClicked.emit(treeNode.path);
-                
             } else {
                 this.onFileUnstageClicked.emit(treeNode.data);
             }
@@ -85,9 +84,9 @@ export class ChangedFilesTreeComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     previewStagedState(treeNode: FileTreeNode, newStagedState: boolean) {
-        const forEachNode = (treeNode: FileTreeNode, action: (x: FileTreeNode) => void) => {
-            action(treeNode);
-            treeNode.children.forEach(y => forEachNode(y, action));
+        const forEachNode = (parentNode: FileTreeNode, action: (x: FileTreeNode) => void) => {
+            action(parentNode);
+            parentNode.children.forEach(y => forEachNode(y, action));
         };
 
         forEachNode(treeNode, x => x.isStaged = newStagedState);

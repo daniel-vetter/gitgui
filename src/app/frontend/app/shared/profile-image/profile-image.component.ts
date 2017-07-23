@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, NgZone, ChangeDetectorRef, SimpleChanges } from "@angular/core";
+import { Component, Input, OnChanges, NgZone, ChangeDetectorRef, SimpleChanges, OnInit } from "@angular/core";
 import { RepositoryCommit } from "../../services/git/model";
 import { md5 } from "./md5";
 import { ImageResolver } from "./image-resolver";
@@ -7,13 +7,13 @@ import { ImageResolver } from "./image-resolver";
     selector: "profile-image",
     templateUrl: "./profile-image.component.html"
 })
-export class ProfileImageComponent implements OnChanges {
+export class ProfileImageComponent implements OnInit, OnChanges {
 
-    @Input() userName?: string = "";
-    @Input() userMail?: string = "";
+    @Input() userName = "";
+    @Input() userMail = "";
 
     imageUrl?: string;
-    shortName: string = "";
+    shortName = "";
     requestId = 0;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private ngZone: NgZone, private imageResolver: ImageResolver) {
@@ -27,7 +27,6 @@ export class ProfileImageComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (this.userMail === undefined || this.userName === undefined) {
             this.imageUrl = undefined;
-            //this.changeDetectorRef.detectChanges();
             return;
         }
 
@@ -39,7 +38,6 @@ export class ProfileImageComponent implements OnChanges {
         });
 
         this.shortName = "";
-        this.userName
         const parts = this.userName.trim().split(" ");
         if (parts.length === 1)
             this.shortName = parts[0].substr(0, 1);
