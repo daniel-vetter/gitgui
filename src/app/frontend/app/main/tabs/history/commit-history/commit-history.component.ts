@@ -1,5 +1,6 @@
 import { Component, Input, Output, ViewChild, OnChanges, ChangeDetectorRef,
-         EventEmitter, ElementRef, SimpleChanges, OnDestroy, OnInit, NgZone } from "@angular/core";
+    EventEmitter, ElementRef, SimpleChanges, OnDestroy, OnInit, NgZone, AfterViewInit
+} from "@angular/core";
 import { LaneColorProvider } from "./services/lane-color-provider";
 import { LaneAssigner } from "./services/lane-assigner";
 import { Repository, RepositoryCommit, UpdatedElements } from "../../../../services/git/model";
@@ -15,7 +16,7 @@ import * as Rx from "rxjs";
     templateUrl: "./commit-history.component.html",
     styleUrls: ["./commit-history.component.scss"]
 })
-export class CommitHistoryComponent implements OnChanges, OnInit, OnDestroy {
+export class CommitHistoryComponent implements OnChanges, OnInit, OnDestroy, AfterViewInit {
 
     @Input() repository?: Repository;
     @Output() selectedCommitChange = new EventEmitter<RepositoryCommit>();
@@ -73,7 +74,6 @@ export class CommitHistoryComponent implements OnChanges, OnInit, OnDestroy {
                 this.onScroll(x);
             });
         })
-
     }
 
     ngOnDestroy() {
@@ -106,6 +106,10 @@ export class CommitHistoryComponent implements OnChanges, OnInit, OnDestroy {
 
         this.updateVisibleRange();
         this.updateShadowVisibility();
+    }
+
+    ngAfterViewInit() {
+        this.updateVisibleRange();
     }
 
     private displayRepository() {
@@ -146,6 +150,7 @@ export class CommitHistoryComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     private updateVisibleRange() {
+
         const startY = Math.floor(this.scrollWrapper.nativeElement.scrollTop / this.metrics.commitHeight);
         const endY = Math.floor(startY + this.scrollWrapper.nativeElement.clientHeight / this.metrics.commitHeight) + 1;
         const overdraw = 5;

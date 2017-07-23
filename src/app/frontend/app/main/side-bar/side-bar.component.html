@@ -1,4 +1,4 @@
-<div *ngIf="contentAvailable" class="root fill" [style.width.px]="width">
+<div *ngIf="contentAvailable" class="root fill">
     <commit-details *ngIf="showCommitDetails" [commit]="commit"></commit-details>
     <repository-status *ngIf="showRepositoryStatus" [repository]="repository"></repository-status>
 </div>

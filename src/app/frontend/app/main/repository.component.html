@@ -1,5 +1,5 @@
-<div style="display: flex;" class="fill root">
-    <div class="tab fill" style="flex: 1; display: flex; flex-direction: column">
+<splitter fixedPart="second" position="350" [showSecond]="showSideBar">
+    <div splitter-first class="tab fill" style="flex: 1; display: flex; flex-direction: column">
         <div>
             <tab-header></tab-header>
         </div>
@@ -7,7 +7,7 @@
             <tab-content></tab-content>
         </div>
     </div>
-    <div>
-        <side-bar [width]="350"></side-bar>
+    <div splitter-second class="fill">
+        <side-bar></side-bar>
     </div>
-</div>
+</splitter>

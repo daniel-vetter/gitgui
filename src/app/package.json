@@ -10,7 +10,7 @@
     "build-watch": "concurrently \"webpack --hide-modules --env=prod --watch\" \"ng build --progress=false -w\" --kill-others --names \"backend,frontend\"",
     "test": "ng test --single-run --progress=false",
     "test-watch": "ng test",
-    "lint": "tslint frontend/**/.*.ts && tslint backend/**/.*.ts && tslint shared/**/.*.ts && cspell ./**/*.ts -e ./node_modules/** -c .vscode/cSpell.json",
+    "lint": "tslint frontend/**/.*.ts && tslint backend/**/.*.ts && tslint shared/**/.*.ts && cspell \"./**/*.{ts,html,sass}\" -e \"./node_modules/**\" -c .vscode/cSpell.json",
     "e2e": "ng e2e"
   },
   "private": true,

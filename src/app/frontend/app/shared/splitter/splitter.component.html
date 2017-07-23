@@ -1,0 +1,15 @@
+<div class="fill" style="position: relative" #root>
+    <div class="fill" style="display: flex; position: absolute">
+        <div *ngIf="showFirst" class="fill" [style.width.px]="firstValue" [style.flex]="firstValue ? undefined : 1">
+            <ng-content select="[splitter-first]"></ng-content>
+        </div>
+        <div *ngIf="showSecond" class="fill" [style.width.px]="secondValue" [style.flex]="secondValue ? undefined : 1">
+            <ng-content select="[splitter-second]"></ng-content>
+        </div>
+    </div>
+    <div class="fill splitterOverlay" [class.isResizing]="isResizing">
+        <div [style.width.px]="firstValue! - 3" [style.flex]="firstValue ? undefined : 1"></div>
+        <div class="splitterHandle" [class.isResizing]="isResizing" (mousedown)="onResizeMouseDown()" (document:mouseup)="onResizeMouseUp()"></div>
+        <div [style.width.px]="secondValue! - 3" [style.flex]="secondValue ? undefined : 1"></div>
+    </div>
+</div>

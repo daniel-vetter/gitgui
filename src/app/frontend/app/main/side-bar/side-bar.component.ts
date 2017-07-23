@@ -9,7 +9,6 @@ import { Repository, RepositoryCommit } from "../../services/git/model";
 })
 export class SideBarComponent implements OnInit {
 
-    @Input() width: number;
     showCommitDetails: boolean;
     showRepositoryStatus: boolean;
     contentAvailable: boolean;

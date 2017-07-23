@@ -11,7 +11,7 @@
             </commit-selection-background>
         </div>
 
-        <!-- The three parts of this component: Annotions, LaneGrid, CommitTitles -->
+        <!-- The three parts of this component: Annotations, LaneGrid, CommitTitles -->
         <div class="scrollInner" [style.height.px]="maxScrollHeight">
 
             <div [style.width.px]="annotationGridWidth">
@@ -31,8 +31,7 @@
 
             <!-- A overlay containing two vertical divs (10px width) which represent the resize click zones -->
             <div class="overlay" style="display: flex;" [style.height.px]="maxScrollHeight" [class.inResizeMode]="isInLaneGridResizeMode || isInAnnotationGridResizeMode">
-                <div class="resizeBar" [style.left.px]="annotationGridWidth - 5" (mousedown)="onAnnotationGridResizeMouseDown($event)" (document:mouseup)="onAnnotationGridResizeMouseUp($event)"
-                    >
+                <div class="resizeBar" [style.left.px]="annotationGridWidth - 5" (mousedown)="onAnnotationGridResizeMouseDown($event)" (document:mouseup)="onAnnotationGridResizeMouseUp($event)">
                 </div>
                 <div class="resizeBar" [style.left.px]="currentLaneGridWidth + annotationGridWidth - 5" (mousedown)="onLaneGridResizeMouseDown($event)"
                     (document:mouseup)="onLaneGridResizeMouseUp($event)">
@@ -41,7 +40,7 @@
         </div>
     </div>
 
-    <!-- Horizontal scrollbar to scroll the lane grid -->
+    <!-- Horizontal scrollBar to scroll the lane grid -->
     <div class="horizontalScrollContainer" [class.visible]="mouseIsInLaneGrid || isInLaneGridResizeMode" [style.left.px]="annotationGridWidth"
         [style.width.px]="currentLaneGridWidth" (scroll)="onLaneGridScroll($event)">
         <div style="opacity: 0; height: 1px;" [style.width.px]="totalLaneGridWidth"></div>

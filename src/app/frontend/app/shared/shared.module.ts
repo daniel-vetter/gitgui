@@ -6,6 +6,7 @@ import { CheckBoxComponent } from "./check-box/check-box.component";
 import { LoadingComponent } from "./loading/loading.component";
 import { LoadingOverlayComponent } from "./loading-overlay/loading-overlay.component";
 import { ImageResolver } from "./profile-image/image-resolver";
+import { SplitterComponent } from "./splitter/splitter.component";
 
 @NgModule({
     declarations: [
@@ -13,7 +14,8 @@ import { ImageResolver } from "./profile-image/image-resolver";
         TreeViewComponent,
         CheckBoxComponent,
         LoadingComponent,
-        LoadingOverlayComponent
+        LoadingOverlayComponent,
+        SplitterComponent
     ],
     imports: [
         BrowserModule
@@ -23,7 +25,8 @@ import { ImageResolver } from "./profile-image/image-resolver";
         TreeViewComponent,
         CheckBoxComponent,
         LoadingComponent,
-        LoadingOverlayComponent
+        LoadingOverlayComponent,
+        SplitterComponent
     ],
 
     providers: [

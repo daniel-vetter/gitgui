@@ -1,12 +1,14 @@
 <div style="display: flex;" class="fill">
-    <ng-container *ngIf="repository">
-        <div style="width: 250px; overflow: hidden">
-            <ref-list [repository]="repository"></ref-list>
-        </div>
-        <div style="background: white; flex: 1">
-            <commit-history [repository]="repository" [(selectedCommit)]="selectedCommit" (selectedCommitChange)="onSelectedCommitChange()"></commit-history>
-        </div>
-    </ng-container>
+    <div class="fill" *ngIf="repository">
+        <splitter position="250">
+            <div splitter-first class="fill">
+                <ref-list [repository]="repository"></ref-list>
+            </div>
+            <div splitter-second class="fill" style="background: white; flex: 1">
+                <commit-history [repository]="repository" [(selectedCommit)]="selectedCommit" (selectedCommitChange)="onSelectedCommitChange()"></commit-history>
+            </div>
+        </splitter>
+    </div>
 
     <div *ngIf="!repository" class="fill" style="display: flex; align-items: center; justify-content: center;">
         <loading></loading>
