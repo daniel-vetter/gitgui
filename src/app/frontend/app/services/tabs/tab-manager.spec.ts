@@ -1,37 +1,48 @@
-import { TabManager, Tab } from "./tab-manager";
-import { HistoryTab } from "../main/tabs/tabs";
+import { TabManager, TabPage } from "./tab-manager";
+import { HistoryTabData } from "../../main/tabs/tabs";
+import { Repository } from "../git/model";
+import { TabData } from "app/main/tabs/tabs";
 
 describe(TabManager.name, () => {
     interface EventRecord {
         eventType: string;
-        selectedTab: Tab | undefined;
-        allTabs: Tab[];
+        selectedTab: TabPage | undefined;
+        allTabs: TabPage[];
     }
+
+    const repository = new Repository();
 
     function monitorEvents(x: TabManager): EventRecord[] {
         const events: EventRecord[] = [];
         x.onTabListChanged.subscribe(() => {
-            events.push({ eventType: "onTabListChanged", selectedTab: x.selectedTab, allTabs: Array.from(x.allTabs) });
+            events.push({
+                eventType: "onTabListChanged",
+                selectedTab: x.selectedTab,
+                allTabs: Array.from(x.allTabPages)
+            });
         });
 
         x.onSelectedTabChanged.subscribe(() => {
-            events.push({ eventType: "onSelectedTabChanged", selectedTab: x.selectedTab, allTabs: Array.from(x.allTabs) });
+            events.push({
+                eventType: "onSelectedTabChanged",
+                selectedTab: x.selectedTab,
+                allTabs: Array.from(x.allTabPages)
+            });
         });
         return events;
     }
 
     it("A fresh TabManager should contain no tabs", () => {
-        expect(new TabManager().allTabs.length).toBe(0);
+        expect(new TabManager().allTabPages.length).toBe(0);
     });
 
     describe("Adding a tab", () => {
 
         const tabManager = new TabManager();
-        const tab = new HistoryTab();
-        tabManager.createNewTab(tab);
+        const tab = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
 
         it("should add a tab to the tab list", () => {
-            expect(tabManager.allTabs.length).toBe(1);
+            expect(tabManager.allTabPages.length).toBe(1);
         });
 
         it("should select the new tab", () => {
@@ -42,10 +53,9 @@ describe(TabManager.name, () => {
     describe("Adding a tab", () => {
         it("should fire all events in the correct order", () => {
             const tabManager = new TabManager();
-            const tab = new HistoryTab();
             const events = monitorEvents(tabManager);
 
-            tabManager.createNewTab(tab);
+            const tab = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
 
             expect(events).toEqual(<EventRecord[]>[
                 { eventType: "onTabListChanged", selectedTab: undefined, allTabs: [tab] },
@@ -57,12 +67,11 @@ describe(TabManager.name, () => {
     describe("After removing the last tab", () => {
 
         const tabManager = new TabManager();
-        const tab = new HistoryTab();
-        tabManager.createNewTab(tab);
+        const tab = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
         tabManager.closeTab(tab);
 
         it("should not have any tabs", () => {
-            expect(tabManager.allTabs.length).toBe(0);
+            expect(tabManager.allTabPages.length).toBe(0);
         });
 
         it("should not have any tab selected", () => {
@@ -73,8 +82,7 @@ describe(TabManager.name, () => {
     describe("Removing the last tab", () => {
         it("should fire all events in the correct order", () => {
             const tabManager = new TabManager();
-            const tab = new HistoryTab();
-            tabManager.createNewTab(tab);
+            const tab = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
             const events = monitorEvents(tabManager);
 
             tabManager.closeTab(tab);
@@ -89,16 +97,16 @@ describe(TabManager.name, () => {
     describe("Changing the selected tab", () => {
 
         const tabManager = new TabManager();
-        tabManager.createNewTab(new HistoryTab());
-        tabManager.createNewTab(new HistoryTab());
-        tabManager.createNewTab(new HistoryTab());
+        tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
+        tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
+        tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
         let eventFired = false;
         tabManager.onSelectedTabChanged.subscribe(() => eventFired = true);
 
-        tabManager.selectedTab = tabManager.allTabs[1];
+        tabManager.selectedTab = tabManager.allTabPages[1];
 
         it("should change the selected tab", () => {
-            expect(tabManager.selectedTab).toBe(tabManager.allTabs[1]);
+            expect(tabManager.selectedTab).toBe(tabManager.allTabPages[1]);
         });
 
         it("should fire the selectedTabChanged event", () => {
@@ -106,19 +114,16 @@ describe(TabManager.name, () => {
         });
     });
 
-    describe("Changing away from a temporary tab", () =>  {
+    describe("Changing away from a temporary tab", () => {
         const tabManager = new TabManager();
-        const persistentTab = new HistoryTab();
-        const tempTab = new HistoryTab();
-        tempTab.ui.isPersistent = false;
-        tabManager.createNewTab(persistentTab);
-        tabManager.createNewTab(tempTab);
+        const persistentTab = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
+        const tempTab = tabManager.createNewTempTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
         const events = monitorEvents(tabManager);
         tabManager.selectedTab = persistentTab;
 
-        it("should close the temporary tab", () => expect(tabManager.allTabs).not.toContain(tempTab));
+        it("should close the temporary tab", () => expect(tabManager.allTabPages).not.toContain(tempTab));
         it("should selected the persistent tab", () => expect(tabManager.selectedTab).toBe(persistentTab));
-        it("should fire event in correct order", () =>  {
+        it("should fire event in correct order", () => {
             expect(events).toEqual(<EventRecord[]>[
                 { eventType: "onSelectedTabChanged", selectedTab: persistentTab, allTabs: [persistentTab, tempTab] },
                 { eventType: "onTabListChanged", selectedTab: persistentTab, allTabs: [persistentTab] }
@@ -126,19 +131,16 @@ describe(TabManager.name, () => {
         })
     });
 
-    describe("Creating a new tab if a temporary tab is currently selected", () =>  {
+    describe("Creating a new tab if a temporary tab is currently selected", () => {
         const tabManager = new TabManager();
-        const persistentTab = new HistoryTab();
-        const tempTab = new HistoryTab();
-        tempTab.ui.isPersistent = false;
-        tabManager.createNewTab(tempTab);
+        const tempTab = tabManager.createNewTempTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
         const events = monitorEvents(tabManager);
-        tabManager.createNewTab(persistentTab);
+        const persistentTab = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
 
 
-        it("should close the temporary tab", () => expect(tabManager.allTabs).not.toContain(tempTab));
+        it("should close the temporary tab", () => expect(tabManager.allTabPages).not.toContain(tempTab));
         it("should selected the persistent tab", () => expect(tabManager.selectedTab).toBe(persistentTab));
-        it("should fire event in correct order", () =>  {
+        it("should fire event in correct order", () => {
             expect(events).toEqual(<EventRecord[]>[
                 { eventType: "onTabListChanged", selectedTab: tempTab, allTabs: [tempTab, persistentTab] },
                 { eventType: "onSelectedTabChanged", selectedTab: persistentTab, allTabs: [tempTab, persistentTab] },

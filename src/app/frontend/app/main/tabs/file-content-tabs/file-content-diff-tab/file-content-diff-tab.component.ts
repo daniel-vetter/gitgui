@@ -1,15 +1,15 @@
 import { Component, Input, OnChanges, ViewChild, AfterViewInit, ElementRef } from "@angular/core";
-import { FileContentDiffTab } from "../../tabs";
 import { Path } from "../../../../services/path";
 import { Git } from "../../../../services/git/git";
+import { TabBase } from "app/services/tabs/tab-base";
+import { FileContentDiffTabData } from "app/main/tabs/tabs";
 
 @Component({
     selector: "file-content-diff-tab",
     templateUrl: "./file-content-diff-tab.component.html",
     styleUrls: ["./file-content-diff-tab.component.scss"]
 })
-export class FileContentDiffTabComponent implements OnChanges, AfterViewInit {
-    @Input() tab: FileContentDiffTab;
+export class FileContentDiffTabComponent extends TabBase<FileContentDiffTabData> implements AfterViewInit {
 
     @ViewChild("container") container: ElementRef;
 
@@ -21,27 +21,26 @@ export class FileContentDiffTabComponent implements OnChanges, AfterViewInit {
 
     private editor: monaco.editor.IDiffEditor;
 
-    constructor(private git: Git) {}
+    constructor(private git: Git) {
+        super();
+    }
 
     ngAfterViewInit() {
         this.createEditors();
     }
 
-    async ngOnChanges() {
-        if (this.tab) {
-            this.leftFileName = Path.getLastPart(this.tab.leftFile.path);
-            this.rightFileName = Path.getLastPart(this.tab.rightFile.path);
-            if (this.leftFileName.toLowerCase() === this.rightFileName.toLowerCase()) {
-                this.tab.ui.title = this.leftFileName;
-            } else {
-                this.tab.ui.title = this.leftFileName + " - " + this.rightFileName;
-            }
-            this.leftContent = await this.git.getFileContent(this.tab.repository, this.tab.leftFile);
-            this.rightContent = await this.git.getFileContent(this.tab.repository, this.tab.rightFile)
+    async displayData(data: FileContentDiffTabData): Promise<void> {
+
+        this.leftFileName = Path.getLastPart(data.leftFile.path);
+        this.rightFileName = Path.getLastPart(data.rightFile.path);
+        if (this.leftFileName.toLowerCase() === this.rightFileName.toLowerCase()) {
+            this.page.title = this.leftFileName;
         } else {
-            this.leftContent = "";
-            this.rightContent = "";
+            this.page.title = this.leftFileName + " - " + this.rightFileName;
         }
+        this.leftContent = await this.git.getFileContent(data.repository, data.leftFile);
+        this.rightContent = await this.git.getFileContent(data.repository, data.rightFile)
+
         this.update();
     }
 
@@ -67,11 +66,9 @@ export class FileContentDiffTabComponent implements OnChanges, AfterViewInit {
 
     private update() {
         if (!this.editor) return;
-        if (this.tab) {
-            this.editor.setModel({
-                original: monaco.editor.createModel(this.leftContent, "text/plain"),
-                modified: monaco.editor.createModel(this.rightContent, "text/plain")
-            });
-        }
+        this.editor.setModel({
+            original: monaco.editor.createModel(this.leftContent, "text/plain"),
+            modified: monaco.editor.createModel(this.rightContent, "text/plain")
+        });
     }
 }

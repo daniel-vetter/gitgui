@@ -1,15 +1,16 @@
 import { Component, Input, OnChanges, AfterViewInit, ViewChild, ElementRef } from "@angular/core";
-import { FileContentTab } from "../../tabs";
+import { FileContentTabData } from "../../tabs";
 import { Path } from "../../../../services/path";
 import { Git } from "../../../../services/git/git";
+import { TabBase } from "app/services/tabs/tab-base";
 
 @Component({
     selector: "file-content-tab",
     templateUrl: "file-content-tab.component.html",
     styleUrls: ["./file-content-tab.component.scss"]
 })
-export class FileContentTabComponent implements OnChanges, AfterViewInit {
-    @Input() tab: FileContentTab;
+export class FileContentTabComponent extends TabBase<FileContentTabData> implements AfterViewInit {
+
     @ViewChild("container") container: ElementRef;
 
     fileName = "";
@@ -17,19 +18,19 @@ export class FileContentTabComponent implements OnChanges, AfterViewInit {
 
     private editor: monaco.editor.IStandaloneCodeEditor;
 
-    constructor(private git: Git) {}
+    constructor(private git: Git) {
+        super();
+    }
 
     ngAfterViewInit() {
         this.createEditors();
     }
 
-    async ngOnChanges() {
-        if (this.tab) {
-            this.tab.ui.title = Path.getLastPart(this.tab.file.path);
-            this.content = await this.git.getFileContent(this.tab.repository, this.tab.file);
-        } else {
-            this.content = "";
-        }
+    async displayData(data: FileContentTabData): Promise<void> {
+
+        this.page.title = Path.getLastPart(data.file.path);
+        this.content = await this.git.getFileContent(data.repository, data.file);
+
         this.update();
     }
 
@@ -55,8 +56,6 @@ export class FileContentTabComponent implements OnChanges, AfterViewInit {
 
     private update() {
         if (!this.editor) return;
-        if (this.tab) {
-            this.editor.setModel(monaco.editor.createModel(this.content, "text/plain"));
-        }
+        this.editor.setModel(monaco.editor.createModel(this.content, "text/plain"));
     }
 }

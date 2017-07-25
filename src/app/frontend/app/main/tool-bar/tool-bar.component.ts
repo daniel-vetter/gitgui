@@ -2,9 +2,9 @@ import { Component } from "@angular/core";
 import { FileOpenRepository } from "../../menu/handler/file-open-repository";
 import { Notifications } from "../notifications/notifications";
 import { Git } from "../../services/git/git";
-import { TabManager } from "../../services/tab-manager";
 import { Repository } from "../../services/git/model";
 import { Status } from "../../services/status";
+import { TabManager } from "app/services/tabs/tab-manager";
 @Component({
     templateUrl: "./tool-bar.component.html",
     styleUrls: ["./tool-bar.component.scss"],
@@ -28,7 +28,7 @@ export class ToolBarComponent {
     onRefreshClicked() {
         this.status.startProcess("Updating repository", async () => {
             const allOpenRepositories: Repository[] = [];
-            for (const tab of this.tabManager.allTabs) {
+            for (const tab of this.tabManager.allTabPages) {
                 const repositoryOrRepositoryPromise = <Repository | Promise<Repository>>((<any>tab)["repository"]); // TODO: Use a interface
                 let repository: Repository | undefined;
                 if (repositoryOrRepositoryPromise instanceof Repository)

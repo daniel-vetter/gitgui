@@ -1,7 +1,5 @@
 <div class="fill root">
-    <ng-container *ngFor="let tab of tabs">
-        <div *ngIf="tab.type === 'HistoryTab'" [class.visible]="tab.visible"><history-tab [tab]="tab.data"></history-tab></div>
-        <div *ngIf="tab.type === 'FileContentTab'" [class.visible]="tab.visible"><file-content-tab [tab]="tab.data"></file-content-tab></div>
-        <div *ngIf="tab.type === 'FileContentDiffTab'" [class.visible]="tab.visible"><file-content-diff-tab [tab]="tab.data"></file-content-diff-tab></div>
-    </ng-container>
+    <div *ngFor="let tab of tabs" [class.visible]="tab.visible">
+        <tab-component-wrapper [componentType]="tab.componentType" [page]="tab.page" [data]="tab.data"></tab-component-wrapper>
+    </div>
 </div>

@@ -24,7 +24,6 @@ import { FileIconComponent } from "./main/side-bar/commit-details/file-icon/file
 import { RefListComponent } from "./main/tabs/history/ref-list/ref-list.component";
 import { ToolBarComponent } from "./main/tool-bar/tool-bar.component";
 import { TabHeaderComponent } from "./main/tab-header/tab-header-component";
-import { TabManager } from "./services/tab-manager";
 import { TabContentComponent } from "./main/tab-content/tab-content.component";
 import { HistoryTabComponent } from "./main/tabs/history/history-tab.component";
 import { SideBarManager } from "./services/side-bar-manager";
@@ -44,6 +43,8 @@ import { ThemeManager } from "app/services/theming/theme-manager";
 import { PlatformThemeValuesProvider } from "app/services/theming/platform-theme-values-provider";
 import { LinuxValuesProvider } from "app/services/theming/platform-theme-values-provider/linux-values-provider";
 import { WindowsValuesProvider } from "app/services/theming/platform-theme-values-provider/windows-values-provider";
+import { TabComponentWrapperComponent } from "./main/tab-content/tab-component-wrapper/tab-component-wrapper.component";
+import { TabManager } from "app/services/tabs/tab-manager";
 
 @NgModule({
   declarations: [
@@ -63,7 +64,13 @@ import { WindowsValuesProvider } from "app/services/theming/platform-theme-value
     SideBarComponent,
     RepositoryStatusComponent,
     NotificationsComponent,
-    NotificationBoxComponent
+    NotificationBoxComponent,
+    TabComponentWrapperComponent
+  ],
+  entryComponents: [
+    HistoryTabComponent,
+    FileContentDiffTabComponent,
+    FileContentTabComponent
   ],
   imports: [
     BrowserAnimationsModule,

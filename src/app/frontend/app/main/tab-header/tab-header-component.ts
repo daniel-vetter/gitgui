@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { TabManager, Tab } from "../../services/tab-manager";
+import { TabManager, TabPage } from "app/services/tabs/tab-manager";
 
 @Component({
     selector: "tab-header",
@@ -7,9 +7,9 @@ import { TabManager, Tab } from "../../services/tab-manager";
     styleUrls: ["./tab-header.component.scss"]
 })
 export class TabHeaderComponent implements OnInit {
-    tabs: TabViewModel[] = [];
+    pages: TabPageViewModel[] = [];
 
-    constructor(private tabManager: TabManager, private changeDetector: ChangeDetectorRef) { }
+    constructor(private tabManager: TabManager) { }
 
     ngOnInit() {
         this.tabManager.onSelectedTabChanged.subscribe(() => this.update());
@@ -19,44 +19,43 @@ export class TabHeaderComponent implements OnInit {
     }
 
     private update() {
-        const tabs = this.tabManager.allTabs;
-        this.tabs = [];
-        for (const tab of tabs) {
-            const vm = new TabViewModel();
-            vm.closeable = tab.ui.isCloseable;
-            vm.title = tab.ui.title;
-            vm.isSelected = tab === this.tabManager.selectedTab;
-            vm.tab = tab;
-            vm.isPersistent = tab.ui.isPersistent;
-            this.tabs.push(vm);
+        const pages = this.tabManager.allTabPages;
+        this.pages = [];
+        for (const page of pages) {
+            const vm = new TabPageViewModel();
+            vm.closeable = page.isCloseable;
+            vm.title = page.title;
+            vm.isSelected = page === this.tabManager.selectedTab;
+            vm.tabPage = page;
+            vm.isPersistent = page.isPersistent;
+            this.pages.push(vm);
         }
-        this.changeDetector.detectChanges();
     }
 
-    onTabClicked(vm: TabViewModel, event: MouseEvent) {
+    onTabClicked(vm: TabPageViewModel, event: MouseEvent) {
         if (event.button === 1) { // Middle mouse button
             this.onCloseClicked(vm);
             return false;
         }
-        if (this.tabManager.selectedTab === vm.tab) {
-            this.tabManager.selectedTab.ui.isPersistent = true;
+        if (this.tabManager.selectedTab === vm.tabPage) {
+            this.tabManager.selectedTab!.isPersistent = true;
         } else {
-            this.tabManager.selectedTab = vm.tab;
+            this.tabManager.selectedTab = vm.tabPage;
         }
     }
 
-    onCloseClicked(vm: TabViewModel) {
-        if (!vm.tab.ui.isCloseable)
+    onCloseClicked(vm: TabPageViewModel) {
+        if (!vm.tabPage.isCloseable)
             return;
-        this.tabManager.closeTab(vm.tab);
+        this.tabManager.closeTab(vm.tabPage);
         this.update();
     }
 }
 
-class TabViewModel {
+class TabPageViewModel {
     isSelected: boolean;
     isPersistent: boolean;
     title: string;
     closeable: boolean;
-    tab: Tab;
+    tabPage: TabPage;
 }

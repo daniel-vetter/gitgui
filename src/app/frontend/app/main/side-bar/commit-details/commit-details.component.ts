@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { RepositoryCommit, ChangedFile, FileRef } from "../../../services/git/model";
-import { TabManager } from "../../../services/tab-manager";
-import { FileContentDiffTab, FileContentTab } from "../../tabs/tabs";
+import { FileContentDiffTabData, FileContentTabData } from "../../tabs/tabs";
 import { Git } from "../../../services/git/git";
 import { FileTreeBuilder } from "../changed-files-tree/file-tree-builder";
+import { TabManager } from "app/services/tabs/tab-manager";
 
 @Component({
     selector: "commit-details",
@@ -46,18 +46,20 @@ export class CommitDetailsComponent implements OnChanges {
     async onFileSelected(changedFile: ChangedFile) {
         if (!changedFile.oldFile || !changedFile.newFile) {
             const file = changedFile.oldFile ? changedFile.oldFile : changedFile.newFile;
-            const tab = new FileContentTab();
-            tab.repository = this.commit.repository;
-            tab.file = file!;
-            tab.ui.isPersistent = false;
-            this.tabManager.createNewTab(tab);
+            const page = this.tabManager.createNewTab({
+                type: "FileContentTab",
+                repository: this.commit.repository,
+                file: file!
+            });
+            page.isPersistent = false;
         } else {
-            const tab = new FileContentDiffTab();
-            tab.repository = this.commit.repository;
-            tab.leftFile = changedFile.oldFile;
-            tab.rightFile = changedFile.newFile;
-            tab.ui.isPersistent = false;
-            this.tabManager.createNewTab(tab);
+            const page = this.tabManager.createNewTab({
+                type: "FileContentDiffTab",
+                repository: this.commit.repository,
+                leftFile: changedFile.oldFile,
+                rightFile: changedFile.newFile
+            });
+            page.isPersistent = false;
         }
     }
 }

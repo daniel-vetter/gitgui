@@ -5,11 +5,12 @@ import { Intermediate } from "../../../shared/check-box/check-box.component";
 import { Subscription } from "../../../services/event-aggregator";
 import { Git } from "../../../services/git/git";
 import { FileTreeBuilder } from "../changed-files-tree/file-tree-builder";
-import { FileContentTab, FileContentDiffTab, HistoryTab } from "../../tabs/tabs";
-import { TabManager } from "../../../services/tab-manager";
+import { FileContentTabData, FileContentDiffTabData, HistoryTabData } from "../../tabs/tabs";
 import { Status } from "../../../services/status";
 import * as autosize from "autosize";
 import { ProcessTracker } from "./process-tracker";
+import { TabManager } from "app/services/tabs/tab-manager";
+import { TabData } from "app/main/tabs/tabs";
 
 @Component({
     selector: "repository-status",
@@ -70,26 +71,28 @@ export class RepositoryStatusComponent implements OnInit, OnDestroy, OnChanges {
 
     private updateButtonEnableState() {
         this.commitButtonEnabled = this.repository.status.indexChanges.length !== 0 &&
-                                   this.commitMessage !== undefined &&
-                                   this.commitMessage.trim() !== "" &&
-                                   this.commitIsRunning === false;
+            this.commitMessage !== undefined &&
+            this.commitMessage.trim() !== "" &&
+            this.commitIsRunning === false;
     }
 
     onFileSelected(changedFile: ChangedFile) {
         if (!changedFile.oldFile || !changedFile.newFile) {
             const file = changedFile.oldFile ? changedFile.oldFile : changedFile.newFile;
-            const tab = new FileContentTab();
-            tab.repository = this.repository;
-            tab.file = file!;
-            tab.ui.isPersistent = false;
-            this.tabManager.createNewTab(tab);
+            const page = this.tabManager.createNewTab({
+                type: "FileContentTab",
+                repository: this.repository,
+                file: file!,
+            });
+            page.isPersistent = false;
         } else {
-            const tab = new FileContentDiffTab();
-            tab.repository = this.repository;
-            tab.ui.isPersistent = false;
-            tab.leftFile = changedFile.oldFile;
-            tab.rightFile = changedFile.newFile;
-            this.tabManager.createNewTab(tab);
+            const page = this.tabManager.createNewTab({
+                type: "FileContentDiffTab",
+                repository: this.repository,
+                leftFile: changedFile.oldFile,
+                rightFile: changedFile.newFile
+            });
+            page.isPersistent = false;
         }
     }
 
@@ -122,11 +125,11 @@ export class RepositoryStatusComponent implements OnInit, OnDestroy, OnChanges {
             this.commitIsRunning = true;
             this.updateButtonEnableState();
             await this.processTracker.allDone();
-            for (const tab of this.tabManager.allTabs) {
-                if (!(tab instanceof HistoryTab))
+            for (const page of this.tabManager.allTabPages) {
+                if (page.data.type !== "HistoryTab")
                     continue;
-                if (this.repository === await tab.repository) {
-                    this.tabManager.selectedTab = tab;
+                if (this.repository === await page.data.repository) {
+                    this.tabManager.selectedTab = page;
                     break;
                 }
             }

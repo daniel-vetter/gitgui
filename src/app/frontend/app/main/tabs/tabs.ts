@@ -1,20 +1,26 @@
 import { Repository, RepositoryCommit, FileRef } from "../../services/git/model";
-import { Tab } from "../../services/tab-manager";
+import { HistoryTabComponent } from "./history/history-tab.component";
+import { FileContentDiffTabComponent } from "./file-content-tabs/file-content-diff-tab/file-content-diff-tab.component";
+import { FileContentTabComponent } from "./file-content-tabs/file-content-tab/file-content-tab.component";
 
-export class HistoryTab extends Tab {
-    key = "HistoryTab";
+export type TabData = HistoryTabData
+                    | FileContentDiffTabData
+                    | FileContentTabData;
+
+export interface HistoryTabData {
+    type: "HistoryTab";
     repository: Promise<Repository>;
 }
 
-export class FileContentDiffTab extends Tab {
-    key = "FileContentDiffTab";
+export interface FileContentDiffTabData {
+    type: "FileContentDiffTab";
     repository: Repository;
     leftFile: FileRef;
     rightFile: FileRef;
 }
 
-export class FileContentTab extends Tab {
-    key = "FileContentTab";
+export interface FileContentTabData {
+    type: "FileContentTab";
     repository: Repository;
     file: FileRef;
 }
