@@ -2,8 +2,9 @@ version: 0.0.{build}
 image: Visual Studio 2017
 init:
   - git config --global core.autocrlf true
+  - npm install -g npm@5.3.0
 install:
-  - ps: Install-Product node 6.10.3
+  - ps: Install-Product node 8.1.4
 build_script:
   - cmd: build.cmd
 test: off
