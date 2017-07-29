@@ -5,6 +5,7 @@ import { RepositoryOpener } from "./services/repository-opener";
 import { FileIconManager } from "./services/file-icon/file-icon";
 import { ThemeManager } from "app/services/theming/theme-manager";
 import { TabManager } from "app/services/tabs/tab-manager";
+import { Logger } from "./services/logger";
 
 @Component({
     selector: "app-root",

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild, AfterViewInit, ElementRef } from "@angular/core";
+import { Component, Input, OnChanges, ViewChild, AfterViewInit, ElementRef, AfterContentInit, OnDestroy } from "@angular/core";
 import { Path } from "../../../../services/path";
 import { Git } from "../../../../services/git/git";
 import { TabBase } from "app/services/tabs/tab-base";
@@ -9,7 +9,7 @@ import { FileContentDiffTabData } from "app/main/tabs/tabs";
     templateUrl: "./file-content-diff-tab.component.html",
     styleUrls: ["./file-content-diff-tab.component.scss"]
 })
-export class FileContentDiffTabComponent extends TabBase<FileContentDiffTabData> implements AfterViewInit {
+export class FileContentDiffTabComponent extends TabBase<FileContentDiffTabData> implements AfterContentInit, OnDestroy {
 
     @ViewChild("container") container: ElementRef;
 
@@ -18,14 +18,16 @@ export class FileContentDiffTabComponent extends TabBase<FileContentDiffTabData>
     leftContent = "";
     rightContent = "";
     isBinary = false;
+    visible = true;
 
-    private editor: monaco.editor.IDiffEditor;
+    private editor: monaco.editor.IStandaloneDiffEditor;
+    private diffNavigator: monaco.editor.IDiffNavigator;
 
     constructor(private git: Git) {
         super();
     }
 
-    ngAfterViewInit() {
+    ngAfterContentInit() {
         this.createEditors();
     }
 
@@ -58,10 +60,20 @@ export class FileContentDiffTabComponent extends TabBase<FileContentDiffTabData>
             readOnly: true,
             scrollBeyondLastLine: false,
             wrappingColumn: -1,
-            automaticLayout: true
+            automaticLayout: true,
+            renderSideBySide: false
+        });
+
+        this.diffNavigator = monaco.editor.createDiffNavigator(this.editor, {
+            alwaysRevealFirst: true
         });
 
         this.update();
+    }
+
+    ngOnDestroy(): void {
+        this.diffNavigator.dispose();
+        this.editor.dispose();
     }
 
     private update() {

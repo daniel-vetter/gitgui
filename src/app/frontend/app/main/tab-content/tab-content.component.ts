@@ -14,60 +14,52 @@ import { TabData } from "app/main/tabs/tabs";
 })
 export class TabContentComponent implements OnInit {
 
-    tabs: TabViewModel[] = [];
+    tabViewModels: TabViewModel[] = [];
 
     constructor(private tabManager: TabManager) { }
 
     ngOnInit() {
+        this.tabManager.onTabListChanged.subscribe(() => { this.update() });
         this.tabManager.onSelectedTabChanged.subscribe(() => { this.update(); });
         this.update();
     }
 
     private update() {
-        const tabs = this.tabManager.allTabPages;
-        const tabsToRemove = this.tabs.filter(x => tabs.indexOf(x.page) === -1);
-        const tabsToAdd = tabs.filter(x => this.tabs.map(y => y.page).indexOf(x) === -1);
+        const allTabs = this.tabManager.allTabPages;
 
-        this.optimizeTabCreationAndRemoval(tabsToRemove, tabsToAdd);
-
-        for (const toRemove of tabsToRemove) {
-            const index = this.tabs.indexOf(toRemove);
-            this.tabs.splice(index, 1);
+        // remove all tab view models for tabs that are no longer register in the tab manager
+        const tabsToRemove: TabViewModel[] = [];
+        for (const tabViewModel of this.tabViewModels) {
+            if (allTabs.indexOf(tabViewModel.page) === -1)
+                tabsToRemove.push(tabViewModel);
         }
 
-        for (const toAdd of tabsToAdd) {
-            const vm = new TabViewModel();
-            vm.data = toAdd.data;
-            vm.page = toAdd;
-            vm.componentType = getTabComponentType(toAdd.data);
-            this.tabs.push(vm);
+        for (const tabViewModel of tabsToRemove) {
+            this.tabViewModels.splice(this.tabViewModels.indexOf(tabViewModel), 1);
         }
 
-        for (const vm of this.tabs) {
-            vm.visible = vm.data === (this.tabManager.selectedTab && this.tabManager.selectedTab.data);
-        }
-    }
+        this.tabViewModels.forEach(x => x.visible = false);
+        const selectedTab = this.tabManager.selectedTab;
 
-    private optimizeTabCreationAndRemoval(tabsToRemove: TabViewModel[], tabsToAdd: TabPage[]) {
-        // Optimization: if a new tab should be displayed and a tab of the same type should be
-        // removed (happens often with temporary tabs) -> move the data from the old to
-        // the new tab. This prevents the creation of a new sub component which could result
-        // in flickering.
+        // if no tab is selected we are done
+        if (selectedTab === undefined)
+            return;
 
-        const toCleanUp: TabPage[] = [];
+        // find the view model of the selected tab
+        const selectedTabViewModel = this.tabViewModels.find(x => x.page === selectedTab);
 
-        for (const tab of tabsToAdd) {
-            const removedWithSameTypeIndex = tabsToRemove.findIndex(y => y.type === tab.data.type);
-            if (removedWithSameTypeIndex !== -1) {
-                tabsToRemove[removedWithSameTypeIndex].data = tab.data;
-                tabsToRemove.splice(removedWithSameTypeIndex, 1);
-                toCleanUp.push(tab);
-            }
+        if (selectedTabViewModel) {
+            // if we found one, make it visible and exit
+            selectedTabViewModel.visible = true;
+            return;
         }
 
-        for (const toClean of toCleanUp) {
-            tabsToAdd.splice(tabsToAdd.indexOf(toClean), 1);
-        }
+        const newViewModel = new TabViewModel();
+        newViewModel.visible = true;
+        newViewModel.page = selectedTab;
+        newViewModel.data = selectedTab.data;
+        newViewModel.componentType = getTabComponentType(selectedTab.data);
+        this.tabViewModels.push(newViewModel);
     }
 }
 
@@ -75,6 +67,5 @@ export class TabViewModel {
     visible: boolean;
     page: TabPage;
     data: TabData;
-    type: string;
     componentType: any;
 }

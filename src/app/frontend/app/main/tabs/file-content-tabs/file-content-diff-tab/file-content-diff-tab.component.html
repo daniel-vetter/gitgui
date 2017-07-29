@@ -9,8 +9,8 @@
             <span class="title">{{ rightFileName }}</span>
         </div>
     </div>
-    <div style="flex: 1; overflow: hidden" [class.hidden]="isBinary">
-        <div #container style="height: 100%"></div>
+    <div style="flex: 1; overflow: hidden" [class.hidden]="isBinary" [style.visibility]="visible ? 'visible' : 'hidden'">
+        <div #container style="height: 100%" ></div>
     </div>
     <div class="binary" [class.hidden]="!isBinary">
         <i class="material-icons" style="font-size: 10em;">insert_drive_file</i>

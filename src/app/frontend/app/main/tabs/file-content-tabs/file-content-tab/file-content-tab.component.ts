@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, AfterViewInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, Input, OnChanges, AfterViewInit, ViewChild, ElementRef, AfterContentInit } from "@angular/core";
 import { FileContentTabData } from "../../tabs";
 import { Path } from "../../../../services/path";
 import { Git } from "../../../../services/git/git";
@@ -9,7 +9,7 @@ import { TabBase } from "app/services/tabs/tab-base";
     templateUrl: "file-content-tab.component.html",
     styleUrls: ["./file-content-tab.component.scss"]
 })
-export class FileContentTabComponent extends TabBase<FileContentTabData> implements AfterViewInit {
+export class FileContentTabComponent extends TabBase<FileContentTabData> implements AfterContentInit {
 
     @ViewChild("container") container: ElementRef;
 
@@ -22,7 +22,7 @@ export class FileContentTabComponent extends TabBase<FileContentTabData> impleme
         super();
     }
 
-    ngAfterViewInit() {
+    ngAfterContentInit() {
         this.createEditors();
     }
 

@@ -1,5 +1,5 @@
 <div class="fill root">
-    <div *ngFor="let tab of tabs" [class.visible]="tab.visible">
-        <tab-component-wrapper [componentType]="tab.componentType" [page]="tab.page" [data]="tab.data"></tab-component-wrapper>
+    <div *ngFor="let vm of tabViewModels" [class.visible]="vm.visible">
+        <tab-component-wrapper [componentType]="vm.componentType" [page]="vm.page" [data]="vm.data"></tab-component-wrapper>
     </div>
 </div>
