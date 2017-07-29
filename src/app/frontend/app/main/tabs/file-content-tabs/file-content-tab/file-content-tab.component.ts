@@ -3,6 +3,7 @@ import { FileContentTabData } from "../../tabs";
 import { Path } from "../../../../services/path";
 import { Git } from "../../../../services/git/git";
 import { TabBase } from "app/services/tabs/tab-base";
+import { MonacoEditorHelper } from "../monaco-editor-helper";
 
 @Component({
     selector: "file-content-tab",
@@ -18,7 +19,7 @@ export class FileContentTabComponent extends TabBase<FileContentTabData> impleme
 
     private editor: monaco.editor.IStandaloneCodeEditor;
 
-    constructor(private git: Git) {
+    constructor(private git: Git, private monacoEditorHelper: MonacoEditorHelper) {
         super();
     }
 
@@ -34,22 +35,22 @@ export class FileContentTabComponent extends TabBase<FileContentTabData> impleme
         this.update();
     }
 
-    private createEditors() {
-        // HACK: wait till the monaco editor is loaded
-        // TODO: move this to the app startup, so the app is not display till the editor is fully loaded.
-        if (!(<any>window)["monaco"]) {
-            setTimeout(() => this.createEditors(), 0);
-            return;
-        }
+    private async createEditors() {
         if (this.editor)
             return;
+
+        await this.monacoEditorHelper.waitTillLibIsLoaded();
 
         this.editor = monaco.editor.create(this.container.nativeElement, {
             readOnly: true,
             scrollBeyondLastLine: false,
             wrappingColumn: -1,
-            automaticLayout: true
+            automaticLayout: true,
+            contextmenu: false
         });
+        console.log(this.container.nativeElement);
+
+        this.monacoEditorHelper.disableCommandMenu(this.editor);
 
         this.update();
     }

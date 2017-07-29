@@ -45,6 +45,7 @@ import { LinuxValuesProvider } from "app/services/theming/platform-theme-values-
 import { WindowsValuesProvider } from "app/services/theming/platform-theme-values-provider/windows-values-provider";
 import { TabComponentWrapperComponent } from "./main/tab-content/tab-component-wrapper/tab-component-wrapper.component";
 import { TabManager } from "app/services/tabs/tab-manager";
+import { MonacoEditorHelper } from "./main/tabs/file-content-tabs/monaco-editor-helper";
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { TabManager } from "app/services/tabs/tab-manager";
       NotificationStore,
       PlatformThemeValuesProvider,
       WindowsValuesProvider,
-      LinuxValuesProvider
+      LinuxValuesProvider,
+      MonacoEditorHelper
   ],
   bootstrap: [AppComponent]
 })

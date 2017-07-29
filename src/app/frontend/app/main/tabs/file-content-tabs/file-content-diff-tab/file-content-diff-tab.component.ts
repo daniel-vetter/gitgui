@@ -3,6 +3,7 @@ import { Path } from "../../../../services/path";
 import { Git } from "../../../../services/git/git";
 import { TabBase } from "app/services/tabs/tab-base";
 import { FileContentDiffTabData } from "app/main/tabs/tabs";
+import { MonacoEditorHelper } from "../monaco-editor-helper";
 
 @Component({
     selector: "file-content-diff-tab",
@@ -23,7 +24,7 @@ export class FileContentDiffTabComponent extends TabBase<FileContentDiffTabData>
     private editor: monaco.editor.IStandaloneDiffEditor;
     private diffNavigator: monaco.editor.IDiffNavigator;
 
-    constructor(private git: Git) {
+    constructor(private git: Git, private monacoEditorHelper: MonacoEditorHelper) {
         super();
     }
 
@@ -46,27 +47,35 @@ export class FileContentDiffTabComponent extends TabBase<FileContentDiffTabData>
         this.update();
     }
 
-    private createEditors() {
-        // HACK: wait till the monaco editor is loaded
-        // TODO: move this to the app startup, so the app is not display till the editor is fully loaded.
-        if (!(<any>window)["monaco"]) {
-            setTimeout(() => this.createEditors(), 0);
-            return;
-        }
+    private async createEditors() {
         if (this.editor)
             return;
+
+        await this.monacoEditorHelper.waitTillLibIsLoaded();
 
         this.editor = monaco.editor.createDiffEditor(this.container.nativeElement, {
             readOnly: true,
             scrollBeyondLastLine: false,
             wrappingColumn: -1,
             automaticLayout: true,
-            renderSideBySide: false
+            renderSideBySide: false,
         });
 
         this.diffNavigator = monaco.editor.createDiffNavigator(this.editor, {
             alwaysRevealFirst: true
         });
+
+        this.editor.getModifiedEditor().updateOptions({
+            contextmenu: false,
+            hover: false
+        });
+
+        this.editor.getOriginalEditor().updateOptions({
+            contextmenu: false,
+            hover: false
+        });
+
+        this.monacoEditorHelper.disableCommandMenu(this.editor);
 
         this.update();
     }
@@ -77,7 +86,9 @@ export class FileContentDiffTabComponent extends TabBase<FileContentDiffTabData>
     }
 
     private update() {
-        if (!this.editor) return;
+        if (!this.editor)
+            return;
+
         this.editor.setModel({
             original: monaco.editor.createModel(this.leftContent, "text/plain"),
             modified: monaco.editor.createModel(this.rightContent, "text/plain")
