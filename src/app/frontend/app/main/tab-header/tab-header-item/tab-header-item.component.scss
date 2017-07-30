@@ -1,0 +1,47 @@
+.tab {
+    margin-right: 5px;
+    white-space: nowrap;
+    vertical-align: middle;
+
+    &:hover {
+        background: lighten(dodgerblue, 10%);
+        color: white;
+
+        .button {
+            visibility: visible;
+        }
+    }
+}
+
+.title {
+    padding: 0.2em;
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+
+    &:not(:only-child) {
+        margin-right: -3px;
+    }
+}
+
+.button {
+    padding: 0.2em 0.4em;
+    visibility: hidden;
+    vertical-align: middle;
+
+    &:hover {
+        background: lighten(dodgerblue, 20%)
+    }
+}
+
+.temp {
+    font-style: italic;
+}
+
+
+.active {
+    background: dodgerblue !important;
+    color: white;
+    .button {
+        visibility: visible;
+    }
+}

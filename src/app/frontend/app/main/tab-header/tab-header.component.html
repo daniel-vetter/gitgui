@@ -1,10 +1,15 @@
-<div class="root" *ngIf="pages.length > 0">
-    <div style="overflow-x: auto; overflow-y: hidden; display: flex">
-        <div *ngFor="let tab of pages" class="tab" style="display: flex;" [class.active]="tab.isSelected">
-            <div class="title" [class.temp]="!tab.isPersistent" style="flex: 1"  (mousedown)="onTabClicked(tab, $event)">{{ tab.title }}</div>
-            <div class="close" *ngIf="tab.closeable" (mousedown)="onCloseClicked(tab)">
-                <i class="material-icons" >close</i>
-            </div>
+<div class="root" *ngIf="persistentPages.length > 0">
+    <div style="display: flex">
+        <div style="overflow-x: auto; overflow-y: hidden; flex: 1; display: flex">
+            <tab-header-item *ngFor="let tab of persistentPages" [selected]="tab.isSelected" [persistent]="true" [closeable]="tab.closeable"
+                [title]="tab.title" (clicked)="onTabClicked(tab)" (closed)="onCloseClicked(tab)">
+            </tab-header-item>
+        </div>
+        <div style="display: flex;">
+            <tab-header-item *ngFor="let tab of tempPages" [selected]="tab.isSelected" [persistent]="false" [closeable]="tab.closeable"
+                [title]="tab.title" (clicked)="onTabClicked(tab)" (closed)="onCloseClicked(tab)" (makePersistent)="onMakePersistentClicked(tab)">
+            </tab-header-item>
         </div>
     </div>
+
 </div>

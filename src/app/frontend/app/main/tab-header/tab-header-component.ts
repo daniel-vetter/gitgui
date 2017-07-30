@@ -7,7 +7,8 @@ import { TabManager, TabPage } from "app/services/tabs/tab-manager";
     styleUrls: ["./tab-header.component.scss"]
 })
 export class TabHeaderComponent implements OnInit {
-    pages: TabPageViewModel[] = [];
+    tempPages: TabPageViewModel[] = [];
+    persistentPages: TabPageViewModel[] = [];
 
     constructor(private tabManager: TabManager) { }
 
@@ -20,28 +21,23 @@ export class TabHeaderComponent implements OnInit {
 
     private update() {
         const pages = this.tabManager.allTabPages;
-        this.pages = [];
+        this.persistentPages = [];
+        this.tempPages = [];
         for (const page of pages) {
             const vm = new TabPageViewModel();
             vm.closeable = page.isCloseable;
             vm.title = page.title;
             vm.isSelected = page === this.tabManager.selectedTab;
             vm.tabPage = page;
-            vm.isPersistent = page.isPersistent;
-            this.pages.push(vm);
+            if (page.isPersistent)
+                this.persistentPages.push(vm);
+            else
+                this.tempPages.push(vm);
         }
     }
 
     onTabClicked(vm: TabPageViewModel, event: MouseEvent) {
-        if (event.button === 1) { // Middle mouse button
-            this.onCloseClicked(vm);
-            return false;
-        }
-        if (this.tabManager.selectedTab === vm.tabPage) {
-            this.tabManager.selectedTab!.isPersistent = true;
-        } else {
-            this.tabManager.selectedTab = vm.tabPage;
-        }
+        this.tabManager.selectedTab = vm.tabPage;
     }
 
     onCloseClicked(vm: TabPageViewModel) {
@@ -50,11 +46,14 @@ export class TabHeaderComponent implements OnInit {
         this.tabManager.closeTab(vm.tabPage);
         this.update();
     }
+
+    onMakePersistentClicked(vm: TabPageViewModel) {
+        vm.tabPage.isPersistent = true;
+    }
 }
 
 class TabPageViewModel {
     isSelected: boolean;
-    isPersistent: boolean;
     title: string;
     closeable: boolean;
     tabPage: TabPage;

@@ -46,6 +46,7 @@ import { WindowsValuesProvider } from "app/services/theming/platform-theme-value
 import { TabComponentWrapperComponent } from "./main/tab-content/tab-component-wrapper/tab-component-wrapper.component";
 import { TabManager } from "app/services/tabs/tab-manager";
 import { MonacoEditorHelper } from "./main/tabs/file-content-tabs/monaco-editor-helper";
+import { TabHeaderItemComponent } from "./main/tab-header/tab-header-item/tab-header-item.component";
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { MonacoEditorHelper } from "./main/tabs/file-content-tabs/monaco-editor-
     RepositoryStatusComponent,
     NotificationsComponent,
     NotificationBoxComponent,
-    TabComponentWrapperComponent
+    TabComponentWrapperComponent,
+    TabHeaderItemComponent
   ],
   entryComponents: [
     HistoryTabComponent,

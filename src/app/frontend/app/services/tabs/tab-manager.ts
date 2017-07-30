@@ -13,7 +13,7 @@ export class TabManager {
     onTabChanged = new Rx.Subject<TabPage>();
 
     createNewTab(tab: TabData): TabPage {
-        return this.createTabInternal(tab, x => {});
+        return this.createTabInternal(tab, x => { });
     }
 
     createNewTempTab(tab: TabData): TabPage {
@@ -25,10 +25,26 @@ export class TabManager {
     private createTabInternal(tab: TabData, configure: (page: TabPage) => void): TabPage {
         const tabPage = new TabPage(tab, x => this.onTabDetailsChanged(x));
         configure(tabPage);
+        if (!tabPage.isPersistent) {
+            this.closeTempTabs({ except: [tabPage] });
+        }
         this._allTabs.push(tabPage);
         this.onTabListChanged.next(this.allTabPages);
         this.selectedTab = tabPage;
         return tabPage;
+    }
+
+    private closeTempTabs(options?: { except?: TabPage[] }) {
+        const toClose: TabPage[] = [];
+        for (const tab of this._allTabs) {
+            if (tab.isPersistent === false && (options && options.except && options.except.indexOf(tab) === -1)) {
+                toClose.push(tab);
+            }
+        }
+
+        for (const tab of toClose) {
+            this.closeTab(tab);
+        }
     }
 
     closeAllTabs() {
@@ -37,23 +53,14 @@ export class TabManager {
     }
 
     private onTabDetailsChanged(tabPage: TabPage) {
-        if (this._allTabs.indexOf(tabPage) !== -1)
-            this.onTabChanged.next(tabPage);
+        if (this._allTabs.indexOf(tabPage) === -1)
+            return;
+        if (!tabPage.isPersistent)
+            this.closeTempTabs({ except: [tabPage] });
+        this.onTabChanged.next(tabPage);
     }
 
-    private getTabPageFromData(tab: TabData | TabPage): TabPage {
-        if (tab instanceof TabPage) {
-            return tab;
-        } else {
-            const tabItem = this._allTabs.find(x => x.data === tab);
-            if (!tabItem)
-                throw new Error("could not find tab item to tab: " + tab);
-            return tabItem;
-        }
-    }
-
-    closeTab(tab: TabData | TabPage) {
-        tab = this.getTabPageFromData(tab);
+    closeTab(tab: TabPage) {
         const index = this._allTabs.indexOf(tab);
         if (index === -1)
             throw new Error("The given tab can not be removed because its not part of the tab list.");
@@ -85,14 +92,8 @@ export class TabManager {
         if (tab !== undefined && this._allTabs.indexOf(tab) === -1)
             throw new Error("The given tab can not be selected because its not part of the tab list.");
 
-        const oldSelectedTab = this._selectedTab;
         this._selectedTab = tab;
         this.onSelectedTabChanged.next(this._selectedTab);
-
-        if (oldSelectedTab && !oldSelectedTab.isPersistent) {
-            this._allTabs.splice(this._allTabs.indexOf(oldSelectedTab), 1);
-            this.onTabListChanged.next(this.allTabPages);
-        }
     }
 }
 

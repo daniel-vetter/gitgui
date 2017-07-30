@@ -121,30 +121,64 @@ describe(TabManager.name, () => {
         const events = monitorEvents(tabManager);
         tabManager.selectedTab = persistentTab;
 
-        it("should close the temporary tab", () => expect(tabManager.allTabPages).not.toContain(tempTab));
+        it("should not close the temporary tab", () => expect(tabManager.allTabPages).toContain(tempTab));
         it("should selected the persistent tab", () => expect(tabManager.selectedTab).toBe(persistentTab));
         it("should fire event in correct order", () => {
             expect(events).toEqual(<EventRecord[]>[
-                { eventType: "onSelectedTabChanged", selectedTab: persistentTab, allTabs: [persistentTab, tempTab] },
-                { eventType: "onTabListChanged", selectedTab: persistentTab, allTabs: [persistentTab] }
+                { eventType: "onSelectedTabChanged", selectedTab: persistentTab, allTabs: [persistentTab, tempTab] }
             ]);
         })
     });
 
-    describe("Creating a new tab if a temporary tab is currently selected", () => {
+    describe("Creating a new temp tab if a temporary tab is currently selected", () => {
+        const tabManager = new TabManager();
+        const tempTab1 = tabManager.createNewTempTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
+        const events = monitorEvents(tabManager);
+        const tempTab2 = tabManager.createNewTempTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
+
+        it("should close the temporary tab", () => expect(tabManager.allTabPages).not.toContain(tempTab1));
+        it("should selected the persistent tab", () => expect(tabManager.selectedTab).toBe(tempTab2));
+        it("should fire the events in correct order", () => {
+            expect(events).toEqual(<EventRecord[]>[
+                { eventType: "onSelectedTabChanged", selectedTab: undefined, allTabs: [tempTab1] },
+                { eventType: "onTabListChanged", selectedTab: undefined, allTabs: [] },
+                { eventType: "onTabListChanged", selectedTab: undefined, allTabs: [tempTab2] },
+                { eventType: "onSelectedTabChanged", selectedTab: tempTab2, allTabs: [tempTab2] }
+            ]);
+        })
+    })
+
+    describe("Creating a new temp tab if a temporary tab is currently open", () => {
         const tabManager = new TabManager();
         const tempTab = tabManager.createNewTempTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
-        const events = monitorEvents(tabManager);
         const persistentTab = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
-
+        const events = monitorEvents(tabManager);
+        const tempTab2 = tabManager.createNewTempTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
 
         it("should close the temporary tab", () => expect(tabManager.allTabPages).not.toContain(tempTab));
-        it("should selected the persistent tab", () => expect(tabManager.selectedTab).toBe(persistentTab));
-        it("should fire event in correct order", () => {
+        it("should selected the persistent tab", () => expect(tabManager.selectedTab).toBe(tempTab2));
+        it("should fire the events in correct order", () => {
             expect(events).toEqual(<EventRecord[]>[
-                { eventType: "onTabListChanged", selectedTab: tempTab, allTabs: [tempTab, persistentTab] },
-                { eventType: "onSelectedTabChanged", selectedTab: persistentTab, allTabs: [tempTab, persistentTab] },
-                { eventType: "onTabListChanged", selectedTab: persistentTab, allTabs: [persistentTab] }
+                { eventType: "onTabListChanged", selectedTab: persistentTab, allTabs: [persistentTab] },
+                { eventType: "onTabListChanged", selectedTab: persistentTab, allTabs: [persistentTab, tempTab2] },
+                { eventType: "onSelectedTabChanged", selectedTab: tempTab2, allTabs: [persistentTab, tempTab2] },
+            ]);
+        })
+    })
+
+    describe("Converting a tab from persistent to temp", () => {
+        const tabManager = new TabManager();
+        const tempTab = tabManager.createNewTempTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
+        const persistentTab1 = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
+        const changingTab = tabManager.createNewTab({ type: "HistoryTab", repository: Promise.resolve(repository) });
+        const events = monitorEvents(tabManager);
+        changingTab.isPersistent = false;
+
+        console.log(events);
+        it("should close the old temporary tab", () => expect(tabManager.allTabPages).not.toContain(tempTab));
+        it("should fire the events in correct order", () => {
+            expect(events).toEqual(<EventRecord[]>[
+                { eventType: "onTabListChanged", selectedTab: changingTab, allTabs: [persistentTab1, changingTab] }
             ]);
         })
     })

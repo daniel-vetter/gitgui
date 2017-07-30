@@ -1,0 +1,9 @@
+<div class="tab" style="display: flex;" [class.active]="selected" [class.temp]="!persistent">
+    <div class="title" style="flex: 1" (mousedown)="onTabClicked($event)">{{ title }}</div>
+    <div class="button" *ngIf="!persistent" (mousedown)="onMakePersistentClicked()" title="Keep open">
+        <i class="material-icons">open_in_browser</i>
+    </div>
+    <div class="button" *ngIf="closeable" (mousedown)="onCloseClicked()" title="Close">
+        <i class="material-icons">close</i>
+    </div>
+</div>
