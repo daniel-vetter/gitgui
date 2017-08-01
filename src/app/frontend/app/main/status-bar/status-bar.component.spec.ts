@@ -13,6 +13,7 @@ describe(StatusBarComponent.name, () => {
         let fixture: ComponentFixture<StatusBarComponent>;
 
         beforeEach(async(async () =>  {
+            console.log("a2");
             await TestBed.configureTestingModule({
                 declarations: [StatusBarComponent],
                 providers: [Status]
@@ -22,7 +23,12 @@ describe(StatusBarComponent.name, () => {
             fixture.detectChanges();
         }));
 
+        afterEach(async () => {
+            TestBed.resetTestingModule();
+        })
+
         it("should show the message 'Ready'", () => {
+            console.log("a3")
             expect(fixture.nativeElement.textContent).toContain("Ready");
         });
     });

@@ -6,7 +6,7 @@ import { AppModule } from "../../../app.module";
 import { Platform } from "../../platform";
 import { FileSystem } from "../../file-system";
 import { GitRaw } from "../infrastructure/git-raw";
-import { waitForPromise, run, getTempDirectory } from "./helper";
+import { run, getTempDirectory } from "./helper";
 import { Repository } from "../model";
 
 
@@ -18,7 +18,8 @@ describe(Git.name, () => {
     let originalWorkingDirectory = "";
     const testDirectory = getTempDirectory();
 
-    beforeEach(waitForPromise(async () => {
+    beforeAll(async () => {
+        console.log("1");
         // Init git system
         await TestBed.configureTestingModule({
             imports: [GitModule],
@@ -35,17 +36,18 @@ describe(Git.name, () => {
             fileSystem.deleteDirectory(testDirectory);
         fileSystem.createDirectory(testDirectory);
         fileSystem.setCurrentWorkingDirectory(testDirectory);
-    }));
+    });
 
-    afterEach(() => {
+    afterAll(() => {
+        TestBed.resetTestingModule();
         fileSystem.setCurrentWorkingDirectory(originalWorkingDirectory!);
     });
 
+    describe("Given a repository with one commit", () => {
 
-    describe("Sample test", () => {
+        let repository: Repository;
 
-        it("should load the correct commit count", waitForPromise(async () => {
-
+        beforeAll(async () => {
             await run("git init");
             await run("git config user.name \"GitGui Testing User\"")
             await run("git config user.email \"testing@git.com\"")
@@ -53,8 +55,11 @@ describe(Git.name, () => {
             await run("git add --all");
             await run("git commit -m \"Test Stuff\"");
 
-            const repository = await git.readRepository(testDirectory);
+            repository = await git.readRepository(testDirectory);
+        });
+
+        it("should load the correct commit count", async () => {
             expect(repository.commits.length).toBe(1);
-        }));
+        });
     });
 });

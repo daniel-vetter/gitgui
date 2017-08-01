@@ -5,19 +5,6 @@ const remote = (<any>window).require("electron").remote;
 const remoteProcess = remote.process;
 const remoteOs = remote.require("os");
 
-export function waitForPromise(action: () => Promise<any>) {
-    return (done: any) => {
-        try {
-            const result = action();
-            result.then(() => done());
-            result.catch((e) => done.fail(e));
-        } catch (e) {
-            done.fail(e);
-        }
-    };
-};
-
-
 export async function run(cmd: string, expectedExitCode = 0): Promise<number> {
     const process = <Process>TestBed.get(Process);
     const result = await process.runAndWait(cmd, [], ".", true);
