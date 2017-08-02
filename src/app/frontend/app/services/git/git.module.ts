@@ -15,6 +15,7 @@ import { Index } from "./actions/index";
 import { Committer } from "./actions/committer";
 import { RepositoryUpdateTracker } from "./reader/repository-update-tracker";
 import { ConfigReader } from "./reader/config-reader";
+import { Fetcher } from "./actions/fetcher";
 
 @NgModule({
     providers: [
@@ -33,7 +34,8 @@ import { ConfigReader } from "./reader/config-reader";
         Committer,
         Git,
         RepositoryUpdateTracker,
-        ConfigReader
+        ConfigReader,
+        Fetcher
     ]
 })
 export class GitModule {

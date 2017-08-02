@@ -12,6 +12,8 @@ export class CommitsReader {
         const prettyParts = ["ae", "an", "P", "s", "aD", "cD"];
         const args = ["rev-list", "--all", "--pretty=" + prettyParts.map(x => "%" + x).join("%n")];
         const result = await this.gitRaw.run(repositoryPath, args);
+        if (result.exitCode === 129) // empty repository
+            return [];
         const parts = result.data.split("\n");
         const allCommits: RepositoryCommit[] = [];
         const commitIndex = new Map<string, RepositoryCommit>();

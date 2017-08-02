@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from "@angular/core";
+import { Injectable, NgZone, OnDestroy } from "@angular/core";
 import { Observable } from "rxjs";
 import * as Rx from "rxjs";
 import { PROCESS_START_REQUEST,
@@ -16,10 +16,12 @@ declare var TextDecoder: any;
 @Injectable()
 export class Process {
 
+
     private lastId = 0;
     private runningRequest = new Map<number, Rx.Subscriber<ProcessStatus>>();
 
     constructor(private zone: NgZone) {
+        ipcRenderer.removeAllListeners(PROCESS_START_RESPONSE);
         ipcRenderer.on(PROCESS_START_RESPONSE, (event: any, args: ProcessStartResponse) => {
             this.onIncomingResponse(args);
         });

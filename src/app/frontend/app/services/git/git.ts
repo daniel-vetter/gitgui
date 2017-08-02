@@ -6,6 +6,7 @@ import { ObjectReader } from "./reader/object-reader";
 import { Injectable } from "@angular/core";
 import { Index } from "./actions/index";
 import { Committer } from "./actions/committer";
+import { GitFetchResult, Fetcher } from "./actions/fetcher";
 
 @Injectable()
 export class Git {
@@ -15,7 +16,8 @@ export class Git {
                 private commitDetailsReader: CommitDetailsReader,
                 private objectReader: ObjectReader,
                 private index: Index,
-                private committer: Committer) {}
+                private committer: Committer,
+                private fetcher: Fetcher) {}
 
     cloneRepositoryFromUrl(url: string, targetPath: string): Promise<boolean> {
         return this.cloner.cloneRepositoryFromUrl(url, targetPath);
@@ -46,5 +48,8 @@ export class Git {
     }
     commit(repository: Repository, message: string, amend: boolean): Promise<boolean> {
         return this.committer.commit(repository, message, amend);
+    }
+    fetch(repository: Repository): Promise<GitFetchResult> {
+        return this.fetcher.fetch(repository);
     }
 }
