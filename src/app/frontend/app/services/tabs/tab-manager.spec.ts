@@ -174,7 +174,6 @@ describe(TabManager.name, () => {
         const events = monitorEvents(tabManager);
         changingTab.isPersistent = false;
 
-        console.log(events);
         it("should close the old temporary tab", () => expect(tabManager.allTabPages).not.toContain(tempTab));
         it("should fire the events in correct order", () => {
             expect(events).toEqual(<EventRecord[]>[
