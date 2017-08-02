@@ -8,18 +8,22 @@ export class Fetcher {
     constructor(private gitRaw: GitRaw) { }
 
     async fetch(repository: Repository): Promise<GitFetchResult> {
-        const result = await this.gitRaw.run(repository.location, ["fetch"]);
+        const result = await this.gitRaw.run(repository.location, ["fetch", "--all"]);
 
         if (result.exitCode === 0)
-            return { result: "success" };
+            return { success: true };
 
-        return { result: "unknown_error" };
+        if (result.exitCode === 128 && result.data.startsWith("fatal: Not a git repository"))
+            return { success: false, errorType: "not_a_git_repository" }
+
+        return {  success: false, errorType: "unknown_error" };
     }
 }
 
-export type CommonErrors = { result: "not_a_git_repository" } | { result: "unknown_error" };
+export type CommonErrors =
+    { success: false, errorType: "not_a_git_repository" }
+    | { success: false, errorType: "unknown_error" };
 
 export type GitFetchResult =
-    { result: "success" }
-    | { result: "no_upstream" }
+    { success: true }
     | CommonErrors;

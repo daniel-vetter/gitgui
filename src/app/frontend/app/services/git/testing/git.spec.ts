@@ -43,50 +43,69 @@ describe(Git.name, () => {
         fileSystem.setCurrentWorkingDirectory(originalWorkingDirectory!);
     });
 
-    describe("Given a repository with one commit", () => {
+    describe("Loading", () => {
+        describe("Given a repository with one commit", () => {
 
-        let repository: Repository;
+            let repository: Repository;
 
-        beforeEach(async () => {
-            await run("git init");
-            await run("git config user.name \"GitGui Testing User\"")
-            await run("git config user.email \"testing@git.com\"")
-            await run("git help > show.txt");
-            await run("git add --all");
-            await run("git commit -m \"Test Stuff\"");
+            beforeEach(async () => {
+                await run("git init");
+                await run("git config user.name \"GitGui Testing User\"")
+                await run("git config user.email \"testing@git.com\"")
+                await run("git help > show.txt");
+                await run("git add --all");
+                await run("git commit -m \"Test Stuff\"");
 
-            repository = await git.readRepository(testDirectory);
-        });
+                repository = await git.readRepository(testDirectory);
+            });
 
-        it("should load the correct commit count", async () => {
-            expect(repository.commits.length).toBe(1);
+            it("should load the correct commit count", async () => {
+                expect(repository.commits.length).toBe(1);
+            });
         });
     });
 
-    describe("Given a repository with a upstream configured to an other repository", () => {
+    describe("Fetch", () => {
+        describe("Given a empty folder", () => {
 
-        let fetchResult: GitFetchResult;
+            let fetchResult: GitFetchResult;
 
-        beforeEach(async () => {
-            fileSystem.createDirectory(testDirectory + "/otherRepository");
-            fileSystem.setCurrentWorkingDirectory(testDirectory + "/otherRepository");
-            await run("git init");
-            await run("git config user.name \"GitGui Testing User\"");
-            await run("git config user.email \"testing@git.com\"");
-            await run("git help > show.txt");
-            await run("git add --all");
-            await run("git commit -m \"Test Stuff\"");
+            beforeEach(async () => {
+                const repository = new Repository();
+                repository.location = testDirectory;
+                fetchResult = await git.fetch(repository);
+            });
 
-            fileSystem.setCurrentWorkingDirectory(testDirectory);
-            await run("git init");
-            await run("git remote add origin ./otherRepository");
-
-            const repository = await git.readRepository(testDirectory);
-            fetchResult = await git.fetch(repository);
+            it("should fail with error: not_a_git_repository", () => {
+                expect(fetchResult.success === false && fetchResult.errorType === "not_a_git_repository").toBe(true);
+            });
         });
 
-        it("should successfully fetch from the other repository", () => {
-            expect(fetchResult.result === "success").toBe(true);
-        })
+        describe("Given a repository with a upstream configured to an other repository", () => {
+
+            let fetchResult: GitFetchResult;
+
+            beforeEach(async () => {
+                fileSystem.createDirectory(testDirectory + "/otherRepository");
+                fileSystem.setCurrentWorkingDirectory(testDirectory + "/otherRepository");
+                await run("git init");
+                await run("git config user.name \"GitGui Testing User\"");
+                await run("git config user.email \"testing@git.com\"");
+                await run("git help > show.txt");
+                await run("git add --all");
+                await run("git commit -m \"Test Stuff\"");
+
+                fileSystem.setCurrentWorkingDirectory(testDirectory);
+                await run("git init");
+                await run("git remote add origin ./otherRepository");
+
+                const repository = await git.readRepository(testDirectory);
+                fetchResult = await git.fetch(repository);
+            });
+
+            it("should successfully fetch from the other repository", () => {
+                expect(fetchResult.success).toBe(true);
+            });
+        });
     });
 });
