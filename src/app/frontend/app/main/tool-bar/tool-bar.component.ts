@@ -25,22 +25,12 @@ export class ToolBarComponent {
         throw new Error("Test");
     }
 
-    onRefreshClicked() {
+    async onRefreshClicked() {
         this.status.startProcess("Updating repository", async () => {
             const allOpenRepositories: Repository[] = [];
             for (const tab of this.tabManager.allTabPages) {
-                const repositoryOrRepositoryPromise = <Repository | Promise<Repository>>((<any>tab)["repository"]); // TODO: Use a interface
-                let repository: Repository | undefined;
-                if (repositoryOrRepositoryPromise instanceof Repository)
-                    repository = repositoryOrRepositoryPromise;
-                else if (repositoryOrRepositoryPromise !== undefined)
-                    repository = await repositoryOrRepositoryPromise;
-                if (repository && allOpenRepositories.indexOf(repository) === -1) {
-                    allOpenRepositories.push(repository);
-                }
-            }
-            for (const rep of allOpenRepositories) {
-                await this.git.updateRepository(rep);
+                const repository = await Promise.resolve(tab.data.repository);
+                await this.git.updateRepository(repository);
             }
         });
 
