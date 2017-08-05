@@ -12,10 +12,11 @@ import { ObjectReader } from "./reader/object-reader";
 import { CurrentHeadReader } from "./reader/current-head-reader";
 import { Git } from "./git";
 import { Index } from "./actions/index";
-import { Committer } from "./actions/committer";
+import { ActionCommit } from "./actions/action-commit";
 import { RepositoryUpdateTracker } from "./reader/repository-update-tracker";
 import { ConfigReader } from "./reader/config-reader";
-import { Fetcher } from "./actions/fetcher";
+import { ActionFetch } from "./actions/action-fetch";
+import { ActionRebase } from "./actions/action-rebase";
 
 @NgModule({
     providers: [
@@ -31,11 +32,12 @@ import { Fetcher } from "./actions/fetcher";
         ObjectReader,
         CurrentHeadReader,
         Index,
-        Committer,
+        ActionCommit,
         Git,
         RepositoryUpdateTracker,
         ConfigReader,
-        Fetcher
+        ActionFetch,
+        ActionRebase
     ]
 })
 export class GitModule {

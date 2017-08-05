@@ -21,6 +21,10 @@ export class FileSystem {
         ipcRenderer.sendSync(FSEXTRA_REMOVE_DIRECTORY, { path: path });
     }
 
+    deleteFile(path: string): void {
+        fs.unlinkSync(path);
+    }
+
     exists(path: string): boolean {
         return fs.existsSync(path);
     }

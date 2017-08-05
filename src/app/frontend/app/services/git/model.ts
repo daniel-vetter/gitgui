@@ -6,11 +6,13 @@ export class Repository {
     status: RepositoryStatus;
     commits: RepositoryCommit[] = [];
     refs: RepositoryRef[] = [];
-    location: string;
     head: RepositoryCommit;
     config: RepositoryConfig;
 
     updateState = new RepositoryUpdateState();
+
+    constructor(public location: string) {
+    }
 }
 
 export class RepositoryUpdateState {
@@ -34,7 +36,7 @@ export class RepositoryStatus {
     workTreeChanges: IndexChangedFile[] = [];
 }
 
-export class ChangedFile  {
+export class ChangedFile {
     type: FileChangeType;
     oldFile?: FileRef;
     newFile?: FileRef;
@@ -60,7 +62,7 @@ export abstract class FileRef {
     public static fromHead(path: string) { return new HeadFileRef(path); }
     public static fromBlob(blob: string, path: string) { return new BlobFileRef(blob, path); }
 
-    constructor(public path: string) {}
+    constructor(public path: string) { }
 }
 
 export class DiskFileRef extends FileRef {

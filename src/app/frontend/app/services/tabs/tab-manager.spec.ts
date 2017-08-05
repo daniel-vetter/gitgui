@@ -10,7 +10,7 @@ describe(TabManager.name, () => {
         allTabs: TabPage[];
     }
 
-    const repository = new Repository();
+    const repository = new Repository("");
 
     function monitorEvents(x: TabManager): EventRecord[] {
         const events: EventRecord[] = [];

@@ -3,7 +3,7 @@ import { GitRaw } from "../infrastructure/git-raw";
 import { Injectable } from "@angular/core";
 
 @Injectable()
-export class Committer {
+export class ActionCommit {
 
     constructor(private gitRaw: GitRaw) {
 

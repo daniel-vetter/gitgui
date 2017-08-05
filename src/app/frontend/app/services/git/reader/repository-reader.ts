@@ -19,9 +19,7 @@ export class RepositoryReader {
     }
 
     async readRepository(repositoryPath: string): Promise<Repository> {
-        const repository = new Repository();
-        repository.location = repositoryPath;
-        return this.updateRepository(repository);
+        return this.updateRepository(new Repository(repositoryPath));
     }
 
     async updateStatus(repository: Repository): Promise<Repository> {

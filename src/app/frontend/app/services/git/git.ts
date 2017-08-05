@@ -5,8 +5,9 @@ import { RepositoryCommit, Repository, ChangedFile, FileRef } from "./model";
 import { ObjectReader } from "./reader/object-reader";
 import { Injectable } from "@angular/core";
 import { Index } from "./actions/index";
-import { Committer } from "./actions/committer";
-import { GitFetchResult, Fetcher } from "./actions/fetcher";
+import { ActionCommit } from "./actions/action-commit";
+import { GitFetchResult, ActionFetch } from "./actions/action-fetch";
+import { ActionRebase, GitRebaseResult } from "./actions/action-rebase";
 
 @Injectable()
 export class Git {
@@ -16,8 +17,9 @@ export class Git {
                 private commitDetailsReader: CommitDetailsReader,
                 private objectReader: ObjectReader,
                 private index: Index,
-                private committer: Committer,
-                private fetcher: Fetcher) {}
+                private actionCommit: ActionCommit,
+                private actionFetch: ActionFetch,
+                private actionRebase: ActionRebase) {}
 
     cloneRepositoryFromUrl(url: string, targetPath: string): Promise<boolean> {
         return this.cloner.cloneRepositoryFromUrl(url, targetPath);
@@ -47,9 +49,12 @@ export class Git {
         return this.index.unstage(repository, file);
     }
     commit(repository: Repository, message: string, amend: boolean): Promise<boolean> {
-        return this.committer.commit(repository, message, amend);
+        return this.actionCommit.commit(repository, message, amend);
     }
     fetch(repository: Repository): Promise<GitFetchResult> {
-        return this.fetcher.fetch(repository);
+        return this.actionFetch.fetch(repository);
+    }
+    rebase(repository: Repository, rebaseOnTo: string, branchToRebase?: string): Promise<GitRebaseResult> {
+        return this.actionRebase.rebase(repository, rebaseOnTo, branchToRebase);
     }
 }

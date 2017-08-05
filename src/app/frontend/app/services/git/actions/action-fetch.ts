@@ -1,9 +1,10 @@
 import { GitRaw } from "../infrastructure/git-raw";
 import { Repository } from "../model";
 import { Injectable } from "@angular/core";
+import { CommonErrors } from "./common";
 
 @Injectable()
-export class Fetcher {
+export class ActionFetch {
 
     constructor(private gitRaw: GitRaw) { }
 
@@ -20,9 +21,6 @@ export class Fetcher {
     }
 }
 
-export type CommonErrors =
-    { success: false, errorType: "not_a_git_repository" }
-    | { success: false, errorType: "unknown_error" };
 
 export type GitFetchResult =
     { success: true }

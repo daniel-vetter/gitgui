@@ -8,8 +8,10 @@ import { FileSystem } from "../../file-system";
 import { GitRaw } from "../infrastructure/git-raw";
 import { run, getTempDirectory } from "./helper";
 import { Repository } from "../model";
-import { GitFetchResult } from "../actions/fetcher";
-
+import { GitFetchResult } from "../actions/action-fetch";
+import { GitRebaseResult } from "../actions/action-rebase";
+const remote = (<any>window).require("electron").remote;
+const fs = remote.require("fs");
 
 describe(Git.name, () => {
 
@@ -71,9 +73,7 @@ describe(Git.name, () => {
             let fetchResult: GitFetchResult;
 
             beforeEach(async () => {
-                const repository = new Repository();
-                repository.location = testDirectory;
-                fetchResult = await git.fetch(repository);
+                fetchResult = await git.fetch(new Repository(testDirectory));
             });
 
             it("should fail with error: not_a_git_repository", () => {
@@ -106,6 +106,82 @@ describe(Git.name, () => {
             it("should successfully fetch from the other repository", () => {
                 expect(fetchResult.success).toBe(true);
             });
+        });
+    });
+
+    describe("Rebase", () => {
+        describe("Given a empty folder", () => {
+
+            let rebaseResult: GitRebaseResult;
+
+            beforeEach(async () => {
+                rebaseResult = await git.rebase(new Repository(testDirectory), "foo");
+            });
+
+            it("a rebase should fail with error: not_a_git_repository", () => {
+                expect(rebaseResult.success === false && rebaseResult.errorType === "not_a_git_repository").toBe(true);
+            });
+        });
+
+        describe("Given two divergent branches", () => {
+
+            beforeEach(async () => {
+                await run("git init");
+                await run("git config user.name \"GitGui Testing User\"");
+                await run("git config user.email \"testing@git.com\"");
+                await run("git help  > initFile.txt");
+                await run("git add --all");
+                await run("git commit -m \"Init commit\"");
+                await run("git checkout -b branch1");
+                await run("git help > fileOnBranch1.txt");
+                await run("git add --all");
+                await run("git commit -m \"Commit on branch 1\"");
+                await run("git checkout master");
+                await run("git help > fileOnMaster.txt");
+                await run("git add --all");
+                await run("git commit -m \"Commit on master\"");
+                await run("git checkout branch1");
+
+                await git.rebase(new Repository(testDirectory), "master");
+            });
+
+            it("the working directory should contain all three files after the rebase", () => {
+                expect(fileSystem.findFiles(testDirectory, x => x.endsWith(".txt")).length).toBe(3);
+            })
+        });
+
+        describe("Given a locked file", () => {
+
+            let rebaseResult: GitRebaseResult;
+
+            beforeEach(async () => {
+                await run("git init");
+                await run("git config user.name \"GitGui Testing User\"");
+                await run("git config user.email \"testing@git.com\"");
+                await run("git help  > initFile.txt");
+                await run("git add --all");
+                await run("git commit -m \"Init commit\"");
+                await run("git checkout -b branch1");
+                await run("git help > fileOnBranch1.txt");
+                await run("git add --all");
+                await run("git commit -m \"Commit on branch 1\"");
+                await run("git checkout master");
+                await run("git help > fileOnMaster.txt");
+                await run("git add --all");
+                await run("git commit -m \"Commit on master\"");
+                await run("git checkout branch1");
+
+                const fd = fs.openSync("./fileOnBranch1.txt", "a");
+                try {
+                    rebaseResult = await git.rebase(new Repository(testDirectory), "master");
+                } finally {
+                    fs.closeSync(fd);
+                }
+            });
+
+            it("the rebase should failed with error: access_denied", () => {
+                expect(rebaseResult.success === false && rebaseResult.errorType === "access_denied").toBe(true);
+            })
         });
     });
 });
