@@ -25,8 +25,6 @@ export class ActionRebase {
         if (result.exitCode === 0)
             return { success: true };
 
-
-
         return { success: false, errorType: "unknown_error" };
     }
 }

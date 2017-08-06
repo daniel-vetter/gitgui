@@ -10,6 +10,7 @@ import { run, getTempDirectory } from "./helper";
 import { Repository } from "../model";
 import { GitFetchResult } from "../actions/action-fetch";
 import { GitRebaseResult } from "../actions/action-rebase";
+import { Process } from "app/services/git/infrastructure/process";
 const remote = (<any>window).require("electron").remote;
 const fs = remote.require("fs");
 
@@ -150,38 +151,40 @@ describe(Git.name, () => {
             })
         });
 
-        describe("Given a locked file", () => {
+        if (Platform.getCurrent() === "Windows") {
+            describe("Given a file is exclusive opened on windows", () => {
 
-            let rebaseResult: GitRebaseResult;
+                let rebaseResult: GitRebaseResult;
 
-            beforeEach(async () => {
-                await run("git init");
-                await run("git config user.name \"GitGui Testing User\"");
-                await run("git config user.email \"testing@git.com\"");
-                await run("git help  > initFile.txt");
-                await run("git add --all");
-                await run("git commit -m \"Init commit\"");
-                await run("git checkout -b branch1");
-                await run("git help > fileOnBranch1.txt");
-                await run("git add --all");
-                await run("git commit -m \"Commit on branch 1\"");
-                await run("git checkout master");
-                await run("git help > fileOnMaster.txt");
-                await run("git add --all");
-                await run("git commit -m \"Commit on master\"");
-                await run("git checkout branch1");
+                beforeEach(async () => {
+                    await run("git init");
+                    await run("git config user.name \"GitGui Testing User\"");
+                    await run("git config user.email \"testing@git.com\"");
+                    await run("git help  > initFile.txt");
+                    await run("git add --all");
+                    await run("git commit -m \"Init commit\"");
+                    await run("git checkout -b branch1");
+                    await run("git help > fileOnBranch1.txt");
+                    await run("git add --all");
+                    await run("git commit -m \"Commit on branch 1\"");
+                    await run("git checkout master");
+                    await run("git help > fileOnMaster.txt");
+                    await run("git add --all");
+                    await run("git commit -m \"Commit on master\"");
+                    await run("git checkout branch1");
 
-                const fd = fs.openSync("./fileOnBranch1.txt", "a");
-                try {
-                    rebaseResult = await git.rebase(new Repository(testDirectory), "master");
-                } finally {
-                    fs.closeSync(fd);
-                }
+                    const fd = fs.openSync("./fileOnBranch1.txt", "a");
+                    try {
+                        rebaseResult = await git.rebase(new Repository(testDirectory), "master");
+                    } finally {
+                        fs.closeSync(fd);
+                    }
+                });
+
+                it("the rebase should failed with error: access_denied", () => {
+                    expect(rebaseResult.success === false && rebaseResult.errorType === "access_denied").toBe(true);
+                }); 
             });
-
-            it("the rebase should failed with error: access_denied", () => {
-                expect(rebaseResult.success === false && rebaseResult.errorType === "access_denied").toBe(true);
-            })
-        });
+        } 
     });
 });

@@ -22,7 +22,7 @@ export class Platform {
         return baseDir;
     }
 
-    get current(): PlatformType {
+    static getCurrent(): PlatformType {
         if (process.platform === "win32") {
             return "Windows";
         }
@@ -30,6 +30,10 @@ export class Platform {
             return "Linux";
         }
         throw new Error("Unsupported platform");
+    }
+
+    get current(): PlatformType {
+        return Platform.getCurrent();
     }
 }
 
