@@ -54,7 +54,7 @@ export class Git {
     fetch(repository: Repository): Promise<GitFetchResult> {
         return this.actionFetch.fetch(repository);
     }
-    rebase(repository: Repository, rebaseOnTo: string, branchToRebase?: string): Promise<GitRebaseResult> {
+    rebase(repository: Repository, rebaseOnTo?: string, branchToRebase?: string): Promise<GitRebaseResult> {
         return this.actionRebase.rebase(repository, rebaseOnTo, branchToRebase);
     }
 }

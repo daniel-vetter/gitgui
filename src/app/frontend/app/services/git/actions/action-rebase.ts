@@ -8,8 +8,11 @@ export class ActionRebase {
 
     constructor(private gitRaw: GitRaw) { }
 
-    async rebase(repository: Repository, rebaseOnTo: string, branchToRebase?: string): Promise<GitRebaseResult> {
-        const args = ["rebase", rebaseOnTo];
+    async rebase(repository: Repository, rebaseOnTo?: string, branchToRebase?: string): Promise<GitRebaseResult> {
+        const args = ["rebase"];
+        if (rebaseOnTo) {
+            args.push(rebaseOnTo);
+        }
         if (branchToRebase) {
             args.push(branchToRebase);
         }
