@@ -1,10 +1,13 @@
 import { Component } from "@angular/core";
 import { FileOpenRepository } from "../../menu/handler/file-open-repository";
-import { Notifications } from "../notifications/notifications";
+import { Notifications, Notification } from "../notifications/notifications";
 import { Git } from "../../services/git/git";
 import { Repository } from "../../services/git/model";
 import { Status } from "../../services/status";
 import { TabManager } from "app/services/tabs/tab-manager";
+import { Dialog } from "app/main/dialog/dialog";
+import { TestDialogComponent } from "../test-dialog/test-dialog.component";
+
 @Component({
     templateUrl: "./tool-bar.component.html",
     styleUrls: ["./tool-bar.component.scss"],
@@ -15,14 +18,17 @@ export class ToolBarComponent {
     constructor(private fileOpenRepository: FileOpenRepository,
         private git: Git,
         private tabManager: TabManager,
-        private status: Status) { }
+        private status: Status,
+        private dialog: Dialog,
+        private notifications: Notifications) { }
 
     onOpenClicked() {
         this.fileOpenRepository.onClick();
     }
 
-    onPushClicked() {
-        throw new Error("Test");
+    async onPushClicked() {
+        const result = await this.dialog.create(TestDialogComponent).showModal(undefined);
+        this.notifications.showInfo(result);
     }
 
     async onRefreshClicked() {

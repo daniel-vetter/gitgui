@@ -47,6 +47,10 @@ import { TabComponentWrapperComponent } from "./main/tab-content/tab-component-w
 import { TabManager } from "app/services/tabs/tab-manager";
 import { MonacoEditorHelper } from "./main/tabs/file-content-tabs/monaco-editor-helper";
 import { TabHeaderItemComponent } from "./main/tab-header/tab-header-item/tab-header-item.component";
+import { DialogWrapperComponent } from "./main/dialog/dialog-wrapper/dialog-wrapper.component";
+import { Dialog } from "app/main/dialog/dialog";
+import { TestDialogComponent } from "./main/test-dialog/test-dialog.component";
+import { DialogOutletComponent } from "./main/dialog/dialog-outlet-component";
 
 @NgModule({
   declarations: [
@@ -68,12 +72,17 @@ import { TabHeaderItemComponent } from "./main/tab-header/tab-header-item/tab-he
     NotificationsComponent,
     NotificationBoxComponent,
     TabComponentWrapperComponent,
-    TabHeaderItemComponent
+    TabHeaderItemComponent,
+    DialogWrapperComponent,
+    DialogWrapperComponent,
+    DialogOutletComponent,
+    TestDialogComponent
   ],
   entryComponents: [
     HistoryTabComponent,
     FileContentDiffTabComponent,
-    FileContentTabComponent
+    FileContentTabComponent,
+    TestDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -106,7 +115,8 @@ import { TabHeaderItemComponent } from "./main/tab-header/tab-header-item/tab-he
       PlatformThemeValuesProvider,
       WindowsValuesProvider,
       LinuxValuesProvider,
-      MonacoEditorHelper
+      MonacoEditorHelper,
+      Dialog
   ],
   bootstrap: [AppComponent]
 })

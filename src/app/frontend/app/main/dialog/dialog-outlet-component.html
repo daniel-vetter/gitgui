@@ -1,0 +1,9 @@
+<div *ngIf="dialogs.length > 0" class="background" [@opacityInOut]></div>
+
+<div class="root">
+    <div *ngFor="let dialog of dialogs" [@flyInOut]>
+        <dialog-wrapper [dialogItem]="dialog.dialogItem" [input]="dialog.input"></dialog-wrapper>
+    </div>
+</div>
+
+

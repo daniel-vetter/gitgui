@@ -18,7 +18,7 @@ export class TabComponentWrapperComponent implements AfterContentInit, OnChanges
 
     private component: TabBase<any>;
 
-    constructor(private componentFactoryResolver: ComponentFactoryResolver, private viewContainerRef: ViewContainerRef) { }
+    constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
     ngAfterContentInit(): void {
         const factory = this.componentFactoryResolver.resolveComponentFactory(this.componentType);
