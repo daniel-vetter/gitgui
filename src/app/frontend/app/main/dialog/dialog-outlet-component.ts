@@ -55,19 +55,19 @@ export class DialogOutletComponent implements OnInit, OnDestroy {
         request.callbacks.onClose = (output) => this.onCloseDialog(request.dialogItem, output);
     }
 
-    private onShowDialog(dialogItem: DialogItem<any, any, any>, input: any) {
+    private onShowDialog(dialogItem: DialogItem<any, any>, input: any) {
         this.dialogs.push({
             dialogItem: dialogItem,
             input: input
         });
     }
 
-    private onCloseDialog(dialogItem: DialogItem<any, any, any>, output: any) {
+    private onCloseDialog(dialogItem: DialogItem<any, any>, output: any) {
         this.dialogs = this.dialogs.filter(x => x.dialogItem !== dialogItem);
     }
 }
 
 export interface DialogViewModel {
-    dialogItem: DialogItem<any, any, any>;
+    dialogItem: DialogItem<any, any>;
     input: any;
 }

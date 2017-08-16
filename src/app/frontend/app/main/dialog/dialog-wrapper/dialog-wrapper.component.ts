@@ -8,7 +8,7 @@ import { DialogItem, DialogBase } from "../dialog";
 })
 export class DialogWrapperComponent implements AfterContentInit {
 
-    @Input() dialogItem: DialogItem<any, any, any>;
+    @Input() dialogItem: DialogItem<any, any>;
     @Input() input: any;
     @ViewChild("host", { read: ViewContainerRef }) host: ViewContainerRef
     private component: DialogBase<any, any>;

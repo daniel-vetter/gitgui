@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { FileOpenRepository } from "../../menu/handler/file-open-repository";
-import { Notifications, Notification } from "../notifications/notifications";
 import { Git } from "../../services/git/git";
 import { Repository } from "../../services/git/model";
 import { Status } from "../../services/status";
 import { TabManager } from "app/services/tabs/tab-manager";
 import { Dialog } from "app/main/dialog/dialog";
 import { TestDialogComponent } from "../test-dialog/test-dialog.component";
+import { Notifications } from "../notification/notifications";
 
 @Component({
     templateUrl: "./tool-bar.component.html",

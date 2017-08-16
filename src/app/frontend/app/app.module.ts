@@ -29,10 +29,6 @@ import { HistoryTabComponent } from "./main/tabs/history/history-tab.component";
 import { SideBarManager } from "./services/side-bar-manager";
 import { SideBarComponent } from "./main/side-bar/side-bar.component";
 import { RepositoryStatusComponent } from "./main/side-bar/repository-status/repository-status.component";
-import { NotificationsComponent } from "./main/notifications/notifications.component";
-import { NotificationStore } from "./main/notifications/notificationStore";
-import { Notifications } from "./main/notifications/notifications";
-import { NotificationBoxComponent } from "./main/notifications/notification-box.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { GlobalErrorHandler } from "./global-error-handler";
 import { FileContentDiffTabComponent } from "./main/tabs/file-content-tabs/file-content-diff-tab/file-content-diff-tab.component";
@@ -51,6 +47,12 @@ import { DialogWrapperComponent } from "./main/dialog/dialog-wrapper/dialog-wrap
 import { Dialog } from "app/main/dialog/dialog";
 import { TestDialogComponent } from "./main/test-dialog/test-dialog.component";
 import { DialogOutletComponent } from "./main/dialog/dialog-outlet-component";
+import { NotificationOutletComponent } from "app/main/notification/notification-outlet-component";
+import { Notifications } from "app/main/notification/notifications";
+import { NotificationWrapperComponent } from "./main/notification/notification-wrapper/notification-wrapper.component";
+import { MessageNotificationComponent } from "app/main/notification/default-notifications/message-notification/message-notification.component";
+import { AccessDeniedNotificationComponent } from './services/git-ui-workflow/user-interactions/access-denied-notification/access-denied-notification.component';
+
 
 @NgModule({
   declarations: [
@@ -69,20 +71,23 @@ import { DialogOutletComponent } from "./main/dialog/dialog-outlet-component";
     FileContentTabComponent,
     SideBarComponent,
     RepositoryStatusComponent,
-    NotificationsComponent,
-    NotificationBoxComponent,
+    NotificationOutletComponent,
+    NotificationWrapperComponent,
     TabComponentWrapperComponent,
     TabHeaderItemComponent,
     DialogWrapperComponent,
     DialogWrapperComponent,
     DialogOutletComponent,
-    TestDialogComponent
+    TestDialogComponent,
+    MessageNotificationComponent,
+    AccessDeniedNotificationComponent
   ],
   entryComponents: [
     HistoryTabComponent,
     FileContentDiffTabComponent,
     FileContentTabComponent,
-    TestDialogComponent
+    TestDialogComponent,
+    MessageNotificationComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -111,7 +116,6 @@ import { DialogOutletComponent } from "./main/dialog/dialog-outlet-component";
       TabManager,
       SideBarManager,
       Notifications,
-      NotificationStore,
       PlatformThemeValuesProvider,
       WindowsValuesProvider,
       LinuxValuesProvider,

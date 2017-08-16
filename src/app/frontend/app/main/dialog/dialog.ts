@@ -14,15 +14,15 @@ export class Dialog {
         this.onDialogCreated = observable;
     }
 
-    create<TInput, TOutput, T extends DialogBase<TInput, TOutput>>(c: Type<DialogBase<TInput, TOutput>>): DialogItem<T, TInput, TOutput> {
+    create<TInput, TOutput, T extends DialogBase<TInput, TOutput>>(c: Type<DialogBase<TInput, TOutput>>): DialogItem<TInput, TOutput> {
         const callbacks = new DialogItemCallbacks();
-        const dialogItem = new DialogItem<T, TInput, TOutput>(c, callbacks);
+        const dialogItem = new DialogItem<TInput, TOutput>(c, callbacks);
         this.onDialogCreatedSubscriber.next({ dialogItem: dialogItem, callbacks: callbacks })
         return dialogItem;
     }
 }
 
-export class DialogItem<TComponent, TInput, TOutput> {
+export class DialogItem<TInput, TOutput> {
 
     private closeResolver: (x: TOutput) => void;
 
@@ -46,11 +46,14 @@ export class DialogItemCallbacks {
 }
 
 export interface DialogCreateRequest {
-    dialogItem: DialogItem<any, any, any>;
+    dialogItem: DialogItem<any, any>;
     callbacks: DialogItemCallbacks;
 }
 
 export abstract class DialogBase<TInput, TOutput> {
-    public close: (result: TOutput) => void;
+    dialogItem: DialogItem<any, any>;
+    public close(result: TOutput) {
+        this.dialogItem.close(result);
+    };
     abstract onInit(input: TInput): void;
 }

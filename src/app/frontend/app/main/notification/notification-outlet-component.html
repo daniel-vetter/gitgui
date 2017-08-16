@@ -1,0 +1,9 @@
+<div class="root">
+    <div style="flex: 1"></div>
+    <div *ngFor="let notification of notifications" [@flyInOut]>
+        <notification-wrapper [notificationItem]="notification.notificationItem" [input]="notification.input"></notification-wrapper>
+    </div>
+    <div style="height: 60px"></div>
+</div>
+
+

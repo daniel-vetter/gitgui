@@ -1,5 +1,5 @@
 import { ErrorHandler, Injectable } from "@angular/core";
-import { Notifications } from "./main/notifications/notifications";
+import { Notifications } from "./main/notification/notifications";
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {

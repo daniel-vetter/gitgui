@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Git } from "../git/git";
 import { Repository } from "../git/model";
+import { Notifications } from "app/main/notification/notifications";
+import { AccessDeniedNotificationComponent } from "./user-interactions/access-denied-notification/access-denied-notification.component";
 
 @Injectable()
 export class RebaseWorkflow {
-    constructor(private git: Git) { }
+    constructor(private git: Git, private notifications: Notifications) { }
 
     async run(repository: Repository, rebaseOnTo?: string, branchToRebase?: string): Promise<RebaseWorkflowResult> {
         while (true) {
@@ -16,7 +18,14 @@ export class RebaseWorkflow {
 
             if (rebaseResult.success === false) {
                 if (rebaseResult.errorType === "access_denied") {
-                    continue;
+                    const result = await this.notifications.create(AccessDeniedNotificationComponent).showModal({ blockedFiles: [] })
+                    if (result === "externally_resolved")
+                        return { success: true };
+                    if (result === "abort")
+                        return { success: false, errorType: "canceled_by_user" };
+                    if (result === "retry")
+                        continue;
+                    return this.assertNever(result);
                 }
                 if (rebaseResult.errorType === "not_a_git_repository") {
                     return { success: false, errorType: "not_a_git_repository"}
@@ -26,6 +35,10 @@ export class RebaseWorkflow {
                 }
             }
         }
+    }
+
+    private assertNever(never: never): never {
+        throw new Error("Invalid state: " + never);
     }
 }
 
