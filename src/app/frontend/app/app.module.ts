@@ -51,8 +51,11 @@ import { NotificationOutletComponent } from "app/main/notification/notification-
 import { Notifications } from "app/main/notification/notifications";
 import { NotificationWrapperComponent } from "./main/notification/notification-wrapper/notification-wrapper.component";
 import { MessageNotificationComponent } from "app/main/notification/default-notifications/message-notification/message-notification.component";
-import { AccessDeniedNotificationComponent } from './services/git-ui-workflow/user-interactions/access-denied-notification/access-denied-notification.component';
-
+import { FetchRebaseWorkflow } from "./services/git-ui-workflow/fetch-rebase-workflow";
+import { RebaseWorkflow } from "./services/git-ui-workflow/rebase-workflow";
+// tslint:disable-next-line:max-line-length
+import { AccessDeniedNotificationComponent } from "./services/git-ui-workflow/user-interactions/access-denied-notification/access-denied-notification.component";
+import { Workflow } from "./services/git-ui-workflow/system/workflow";
 
 @NgModule({
   declarations: [
@@ -120,7 +123,10 @@ import { AccessDeniedNotificationComponent } from './services/git-ui-workflow/us
       WindowsValuesProvider,
       LinuxValuesProvider,
       MonacoEditorHelper,
-      Dialog
+      Dialog,
+      FetchRebaseWorkflow,
+      RebaseWorkflow,
+      Workflow
   ],
   bootstrap: [AppComponent]
 })

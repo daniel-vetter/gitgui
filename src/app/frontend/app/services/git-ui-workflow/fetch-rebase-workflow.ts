@@ -2,13 +2,15 @@ import { Git } from "../git/git";
 import { Injectable } from "@angular/core";
 import { Repository } from "../git/model";
 import { RebaseWorkflow } from "./rebase-workflow";
+import { Workflow, WorkflowBase } from "./system/workflow";
 
 @Injectable()
-export class FetchRebaseWorkflow {
-    constructor(private git: Git, private rebaseWorkflow: RebaseWorkflow) { }
+export class FetchRebaseWorkflow implements WorkflowBase<Repository, Promise<PullRebaseWorkflowResult>> {
+    constructor(private git: Git, private workflow: Workflow) { }
 
     async run(repository: Repository): Promise<PullRebaseWorkflowResult> {
         const fetchResult = await this.git.fetch(repository);
+
 
         if (fetchResult.success === false) {
             if (fetchResult.errorType === "not_a_git_repository") {
@@ -20,7 +22,7 @@ export class FetchRebaseWorkflow {
         }
         if (fetchResult.success === true) {
 
-            const rebaseResult = await this.rebaseWorkflow.run(repository);
+            const rebaseResult = await this.workflow.create(FetchRebaseWorkflow).asSubWorkflowTo(this).run(repository);
             if (rebaseResult.success === false) {
                 if (rebaseResult.errorType === "canceled_by_user") {
                     return { success: false, errorType: "canceled_by_user" }
@@ -37,7 +39,6 @@ export class FetchRebaseWorkflow {
             }
 
             return this.assertNever(rebaseResult);
-
         }
 
         return this.assertNever(fetchResult);

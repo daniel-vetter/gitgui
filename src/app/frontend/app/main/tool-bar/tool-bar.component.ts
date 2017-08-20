@@ -7,6 +7,7 @@ import { TabManager } from "app/services/tabs/tab-manager";
 import { Dialog } from "app/main/dialog/dialog";
 import { TestDialogComponent } from "../test-dialog/test-dialog.component";
 import { Notifications } from "../notification/notifications";
+import { FetchRebaseWorkflow } from "app/services/git-ui-workflow/fetch-rebase-workflow";
 
 @Component({
     templateUrl: "./tool-bar.component.html",
@@ -20,7 +21,8 @@ export class ToolBarComponent {
         private tabManager: TabManager,
         private status: Status,
         private dialog: Dialog,
-        private notifications: Notifications) { }
+        private notifications: Notifications,
+        private fetchRebaseWorkflow: FetchRebaseWorkflow) { }
 
     onOpenClicked() {
         this.fileOpenRepository.onClick();
@@ -39,6 +41,20 @@ export class ToolBarComponent {
                 await this.git.updateRepository(repository);
             }
         });
+    }
 
+    async onPullClicked() {
+        const rep = await this.getCurrentRepository();
+        if (rep) {
+            this.fetchRebaseWorkflow.run(rep)
+        }
+    }
+
+    private async getCurrentRepository(): Promise<Repository | undefined> {
+        const selectedTab = this.tabManager.selectedTab;
+        if (selectedTab !== undefined) {
+            return await Promise.resolve(selectedTab.data.repository);
+        }
+        return undefined;
     }
 }
